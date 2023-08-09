@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using SWP391_Recipe_Organizer_BE.Repo.DataAccess;
+
 namespace SWP391_Recipe_Organizer_BE.API
 {
     public class Program
@@ -12,7 +15,8 @@ namespace SWP391_Recipe_Organizer_BE.API
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-
+            builder.Services.AddDbContext<RecipeOrganizerDbContext>(
+                op => op.UseSqlServer(builder.Configuration.GetConnectionString("RecipeOrganizerDB")));
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
