@@ -3,11 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWP391_Recipe_Organizer_BE.Repo", "SWP391_Recipe_Organizer_BE.Repo\SWP391_Recipe_Organizer_BE.Repo.csproj", "{3DCEBC0C-96EE-4F1C-8FDA-BB8ABF25FA80}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SWP391_Recipe_Organizer_BE.Repo", "SWP391_Recipe_Organizer_BE.Repo\SWP391_Recipe_Organizer_BE.Repo.csproj", "{3DCEBC0C-96EE-4F1C-8FDA-BB8ABF25FA80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWP391_Recipe_Organizer_BE.Service", "SWP391_Recipe_Organizer_BE.Service\SWP391_Recipe_Organizer_BE.Service.csproj", "{CE964416-A7F0-445B-B3DB-B2FCCC5BD834}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SWP391_Recipe_Organizer_BE.Service", "SWP391_Recipe_Organizer_BE.Service\SWP391_Recipe_Organizer_BE.Service.csproj", "{CE964416-A7F0-445B-B3DB-B2FCCC5BD834}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWP391_Recipe_Organizer_BE.API", "SWP391_Recipe_Organizer_BE.API\SWP391_Recipe_Organizer_BE.API.csproj", "{583F5323-567E-41F0-AFC4-9CF714B629D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SWP391_Recipe_Organizer_BE.API", "SWP391_Recipe_Organizer_BE.API\SWP391_Recipe_Organizer_BE.API.csproj", "{583F5323-567E-41F0-AFC4-9CF714B629D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWP391_Recipe_Organizer_BE.Ultility", "SWP391_Recipe_Organizer_BE.Ultility\SWP391_Recipe_Organizer_BE.Ultility.csproj", "{A7FECD50-2F0C-4289-8A13-774CCFE8884F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWP391_Recipe_Organizer_BE.TestConsole", "SWP391_Recipe_Organizer_BE.TestConsole\SWP391_Recipe_Organizer_BE.TestConsole.csproj", "{4FF97622-EA6A-4921-8678-474481FB9933}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +31,14 @@ Global
 		{583F5323-567E-41F0-AFC4-9CF714B629D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{583F5323-567E-41F0-AFC4-9CF714B629D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{583F5323-567E-41F0-AFC4-9CF714B629D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7FECD50-2F0C-4289-8A13-774CCFE8884F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7FECD50-2F0C-4289-8A13-774CCFE8884F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7FECD50-2F0C-4289-8A13-774CCFE8884F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7FECD50-2F0C-4289-8A13-774CCFE8884F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FF97622-EA6A-4921-8678-474481FB9933}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FF97622-EA6A-4921-8678-474481FB9933}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FF97622-EA6A-4921-8678-474481FB9933}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FF97622-EA6A-4921-8678-474481FB9933}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

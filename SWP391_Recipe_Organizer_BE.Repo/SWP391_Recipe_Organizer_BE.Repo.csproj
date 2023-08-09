@@ -18,4 +18,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SWP391_Recipe_Organizer_BE.Ultility\SWP391_Recipe_Organizer_BE.Ultility.csproj" />
+  </ItemGroup>
+
 </Project>

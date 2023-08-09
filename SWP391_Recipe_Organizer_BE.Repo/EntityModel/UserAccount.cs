@@ -1,25 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SWP391_Recipe_Organizer_BE.Repo.EntityModel
 {
-    public class UserAccount
+    public partial class UserAccount
     {
         public UserAccount()
         {
-            Recipes = new HashSet<Recipe>();
-            Plans = new HashSet<Plan>();
             FavoriteRecipes = new HashSet<FavoriteRecipe>();
-            Reviews = new HashSet<Review>();
             Photos = new HashSet<Photo>();
+            Plans = new HashSet<Plan>();
+            Recipes = new HashSet<Recipe>();
+            Reviews = new HashSet<Review>();
         }
-        public string UserId { get; set; }
 
+        public string UserId { get; set; } = null!;
         public string? Username { get; set; }
         public string? UserInfo { get; set; }
         public string? FullName { get; set; }
@@ -28,15 +23,16 @@ namespace SWP391_Recipe_Organizer_BE.Repo.EntityModel
         public string? GoogleToken { get; set; }
         public string? PhoneNum { get; set; }
         public string? Address { get; set; }
-        public string Password { get; set; }
-        public DateTime CreateDate { get; set; } = DateTime.Now;
-        public DateTime UpdateDate { get; set; } = DateTime.Now;
-        public bool IsDelete { get; set; } = false;
-        public int Role { get; set; } = 1; // 0: Admin, 1: Customer, 2: Cooker
-        public virtual IEnumerable<Recipe> Recipes { get; set; }
-        public virtual IEnumerable<Plan> Plans { get; set; }
-        public virtual IEnumerable<FavoriteRecipe> FavoriteRecipes { get; set; }
-        public virtual IEnumerable<Review> Reviews { get; set; }
-        public virtual IEnumerable<Photo> Photos { get; set; }
+        public string? Password { get; set; }
+        public DateTime? CreateDate { get; set; }
+        public DateTime? UpdateDate { get; set; }
+        public bool? IsDelete { get; set; }
+        public int? Role { get; set; }
+
+        public virtual ICollection<FavoriteRecipe> FavoriteRecipes { get; set; }
+        public virtual ICollection<Photo> Photos { get; set; }
+        public virtual ICollection<Plan> Plans { get; set; }
+        public virtual ICollection<Recipe> Recipes { get; set; }
+        public virtual ICollection<Review> Reviews { get; set; }
     }
 }

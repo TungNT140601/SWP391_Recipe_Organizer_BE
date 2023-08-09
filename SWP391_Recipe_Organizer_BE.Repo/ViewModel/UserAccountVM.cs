@@ -13,9 +13,8 @@ namespace SWP391_Recipe_Organizer_BE.Repo.ViewModel
         public string? FullName { get; set; }
         public string? Email { get; set; }
         public string? AvatarName { get; set; }
-        public string? GoogleToken { get; set; }
         public string? PhoneNum { get; set; }
         public string? Address { get; set; }
-        public string Password { get; set; }
+        public string? Password { get; set; }
     }
 }

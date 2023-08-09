@@ -2,12 +2,6 @@ USE [master]
 GO
 /****** Object:  Database [RecipeOrganizerDB]    Script Date: 8/9/2023 1:24:20 PM ******/
 CREATE DATABASE [RecipeOrganizerDB]
- CONTAINMENT = NONE
- ON  PRIMARY 
-( NAME = N'RecipeOrganizerDB', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.SQLEXPRESS\MSSQL\DATA\RecipeOrganizerDB.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
- LOG ON 
-( NAME = N'RecipeOrganizerDB_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.SQLEXPRESS\MSSQL\DATA\RecipeOrganizerDB_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
- WITH CATALOG_COLLATION = DATABASE_DEFAULT, LEDGER = OFF
 GO
 ALTER DATABASE [RecipeOrganizerDB] SET COMPATIBILITY_LEVEL = 160
 GO
