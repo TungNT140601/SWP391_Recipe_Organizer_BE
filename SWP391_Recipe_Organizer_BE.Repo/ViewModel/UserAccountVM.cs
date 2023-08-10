@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,8 @@ namespace SWP391_Recipe_Organizer_BE.Repo.ViewModel
 {
     public class UserAccountVM
     {
+        [Required]
+        public string UserId { get; set; }
         public string? Username { get; set; }
         public string? UserInfo { get; set; }
         public string? FullName { get; set; }
@@ -15,6 +18,5 @@ namespace SWP391_Recipe_Organizer_BE.Repo.ViewModel
         public string? AvatarName { get; set; }
         public string? PhoneNum { get; set; }
         public string? Address { get; set; }
-        public string? Password { get; set; }
     }
 }

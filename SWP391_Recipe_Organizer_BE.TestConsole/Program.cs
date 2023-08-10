@@ -3,7 +3,5 @@ public class Program
 {
     private static void Main(string[] args)
     {
-        var salt = PasswordHashing.GenerateSalt();
-        Console.WriteLine(salt);
     }
 }

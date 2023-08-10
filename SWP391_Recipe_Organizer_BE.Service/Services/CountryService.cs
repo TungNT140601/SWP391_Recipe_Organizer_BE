@@ -1,4 +1,5 @@
 ﻿using SWP391_Recipe_Organizer_BE.Repo.EntityModel;
+using SWP391_Recipe_Organizer_BE.Repo.Interface;
 using SWP391_Recipe_Organizer_BE.Service.Interface;
 using System;
 using System.Collections.Generic;
@@ -10,35 +11,36 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
 {
     public class CountryService : ICountryService
     {
-        private readonly ICountryService countryService;
-        public CountryService(ICountryService countryService)
+        private readonly ICountryRepository countryRepository;
+        public CountryService(ICountryRepository countryRepository)
         {
-            this.countryService = countryService;
+            this.countryRepository = countryRepository;
         }
 
         public bool Add(Country item)
         {
-            return countryService.Add(item);
+            return countryRepository.Add(item);
         }
 
         public Country Get(string id)
         {
-            return countryService.Get(id);
+            return countryRepository.Get(id);
         }
 
         public IEnumerable<Country> GetAll()
         {
-            return countryService.GetAll();
+            
+            return countryRepository.GetAll();
         }
 
         public bool Remove(Country item)
         {
-            return countryService.Remove(item);
+            return countryRepository.Remove(item);
         }
 
         public bool Update(Country item)
         {
-            return countryService.Update(item);
+            return countryRepository.Update(item);
         }
     }
 }

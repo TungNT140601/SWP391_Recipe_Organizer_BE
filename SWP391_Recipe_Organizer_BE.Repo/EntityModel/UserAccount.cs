@@ -27,7 +27,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.EntityModel
         public DateTime? CreateDate { get; set; }
         public DateTime? UpdateDate { get; set; }
         public bool? IsDelete { get; set; }
-        public int? Role { get; set; }
+        public int? Role { get; set; } //  0: Admin; 1:Guest; 2:Cooker
 
         public virtual ICollection<FavoriteRecipe> FavoriteRecipes { get; set; }
         public virtual ICollection<Photo> Photos { get; set; }

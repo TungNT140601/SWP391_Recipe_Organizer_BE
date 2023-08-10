@@ -53,25 +53,12 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
             }
         }
 
-        public UserAccount CheckLoginByEmail(string email, string ggToken, string password)
+        public UserAccount CheckLoginByEmail(string email, string ggToken)
         {
             try
             {
-                var user = dbSet.Where(x => x.Email == email && x.GoogleToken == ggToken && PasswordHashing.VerifyPassword(password, x.Password)).FirstOrDefault();
+                var user = dbSet.Where(x => x.Email == email && x.GoogleToken == ggToken).FirstOrDefault();
                 return user != null ? user : null;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public UserAccount CheckLoginByPhone(string phone, string password)
-        {
-            try
-            {
-                var user = dbSet.Where(x => x.PhoneNum == phone && PasswordHashing.VerifyPassword(password, x.Password)).FirstOrDefault();
-                return user != null?user:null;
             }
             catch (Exception ex)
             {
@@ -83,8 +70,9 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
         {
             try
             {
-                var user = dbSet.Where(x => x.Username == username && PasswordHashing.VerifyPassword(password, x.Password)).FirstOrDefault();
-                return user != null?user:null;
+                var user = dbSet.Where(x => x.Username == username).FirstOrDefault();
+                var check = PasswordHashing.VerifyPassword(password, user.Password);
+                return check ? user : null;
             }
             catch (Exception ex)
             {
@@ -131,7 +119,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
             }
         }
 
-        public bool RegisWithEmail(string email, string ggToken)
+        public UserAccount RegisWithEmail(string email, string ggToken)
         {
             try
             {
@@ -141,11 +129,12 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                     Email = email,
                     GoogleToken = ggToken,
                     CreateDate = DateTime.Now,
-                    UpdateDate = DateTime.Now
+                    UpdateDate = DateTime.Now,
+                    Role = 1
                 };
                 dbSet.Add(user);
                 dBContext.SaveChanges();
-                return true;
+                return user;
             }
             catch (Exception ex)
             {
@@ -153,29 +142,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
             }
         }
 
-        public bool RegisWithPhone(string phone, string password)
-        {
-            try
-            {
-                UserAccount user = new UserAccount
-                {
-                    UserId = GenerateId.AutoGenerateId(),
-                    PhoneNum = phone,
-                    Password = PasswordHashing.HashPassword(password),
-                    CreateDate = DateTime.Now,
-                    UpdateDate = DateTime.Now
-                };
-                dbSet.Add(user);
-                dBContext.SaveChanges();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public bool RegisWithUsername(string username, string password)
+        public UserAccount RegisWithUsername(string username, string password)
         {
             try
             {
@@ -185,11 +152,12 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                     Username = username,
                     Password = PasswordHashing.HashPassword(password),
                     CreateDate = DateTime.Now,
-                    UpdateDate = DateTime.Now
+                    UpdateDate = DateTime.Now,
+                    Role = 1
                 };
                 dbSet.Add(user);
                 dBContext.SaveChanges();
-                return true;
+                return user;
             }
             catch (Exception ex)
             {

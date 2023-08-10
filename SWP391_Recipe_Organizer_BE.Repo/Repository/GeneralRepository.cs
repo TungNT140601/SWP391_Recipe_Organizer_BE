@@ -4,6 +4,7 @@ using SWP391_Recipe_Organizer_BE.Repo.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -48,12 +49,19 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
             }
         }
 
-        public IEnumerable<T> GetAll()
+        public IEnumerable<T> GetAll(params Expression<Func<T, object>>[] includeProperties)
         {
             try
             {
-                var lst = dbSet.ToList();
-                return lst;
+                IQueryable<T> query = dbSet;
+
+                foreach (var includeProperty in includeProperties)
+                {
+                    query = query.Include(includeProperty);
+                }
+
+                var items = query.ToList();
+                return items;
             }
             catch (Exception ex)
             {

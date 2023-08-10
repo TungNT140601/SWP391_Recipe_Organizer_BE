@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -5,6 +6,8 @@ using Microsoft.OpenApi.Models;
 using SWP391_Recipe_Organizer_BE.Repo.DataAccess;
 using SWP391_Recipe_Organizer_BE.Repo.Interface;
 using SWP391_Recipe_Organizer_BE.Repo.Repository;
+using SWP391_Recipe_Organizer_BE.Service.Interface;
+using SWP391_Recipe_Organizer_BE.Service.Services;
 using System.Text;
 
 namespace SWP391_Recipe_Organizer_BE.API
@@ -21,6 +24,7 @@ namespace SWP391_Recipe_Organizer_BE.API
             builder.Services.AddDbContext<RecipeOrganizerDBContext>(opt =>
             opt.UseSqlServer(builder.Configuration.GetConnectionString("RecipeOrganizerDB")));
             var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.AddAuthentication(option =>
             {
                 option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -47,7 +51,8 @@ namespace SWP391_Recipe_Organizer_BE.API
                 });
             });
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen(c =>
+            builder.Services.AddSwaggerGen(
+                c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Recipe Organizer API", Version = "v1" });
 
@@ -74,7 +79,8 @@ namespace SWP391_Recipe_Organizer_BE.API
                 new string[] { }
             }
         });
-            });
+            }
+            );
 
             builder.Services.AddScoped<ICountryRepository, CountryRepository>();
             builder.Services.AddScoped<IDirectionRepository, DirectionRepository>();
@@ -104,10 +110,15 @@ namespace SWP391_Recipe_Organizer_BE.API
             //builder.Services.AddScoped<IPlanDetailService, PlanDetailService>();
             //builder.Services.AddScoped<IRecipeService, RecipeService>();
             //builder.Services.AddScoped<IReviewService, ReviewService>();
-            //builder.Services.AddScoped<IUserAccountService, UserAccountService>();
+            builder.Services.AddScoped<IUserAccountService, UserAccountService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
             app.UseSwagger();
             app.UseSwaggerUI();
             app.UseCors();
