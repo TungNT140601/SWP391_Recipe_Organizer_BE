@@ -1,12 +1,7 @@
 ﻿using SWP391_Recipe_Organizer_BE.Repo.EntityModel;
 using SWP391_Recipe_Organizer_BE.Repo.Interface;
 using SWP391_Recipe_Organizer_BE.Service.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using SWP391_Recipe_Organizer_BE.Ultility;
 namespace SWP391_Recipe_Organizer_BE.Service.Services
 {
     public class CountryService : ICountryService
@@ -19,28 +14,87 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
 
         public bool Add(Country item)
         {
-            return countryRepository.Add(item);
+            try
+            {
+                item.CountryId = GenerateId.AutoGenerateId();
+                item.HasRecipe = false;
+                return countryRepository.Add(item);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public Country Get(string id)
         {
-            return countryRepository.Get(id);
+            try
+            {
+                return countryRepository.Get(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
-        public IEnumerable<Country> GetAll()
+        public IEnumerable<Country> GetAllAdd()
         {
-            
-            return countryRepository.GetAll();
+            try
+            {
+                return countryRepository.GetAll(x => x.IsDelete == false);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public IEnumerable<Country> GetAllFilter()
+        {
+            try
+            {
+                var countryList = countryRepository.GetAll(x => x.IsDelete == false && x.HasRecipe == true);
+                return countryList.ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
-        public bool Remove(Country item)
+        public bool Delete(string id)
         {
-            return countryRepository.Remove(item);
+            try
+            {
+                var country = countryRepository.Get(id);
+                if (country != null)
+                {
+                    country.IsDelete = true;
+                    return countryRepository.Update(country);
+                }
+                else
+                {
+                    throw new Exception("Not Found Country");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public bool Update(Country item)
         {
-            return countryRepository.Update(item);
+            try
+            {
+                var country = countryRepository.Get(item.CountryId);
+                country.CountryName = item.CountryName;
+                return countryRepository.Update(country);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

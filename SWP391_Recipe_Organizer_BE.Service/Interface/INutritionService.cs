@@ -12,7 +12,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Interface
         Nutrition Get(string id);
         IEnumerable<Nutrition> GetAll();
         bool Add(Nutrition item);
-        bool Remove(Nutrition item);
+        bool Delete(string id);
         bool Update(Nutrition item);
     }
 }

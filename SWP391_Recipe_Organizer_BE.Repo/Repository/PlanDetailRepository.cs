@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SWP391_Recipe_Organizer_BE.Repo.Repository
 {
-    public class PlanDetailRepository : GeneralRepository<PlanDetail>, IPlanDetailRepository
+    public class PlanDetailRepository : GenericRepository<PlanDetail>, IPlanDetailRepository
     {
         public PlanDetailRepository(RecipeOrganizerDBContext dBContext) : base(dBContext)
         {

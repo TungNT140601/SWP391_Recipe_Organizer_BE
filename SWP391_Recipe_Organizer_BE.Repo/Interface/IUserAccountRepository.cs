@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SWP391_Recipe_Organizer_BE.Repo.Interface
 {
-    public interface IUserAccountRepository:IGeneralRepository<UserAccount>
+    public interface IUserAccountRepository:IGenericRepository<UserAccount>
     {
         UserAccount CheckLoginByUserName(string username, string password);
         UserAccount CheckLoginByEmail(string email, string ggToken);

@@ -12,7 +12,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Interface
         Ingredient Get(string id);
         IEnumerable<Ingredient> GetAll();
         bool Add(Ingredient item);
-        bool Remove(Ingredient item);
+        bool Delete(string id);
         bool Update(Ingredient item);
     }
 }

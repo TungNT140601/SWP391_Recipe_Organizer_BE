@@ -84,7 +84,8 @@ GO
 CREATE TABLE [dbo].[Country](
 	[CountryId] [nvarchar](20) NOT NULL,
 	[CountryName] [nvarchar](255) NULL,
-	[HasRecipe] [bit] NULL,
+	[HasRecipe] [bit] NULL DEFAULT 0,
+	[IsDelete] [bit] NULL DEFAULT 0,
 PRIMARY KEY CLUSTERED 
 (
 	[CountryId] ASC
@@ -131,6 +132,7 @@ GO
 CREATE TABLE [dbo].[Ingredient](
 	[IngredientId] [nvarchar](20) NOT NULL,
 	[IngredientName] [nvarchar](255) NULL,
+	[IsDelete] [bit] NULL DEFAULT 0,
 PRIMARY KEY CLUSTERED 
 (
 	[IngredientId] ASC
@@ -156,6 +158,7 @@ GO
 CREATE TABLE [dbo].[Meal](
 	[MealId] [nvarchar](20) NOT NULL,
 	[MealName] [nvarchar](255) NULL,
+	[IsDelete] [bit] NULL DEFAULT 0,
 PRIMARY KEY CLUSTERED 
 (
 	[MealId] ASC
@@ -170,6 +173,7 @@ GO
 CREATE TABLE [dbo].[Nutrition](
 	[NutritionId] [nvarchar](20) NOT NULL,
 	[NutritionName] [nvarchar](255) NULL,
+	[IsDelete] [bit] NULL DEFAULT 0,
 PRIMARY KEY CLUSTERED 
 (
 	[NutritionId] ASC
@@ -198,6 +202,7 @@ CREATE TABLE [dbo].[Photo](
 	[RecipeId] [nvarchar](20) NULL,
 	[UserId] [nvarchar](20) NULL,
 	[UploadTime] [datetime] NULL,
+	[IsDelete] [bit] NULL DEFAULT 0,
 PRIMARY KEY CLUSTERED 
 (
 	[PhotoId] ASC
@@ -212,10 +217,12 @@ GO
 CREATE TABLE [dbo].[Plan](
 	[PlanId] [nvarchar](20) NOT NULL,
 	[UserId] [nvarchar](20) NULL,
+	[PlanName] [nvarchar](255) NULL,
+	[PlanDescription] [text] NULL,
 	[CreateTime] [datetime] NULL,
 	[UpdateTime] [datetime] NULL,
 	[DeleteTime] [datetime] NULL,
-	[IsDelete] [bit] NULL,
+	[IsDelete] [bit] NULL DEFAULT 0,
 PRIMARY KEY CLUSTERED 
 (
 	[PlanId] ASC
@@ -259,7 +266,7 @@ CREATE TABLE [dbo].[Recipe](
 	[CreateTime] [datetime] NULL,
 	[UpdateTime] [datetime] NULL,
 	[DeleteTime] [datetime] NULL,
-	[IsDelete] [bit] NULL,
+	[IsDelete] [bit] NULL DEFAULT 0,
 PRIMARY KEY CLUSTERED 
 (
 	[RecipeId] ASC
@@ -301,7 +308,7 @@ CREATE TABLE [dbo].[UserAccount](
 	[Password] [nvarchar](255) NULL,
 	[CreateDate] [datetime] NULL,
 	[UpdateDate] [datetime] NULL,
-	[IsDelete] [bit] NULL,
+	[IsDelete] [bit] NULL DEFAULT 0,
 	[Role] [int] NULL,
 PRIMARY KEY CLUSTERED 
 (
@@ -309,12 +316,12 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-ALTER TABLE [dbo].[Country] ADD  DEFAULT ((0)) FOR [HasRecipe]
-GO
-ALTER TABLE [dbo].[Recipe] ADD  DEFAULT ((0)) FOR [IsDelete]
-GO
-ALTER TABLE [dbo].[UserAccount] ADD  DEFAULT ((0)) FOR [IsDelete]
-GO
+--ALTER TABLE [dbo].[Country] ADD  DEFAULT ((0)) FOR [HasRecipe]
+--GO
+--ALTER TABLE [dbo].[Recipe] ADD  DEFAULT ((0)) FOR [IsDelete]
+--GO
+--ALTER TABLE [dbo].[UserAccount] ADD  DEFAULT ((0)) FOR [IsDelete]
+--GO
 ALTER TABLE [dbo].[UserAccount] ADD  DEFAULT ((1)) FOR [Role]
 GO
 ALTER TABLE [dbo].[Direction]  WITH CHECK ADD FOREIGN KEY([RecipeId])

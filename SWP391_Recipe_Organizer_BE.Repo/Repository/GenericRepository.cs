@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace SWP391_Recipe_Organizer_BE.Repo.Repository
 {
-    public class GeneralRepository<T> : IGeneralRepository<T> where T : class
+    public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         protected readonly RecipeOrganizerDBContext dBContext;
         protected readonly DbSet<T> dbSet;
-        public GeneralRepository(RecipeOrganizerDBContext dBContext)
+        public GenericRepository(RecipeOrganizerDBContext dBContext)
         {
             if (this.dBContext == null)
             {
@@ -49,7 +49,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
             }
         }
 
-        public IEnumerable<T> GetAll(params Expression<Func<T, object>>[] includeProperties)
+        public IEnumerable<T> GetAll(Func<T, bool>? predicate, params Expression<Func<T, object>>[] includeProperties)
         {
             try
             {
@@ -59,8 +59,15 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                 {
                     query = query.Include(includeProperty);
                 }
-
-                var items = query.ToList();
+                var items = new List<T>();
+                if (predicate != null)
+                {
+                    items = query.Where(predicate).ToList();
+                }
+                else
+                {
+                    items = query.ToList();
+                }
                 return items;
             }
             catch (Exception ex)
@@ -69,13 +76,21 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
             }
         }
 
-        public bool Remove(T item)
+        public bool Remove(object id)
         {
             try
             {
-                dbSet.Remove(item);
-                dBContext.SaveChanges();
-                return true;
+                var item = dbSet.Find(id);
+                if (item != null)
+                {
+                    dbSet.Remove(item);
+                    dBContext.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch (Exception ex)
             {

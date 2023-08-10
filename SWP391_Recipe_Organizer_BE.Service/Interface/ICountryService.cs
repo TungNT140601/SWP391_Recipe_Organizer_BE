@@ -10,9 +10,10 @@ namespace SWP391_Recipe_Organizer_BE.Service.Interface
     public interface ICountryService
     {
         Country Get(string id);
-        IEnumerable<Country> GetAll();
+        IEnumerable<Country> GetAllAdd();
+        IEnumerable<Country> GetAllFilter();
         bool Add(Country item);
-        bool Remove(Country item);
+        bool Delete(string id);
         bool Update(Country item);
     }
 }

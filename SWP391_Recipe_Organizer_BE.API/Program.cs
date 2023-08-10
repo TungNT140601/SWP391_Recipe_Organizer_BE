@@ -97,13 +97,13 @@ namespace SWP391_Recipe_Organizer_BE.API
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
             builder.Services.AddScoped<IUserAccountRepository, UserAccountRepository>();
 
-            //builder.Services.AddScoped<ICountryService, CountryService>();
+            builder.Services.AddScoped<ICountryService, CountryService>();
             //builder.Services.AddScoped<IDirectionService, DirectionService>();
             //builder.Services.AddScoped<IFavoriteRecipeService, FavoriteRecipeService>();
-            //builder.Services.AddScoped<IIngredientService, IngredientService>();
+            builder.Services.AddScoped<IIngredientService, IngredientService>();
             //builder.Services.AddScoped<IIngredientOfRecipeService, IngredientOfRecipeService>();
-            //builder.Services.AddScoped<IMealService, MealService>();
-            //builder.Services.AddScoped<INutritionService, NutritionService>();
+            builder.Services.AddScoped<IMealService, MealService>();
+            builder.Services.AddScoped<INutritionService, NutritionService>();
             //builder.Services.AddScoped<INutritionInRecipeService, NutritionInRecipeService>();
             //builder.Services.AddScoped<IPhotoService, PhotoService>();
             //builder.Services.AddScoped<IPlanService, PlanService>();

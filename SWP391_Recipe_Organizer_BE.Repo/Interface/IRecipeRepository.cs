@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SWP391_Recipe_Organizer_BE.Repo.Interface
 {
-    public interface IRecipeRepository : IGeneralRepository<Recipe>
+    public interface IRecipeRepository : IGenericRepository<Recipe>
     {
     }
 }

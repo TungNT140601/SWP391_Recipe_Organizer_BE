@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SWP391_Recipe_Organizer_BE.Repo.Repository
 {
-    public class PhotoRepository : GeneralRepository<Photo>, IPhotoRepository
+    public class PhotoRepository : GenericRepository<Photo>, IPhotoRepository
     {
         public PhotoRepository(RecipeOrganizerDBContext dBContext) : base(dBContext)
         {

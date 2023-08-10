@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SWP391_Recipe_Organizer_BE.Repo.Repository
 {
-    public class DirectionRepository : GeneralRepository<Direction>, IDirectionRepository
+    public class DirectionRepository : GenericRepository<Direction>, IDirectionRepository
     {
         public DirectionRepository(RecipeOrganizerDBContext dBContext) : base(dBContext)
         {

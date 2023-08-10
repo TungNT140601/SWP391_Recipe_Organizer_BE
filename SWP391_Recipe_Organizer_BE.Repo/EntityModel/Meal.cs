@@ -12,6 +12,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.EntityModel
 
         public string MealId { get; set; } = null!;
         public string? MealName { get; set; }
+        public bool? IsDelete { get; set; }
 
         public virtual ICollection<Recipe> Recipes { get; set; }
     }

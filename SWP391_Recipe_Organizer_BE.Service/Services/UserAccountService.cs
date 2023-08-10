@@ -1,9 +1,11 @@
 ﻿using SWP391_Recipe_Organizer_BE.Repo.EntityModel;
 using SWP391_Recipe_Organizer_BE.Repo.Interface;
+using SWP391_Recipe_Organizer_BE.Repo.Repository;
 using SWP391_Recipe_Organizer_BE.Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,85 +21,184 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
 
         public bool Add(UserAccount item)
         {
-            return userAccountRepository.Add(item);
+            try
+            {
+                return userAccountRepository.Add(item);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public bool ChangePassword(string id, string oldPassword, string newPassword)
         {
-            return userAccountRepository.ChangePassword(id, oldPassword, newPassword);
+            try
+            {
+                return userAccountRepository.ChangePassword(id, oldPassword, newPassword);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public bool CheckEmailExist(string email)
         {
-            return userAccountRepository.CheckEmailExist(email);
+            try
+            {
+                return userAccountRepository.CheckEmailExist(email);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public UserAccount CheckLoginByEmail(string email, string ggToken)
         {
-            var check = userAccountRepository.CheckEmailExist(email);
-            if (check)
+            try
             {
-                return userAccountRepository.CheckLoginByEmail(email, ggToken);
+                var check = userAccountRepository.CheckEmailExist(email);
+                if (check)
+                {
+                    return userAccountRepository.CheckLoginByEmail(email, ggToken);
+                }
+                else
+                {
+                    return userAccountRepository.RegisWithEmail(email, ggToken);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return userAccountRepository.RegisWithEmail(email, ggToken);
+                throw new Exception(ex.Message);
             }
         }
 
         public UserAccount CheckLoginByUserName(string username, string password)
         {
-            return userAccountRepository.CheckLoginByUserName(username, password);
+            try
+            {
+                return userAccountRepository.CheckLoginByUserName(username, password);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public bool CheckPhoneExist(string phone)
         {
-            return userAccountRepository.CheckPhoneExist(phone);
+            try
+            {
+                return userAccountRepository.CheckPhoneExist(phone);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public bool CheckUsernameExist(string username)
         {
-            return userAccountRepository.CheckUsernameExist(username);
+            try
+            {
+                return userAccountRepository.CheckUsernameExist(username);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public UserAccount Get(string id)
         {
-            return userAccountRepository.Get(id);
+            try
+            {
+                return userAccountRepository.Get(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public IEnumerable<UserAccount> GetAll()
         {
-            return userAccountRepository.GetAll(new System.Linq.Expressions.Expression<Func<UserAccount, object>>[] {
+            try
+            {
+                return userAccountRepository.GetAll(x => x.IsDelete == false,
+                    new System.Linq.Expressions.Expression<Func<UserAccount, object>>[] {
                 x => x.Plans,
                 x => x.Recipes,
                 x => x.Reviews,
                 x => x.FavoriteRecipes
-            });
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public UserAccount GetUserInfo(string id)
         {
-            return userAccountRepository.GetUserInfo(id);
+            try
+            {
+                return userAccountRepository.GetUserInfo(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public UserAccount RegisWithEmail(string email, string ggToken)
         {
-            return userAccountRepository.RegisWithEmail(email, ggToken);
+            try
+            {
+                return userAccountRepository.RegisWithEmail(email, ggToken);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public UserAccount RegisWithUsername(string username, string password)
         {
-            return userAccountRepository.RegisWithUsername(username, password);
+            try
+            {
+                return userAccountRepository.RegisWithUsername(username, password);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public bool Remove(UserAccount item)
         {
-            return userAccountRepository.Remove(item);
+            try
+            {
+                return userAccountRepository.Remove(item);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public bool Update(UserAccount item)
         {
-            return userAccountRepository.Update(item);
+            try
+            {
+                return userAccountRepository.Update(item);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

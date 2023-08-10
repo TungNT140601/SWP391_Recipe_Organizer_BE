@@ -7,5 +7,6 @@ namespace SWP391_Recipe_Organizer_BE.Repo.EntityModel
     {
         public string IngredientId { get; set; } = null!;
         public string? IngredientName { get; set; }
+        public bool? IsDelete { get; set; }
     }
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SWP391_Recipe_Organizer_BE.Repo.Repository
 {
-    public class ReviewRepository : GeneralRepository<Review>, IReviewRepository
+    public class ReviewRepository : GenericRepository<Review>, IReviewRepository
     {
         public ReviewRepository(RecipeOrganizerDBContext dBContext) : base(dBContext)
         {

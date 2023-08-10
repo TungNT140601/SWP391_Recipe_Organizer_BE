@@ -1,104 +1,47 @@
-﻿using System.Security.Claims;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using SWP391_Recipe_Organizer_BE.API.ViewModel;
 using SWP391_Recipe_Organizer_BE.Repo.EntityModel;
 using SWP391_Recipe_Organizer_BE.Service.Interface;
+using System.Security.Claims;
 
 namespace SWP391_Recipe_Organizer_BE.API.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class CountriesController : ControllerBase
+    public class MealsController : ControllerBase
     {
-        private readonly ICountryService countryService;
+        private readonly IMealService mealService;
         private readonly IMapper mapper;
-
-        public CountriesController(ICountryService countryService, IMapper mapper)
+        public MealsController(IMealService mealService,IMapper mapper)
         {
-            this.countryService = countryService;
+            this.mealService = mealService;
             this.mapper = mapper;
         }
-
-        // GET: api/Countries
         [HttpGet]
-        public async Task<IActionResult> GetCountriesAdd()
+        public async Task<IActionResult> GetAll()
         {
             try
             {
-                var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-                if (!string.IsNullOrEmpty(role))
-                {
-                    if (role == "Cooker")
-                    {
-                        var lst = countryService.GetAllAdd();
-                        var countries = new List<CountryVM>();
-                        foreach (var item in lst)
-                        {
-                            countries.Add(mapper.Map<CountryVM>(item));
-                        }
-                        return Ok(new
-                        {
-                            Status = 1,
-                            Message = "Role Accepted",
-                            Data = lst
-                        });
-                    }
-                    else
-                    {
-                        return Ok(new
-                        {
-                            Status = 0,
-                            Message = "Role Denied",
-                            Data = new { }
-                        });
-                    }
-                }
-                else
-                {
-                    return Unauthorized();
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }// GET: api/Countries
-        [HttpGet]
-        public async Task<IActionResult> GetCountriesFilter()
-        {
-            try
-            {
-                var lst = countryService.GetAllFilter();
-                var countries = new List<CountryVM>();
-                foreach (var item in lst)
-                {
-                    countries.Add(mapper.Map<CountryVM>(item));
-                }
                 return Ok(new
                 {
                     Status = 1,
-                    Message = "",
-                    Data = countries
+                    Data = mealService.GetAll()
                 });
-            }
-            catch (Exception ex)
+            }catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
-
-        // GET: api/Countries/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCountry(string id)
+        public async Task<IActionResult> Get(string id)
         {
             try
             {
                 return Ok(new
                 {
                     Status = 1,
-                    Message = "",
-                    Data = mapper.Map<CountryVM>(countryService.Get(id))
+                    Data = mealService.Get(id)
                 });
             }
             catch (Exception ex)
@@ -106,72 +49,8 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        // PUT: api/Countries/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut]
-        public async Task<IActionResult> UpdateCountry(string id, CountryVM countryVM)
-        {
-            if (id != countryVM.CountryId)
-            {
-                return BadRequest();
-            }
-
-            try
-            {
-                var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-                if (!string.IsNullOrEmpty(role))
-                {
-                    if (role == "Admin")
-                    {
-                        if (string.IsNullOrEmpty(countryVM.CountryName))
-                        {
-                            return StatusCode(400, new
-                            {
-                                Message = "Country name cannot be empty!!!"
-                            });
-                        }
-                        else
-                        {
-                            var country = mapper.Map<Country>(countryVM);
-                            var check = countryService.Update(country);
-                            return check ? Ok(new
-                            {
-                                Status = 1,
-                                Message = "Update Country Success"
-                            }) : Ok(new
-                            {
-                                Status = 0,
-                                Message = "Update Country Fail"
-                            });
-                        }
-                    }
-                    else
-                    {
-                        return Ok(new
-                        {
-                            Status = 0,
-                            Message = "Role Denied",
-                            Data = new { }
-                        });
-                    }
-                }
-                else
-                {
-                    return Unauthorized();
-                }
-
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        // POST: api/Countries
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<IActionResult> AddCountry(CountryVM countryVM)
+        public async Task<IActionResult> AddMeal(MealVM mealVM)
         {
             try
             {
@@ -180,25 +59,25 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 {
                     if (role == "Admin")
                     {
-                        if (string.IsNullOrEmpty(countryVM.CountryName))
+                        if (string.IsNullOrEmpty(mealVM.MealName))
                         {
                             return StatusCode(400, new
                             {
-                                Message = "Country name cannot be empty!!!"
+                                Message = "Meal name cannot be empty!!!"
                             });
                         }
                         else
                         {
-                            var country = mapper.Map<Country>(countryVM);
-                            var check = countryService.Add(country);
+                            var meal = mapper.Map<Meal>(mealVM);
+                            var check = mealService.Add(meal);
                             return check ? Ok(new
                             {
                                 Status = 1,
-                                Message = "Add Country Success"
+                                Message = "Add Meal Success"
                             }) : Ok(new
                             {
                                 Status = 0,
-                                Message = "Add Country Fail"
+                                Message = "Add Meal Fail"
                             });
                         }
                     }
@@ -222,12 +101,10 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        // DELETE: api/Countries/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCountry(string id)
+        [HttpPut]
+        public async Task<IActionResult> UpdateMeal(string id, MealVM mealVM)
         {
-            if (countryService.Get(id) == null)
+            if (id != mealVM.MealId)
             {
                 return BadRequest();
             }
@@ -239,15 +116,73 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 {
                     if (role == "Admin")
                     {
-                        var check = countryService.Delete(id);
+                        if (string.IsNullOrEmpty(mealVM.MealName))
+                        {
+                            return StatusCode(400, new
+                            {
+                                Message = "Meal name cannot be empty!!!"
+                            });
+                        }
+                        else
+                        {
+                            var meal = mapper.Map<Meal>(mealVM);
+                            var check = mealService.Update(meal);
+                            return check ? Ok(new
+                            {
+                                Status = 1,
+                                Message = "Update Meal Success"
+                            }) : Ok(new
+                            {
+                                Status = 0,
+                                Message = "Update Meal Fail"
+                            });
+                        }
+                    }
+                    else
+                    {
+                        return Ok(new
+                        {
+                            Status = 0,
+                            Message = "Role Denied",
+                            Data = new { }
+                        });
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteMeal(string id)
+        {
+            if (mealService.Get(id) == null)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                if (!string.IsNullOrEmpty(role))
+                {
+                    if (role == "Admin")
+                    {
+                        var check = mealService.Delete(id);
                         return check ? Ok(new
                         {
                             Status = 1,
-                            Message = "Delete Country Success"
+                            Message = "Delete Meal Success"
                         }) : Ok(new
                         {
                             Status = 0,
-                            Message = "Delete Country Fail"
+                            Message = "Delete Meal Fail"
                         });
 
                     }

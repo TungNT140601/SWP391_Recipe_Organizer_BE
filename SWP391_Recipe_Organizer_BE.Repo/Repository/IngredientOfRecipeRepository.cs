@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SWP391_Recipe_Organizer_BE.Repo.Repository
 {
-    public class IngredientOfRecipeRepository : GeneralRepository<IngredientOfRecipe>, IIngredientOfRecipeRepository
+    public class IngredientOfRecipeRepository : GenericRepository<IngredientOfRecipe>, IIngredientOfRecipeRepository
     {
         public IngredientOfRecipeRepository(RecipeOrganizerDBContext dBContext) : base(dBContext)
         {

@@ -1,19 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using SWP391_Recipe_Organizer_BE.Repo.DataAccess;
-using SWP391_Recipe_Organizer_BE.Repo.EntityModel;
-using SWP391_Recipe_Organizer_BE.Repo.ViewModel;
+using SWP391_Recipe_Organizer_BE.API.ViewModel;
 using SWP391_Recipe_Organizer_BE.Service.Interface;
 
 namespace SWP391_Recipe_Organizer_BE.API.Controllers
@@ -26,7 +17,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
         private readonly IUserAccountService userAccountService;
         private readonly IMapper mapper;
 
-        public UserAccountsController(IConfiguration configuration, IUserAccountService userAccountService,IMapper mapper)
+        public UserAccountsController(IConfiguration configuration, IUserAccountService userAccountService, IMapper mapper)
         {
             this.configuration = configuration;
             this.userAccountService = userAccountService;
@@ -74,13 +65,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
             }
             catch (Exception ex)
             {
-                return Ok(new
-                {
-                    Status = -1,
-                    Message = $"Server Error: {ex.Message}",
-                    Role = "",
-                    Token = ""
-                });
+                return BadRequest(ex.Message);
             }
         }
         [HttpPost]
@@ -125,45 +110,75 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
             }
             catch (Exception ex)
             {
-                return Ok(new
-                {
-                    Status = -1,
-                    Message = $"Server Error: {ex.Message}",
-                    Role = "",
-                    Token = ""
-                });
+                return BadRequest(ex.Message);
             }
         }
+        //[HttpPost]
+        //public async Task<IActionResult> RegisByEmail([FromBody] LoginEmailVM loginVM)
+        //{
+        //    try
+        //    {
+        //        var user = userAccountService.RegisWithEmail(loginVM.Email, loginVM.GGToken);
+        //        if (user != null)
+        //        {
+        //            return Ok(new
+        //            {
+        //                Status = 1,
+        //                Message = "Regis Success"
+        //            });
+        //        }
+        //        else
+        //        {
+        //            return Ok(new
+        //            {
+        //                Status = 0,
+        //                Message = "Regis Fail"
+        //            });
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
         [HttpPost]
-        public async Task<IActionResult> RegisByEmail([FromBody] LoginEmailVM loginVM)
+        public async Task<IActionResult> RegisByUsername([FromBody] LoginVM loginVM)
         {
             try
             {
-                var user = userAccountService.RegisWithEmail(loginVM.Email, loginVM.GGToken);
-                if (user != null)
+
+                var check = userAccountService.CheckUsernameExist(loginVM.Username);
+                if (check)
                 {
-                    return Ok(new
+                    return StatusCode(400, new
                     {
-                        Status = 1,
-                        Message = "Regis Success"
+                        Message = "Username has been used!!!"
                     });
                 }
                 else
                 {
-                    return Ok(new
+                    var user = userAccountService.RegisWithUsername(loginVM.Username, loginVM.Password);
+                    if (user != null)
                     {
-                        Status = 0,
-                        Message = "Regis Fail"
-                    });
+                        return Ok(new
+                        {
+                            Status = 1,
+                            Message = "Regis Success"
+                        });
+                    }
+                    else
+                    {
+                        return Ok(new
+                        {
+                            Status = 0,
+                            Message = "Regis Fail"
+                        });
+                    }
                 }
             }
             catch (Exception ex)
             {
-                return Ok(new
-                {
-                    Status = -1,
-                    Message = $"Server Error: {ex.Message}"
-                });
+                return BadRequest(ex.Message);
             }
         }
         [HttpGet]
@@ -199,14 +214,53 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 {
                     return Unauthorized();
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
-                return Ok(new
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllUser()
+        {
+            try
+            {
+                var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                if (!string.IsNullOrEmpty(role))
                 {
-                    Status = -1,
-                    Message = "Server Error",
-                    Data = new { }
-                });
+                    if (role == "Admin")
+                    {
+                        var lst = userAccountService.GetAll();
+                        var users = new List<UserAccountVM>();
+                        foreach (var item in lst)
+                        {
+                            users.Add(mapper.Map<UserAccountVM>(item));
+                        }
+                        return Ok(new
+                        {
+                            Status = 1,
+                            Message = "Success",
+                            Data = users.ToList()
+                        }); ;
+                    }
+                    else
+                    {
+                        return Ok(new
+                        {
+                            Status = 0,
+                            Message = "Role Denied",
+                            Data = new { }
+                        });
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
         private string GenerateJwtToken(string id, string role)

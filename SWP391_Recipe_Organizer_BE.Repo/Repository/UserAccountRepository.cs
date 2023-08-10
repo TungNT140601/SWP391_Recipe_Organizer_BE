@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SWP391_Recipe_Organizer_BE.Repo.Repository
 {
-    public class UserAccountRepository : GeneralRepository<UserAccount>, IUserAccountRepository
+    public class UserAccountRepository : GenericRepository<UserAccount>, IUserAccountRepository
     {
         public UserAccountRepository(RecipeOrganizerDBContext dBContext) : base(dBContext)
         {

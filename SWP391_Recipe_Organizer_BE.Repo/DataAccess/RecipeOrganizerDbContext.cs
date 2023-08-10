@@ -36,7 +36,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.DataAccess
         {
             if (!optionsBuilder.IsConfigured)
             {
-                //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.UseSqlServer("server=(local);uid=sa;pwd=1;database=RecipeOrganizerDB;TrustServerCertificate=True;");
             }
         }
@@ -52,12 +52,14 @@ namespace SWP391_Recipe_Organizer_BE.Repo.DataAccess
                 entity.Property(e => e.CountryName).HasMaxLength(255);
 
                 entity.Property(e => e.HasRecipe).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.IsDelete).HasDefaultValueSql("((0))");
             });
 
             modelBuilder.Entity<Direction>(entity =>
             {
                 entity.HasKey(e => e.DirectionsId)
-                    .HasName("PK__Directio__D9F441A8686A3090");
+                    .HasName("PK__Directio__D9F441A879D6BC7A");
 
                 entity.ToTable("Direction");
 
@@ -70,13 +72,13 @@ namespace SWP391_Recipe_Organizer_BE.Repo.DataAccess
                 entity.HasOne(d => d.Recipe)
                     .WithMany(p => p.Directions)
                     .HasForeignKey(d => d.RecipeId)
-                    .HasConstraintName("FK__Direction__Recip__52593CB8");
+                    .HasConstraintName("FK__Direction__Recip__5812160E");
             });
 
             modelBuilder.Entity<FavoriteRecipe>(entity =>
             {
                 entity.HasKey(e => e.FavoriteId)
-                    .HasName("PK__Favorite__CE74FAD59B49754C");
+                    .HasName("PK__Favorite__CE74FAD56A831364");
 
                 entity.ToTable("FavoriteRecipe");
 
@@ -91,12 +93,12 @@ namespace SWP391_Recipe_Organizer_BE.Repo.DataAccess
                 entity.HasOne(d => d.Recipe)
                     .WithMany(p => p.FavoriteRecipes)
                     .HasForeignKey(d => d.RecipeId)
-                    .HasConstraintName("FK__FavoriteR__Recip__534D60F1");
+                    .HasConstraintName("FK__FavoriteR__Recip__59063A47");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.FavoriteRecipes)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__FavoriteR__UserI__5441852A");
+                    .HasConstraintName("FK__FavoriteR__UserI__59FA5E80");
             });
 
             modelBuilder.Entity<Ingredient>(entity =>
@@ -106,6 +108,8 @@ namespace SWP391_Recipe_Organizer_BE.Repo.DataAccess
                 entity.Property(e => e.IngredientId).HasMaxLength(20);
 
                 entity.Property(e => e.IngredientName).HasMaxLength(255);
+
+                entity.Property(e => e.IsDelete).HasDefaultValueSql("((0))");
             });
 
             modelBuilder.Entity<IngredientOfRecipe>(entity =>
@@ -123,12 +127,12 @@ namespace SWP391_Recipe_Organizer_BE.Repo.DataAccess
                 entity.HasOne(d => d.Ingredient)
                     .WithMany()
                     .HasForeignKey(d => d.IngredientId)
-                    .HasConstraintName("FK__Ingredien__Ingre__5535A963");
+                    .HasConstraintName("FK__Ingredien__Ingre__5AEE82B9");
 
                 entity.HasOne(d => d.Recipe)
                     .WithMany()
                     .HasForeignKey(d => d.RecipeId)
-                    .HasConstraintName("FK__Ingredien__Recip__5629CD9C");
+                    .HasConstraintName("FK__Ingredien__Recip__5BE2A6F2");
             });
 
             modelBuilder.Entity<Meal>(entity =>
@@ -136,6 +140,8 @@ namespace SWP391_Recipe_Organizer_BE.Repo.DataAccess
                 entity.ToTable("Meal");
 
                 entity.Property(e => e.MealId).HasMaxLength(20);
+
+                entity.Property(e => e.IsDelete).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.MealName).HasMaxLength(255);
             });
@@ -145,6 +151,8 @@ namespace SWP391_Recipe_Organizer_BE.Repo.DataAccess
                 entity.ToTable("Nutrition");
 
                 entity.Property(e => e.NutritionId).HasMaxLength(20);
+
+                entity.Property(e => e.IsDelete).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.NutritionName).HasMaxLength(255);
             });
@@ -162,12 +170,12 @@ namespace SWP391_Recipe_Organizer_BE.Repo.DataAccess
                 entity.HasOne(d => d.Nutrition)
                     .WithMany()
                     .HasForeignKey(d => d.NutritionId)
-                    .HasConstraintName("FK__Nutrition__Nutri__571DF1D5");
+                    .HasConstraintName("FK__Nutrition__Nutri__5CD6CB2B");
 
                 entity.HasOne(d => d.Recipe)
                     .WithMany()
                     .HasForeignKey(d => d.RecipeId)
-                    .HasConstraintName("FK__Nutrition__Recip__5812160E");
+                    .HasConstraintName("FK__Nutrition__Recip__5DCAEF64");
             });
 
             modelBuilder.Entity<Photo>(entity =>
@@ -175,6 +183,8 @@ namespace SWP391_Recipe_Organizer_BE.Repo.DataAccess
                 entity.ToTable("Photo");
 
                 entity.Property(e => e.PhotoId).HasMaxLength(20);
+
+                entity.Property(e => e.IsDelete).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.PhotoName).HasMaxLength(255);
 
@@ -187,12 +197,12 @@ namespace SWP391_Recipe_Organizer_BE.Repo.DataAccess
                 entity.HasOne(d => d.Recipe)
                     .WithMany(p => p.Photos)
                     .HasForeignKey(d => d.RecipeId)
-                    .HasConstraintName("FK__Photo__RecipeId__59063A47");
+                    .HasConstraintName("FK__Photo__RecipeId__5EBF139D");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Photos)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__Photo__UserId__59FA5E80");
+                    .HasConstraintName("FK__Photo__UserId__5FB337D6");
             });
 
             modelBuilder.Entity<Plan>(entity =>
@@ -205,6 +215,12 @@ namespace SWP391_Recipe_Organizer_BE.Repo.DataAccess
 
                 entity.Property(e => e.DeleteTime).HasColumnType("datetime");
 
+                entity.Property(e => e.IsDelete).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.PlanDescription).HasColumnType("text");
+
+                entity.Property(e => e.PlanName).HasMaxLength(255);
+
                 entity.Property(e => e.UpdateTime).HasColumnType("datetime");
 
                 entity.Property(e => e.UserId).HasMaxLength(20);
@@ -212,7 +228,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.DataAccess
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Plans)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__Plan__UserId__5AEE82B9");
+                    .HasConstraintName("FK__Plan__UserId__60A75C0F");
             });
 
             modelBuilder.Entity<PlanDetail>(entity =>
@@ -230,12 +246,12 @@ namespace SWP391_Recipe_Organizer_BE.Repo.DataAccess
                 entity.HasOne(d => d.Plan)
                     .WithMany(p => p.PlanDetails)
                     .HasForeignKey(d => d.PlanId)
-                    .HasConstraintName("FK__PlanDetai__PlanI__5BE2A6F2");
+                    .HasConstraintName("FK__PlanDetai__PlanI__619B8048");
 
                 entity.HasOne(d => d.Recipe)
                     .WithMany(p => p.PlanDetails)
                     .HasForeignKey(d => d.RecipeId)
-                    .HasConstraintName("FK__PlanDetai__Recip__5CD6CB2B");
+                    .HasConstraintName("FK__PlanDetai__Recip__628FA481");
             });
 
             modelBuilder.Entity<Recipe>(entity =>
@@ -265,17 +281,17 @@ namespace SWP391_Recipe_Organizer_BE.Repo.DataAccess
                 entity.HasOne(d => d.Country)
                     .WithMany(p => p.Recipes)
                     .HasForeignKey(d => d.CountryId)
-                    .HasConstraintName("FK__Recipe__CountryI__5DCAEF64");
+                    .HasConstraintName("FK__Recipe__CountryI__6383C8BA");
 
                 entity.HasOne(d => d.Meal)
                     .WithMany(p => p.Recipes)
                     .HasForeignKey(d => d.MealId)
-                    .HasConstraintName("FK__Recipe__MealId__5EBF139D");
+                    .HasConstraintName("FK__Recipe__MealId__6477ECF3");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Recipes)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__Recipe__UserId__5FB337D6");
+                    .HasConstraintName("FK__Recipe__UserId__656C112C");
             });
 
             modelBuilder.Entity<Review>(entity =>
@@ -295,18 +311,18 @@ namespace SWP391_Recipe_Organizer_BE.Repo.DataAccess
                 entity.HasOne(d => d.Recipe)
                     .WithMany(p => p.Reviews)
                     .HasForeignKey(d => d.RecipeId)
-                    .HasConstraintName("FK__Review__RecipeId__60A75C0F");
+                    .HasConstraintName("FK__Review__RecipeId__66603565");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Reviews)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__Review__UserId__619B8048");
+                    .HasConstraintName("FK__Review__UserId__6754599E");
             });
 
             modelBuilder.Entity<UserAccount>(entity =>
             {
                 entity.HasKey(e => e.UserId)
-                    .HasName("PK__UserAcco__1788CC4C31A5B95D");
+                    .HasName("PK__UserAcco__1788CC4C47760BAB");
 
                 entity.ToTable("UserAccount");
 
