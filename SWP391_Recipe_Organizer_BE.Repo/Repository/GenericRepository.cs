@@ -36,12 +36,18 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
             }
         }
 
-        public T Get(object id)
+        public T Get(Func<T, bool> predicate, params Expression<Func<T, object>>[] includeProperties)
         {
             try
             {
-                var item = dbSet.Find(id);
-                return item != null ? item : null;
+                IQueryable<T> query = dbSet;
+
+                foreach (var includeProperty in includeProperties)
+                {
+                    query = query.Include(includeProperty);
+                }
+                var items = query.Where(predicate).FirstOrDefault();
+                return items;
             }
             catch (Exception ex)
             {

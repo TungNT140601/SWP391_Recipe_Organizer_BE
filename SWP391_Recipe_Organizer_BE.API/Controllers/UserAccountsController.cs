@@ -73,7 +73,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
         {
             try
             {
-                var user = userAccountService.CheckLoginByEmail(loginVM.Email, loginVM.GGToken);
+                var user = userAccountService.CheckLoginByEmail(loginVM.Email, loginVM.GGToken, loginVM.Fullname, loginVM.Image);
                 if (user != null)
                 {
                     string role = "";

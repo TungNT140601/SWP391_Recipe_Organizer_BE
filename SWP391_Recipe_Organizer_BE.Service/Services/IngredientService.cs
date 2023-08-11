@@ -2,6 +2,7 @@
 using SWP391_Recipe_Organizer_BE.Repo.Interface;
 using SWP391_Recipe_Organizer_BE.Service.Interface;
 using SWP391_Recipe_Organizer_BE.Ultility;
+using System.ComponentModel;
 
 namespace SWP391_Recipe_Organizer_BE.Service.Services
 {
@@ -31,7 +32,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         {
             try
             {
-                return ingredientRepository.Get(id);
+                return ingredientRepository.Get(x => x.IngredientId == id && x.IsDelete == false);
             }
             catch (Exception ex)
             {
@@ -55,11 +56,11 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         {
             try
             {
-                var country = ingredientRepository.Get(id);
-                if (country != null)
+                var ingredient = ingredientRepository.Get(x => x.IngredientId == id && x.IsDelete == false);
+                if (ingredient != null)
                 {
-                    country.IsDelete = true;
-                    return ingredientRepository.Update(country);
+                    ingredient.IsDelete = true;
+                    return ingredientRepository.Update(ingredient);
                 }
                 else
                 {
@@ -76,9 +77,9 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         {
             try
             {
-                var country = ingredientRepository.Get(item.IngredientId);
-                country.IngredientName = item.IngredientName;
-                return ingredientRepository.Update(country);
+                var ingredient = ingredientRepository.Get(x => x.IngredientId == item.IngredientId && x.IsDelete == false);
+                ingredient.IngredientName = item.IngredientName;
+                return ingredientRepository.Update(ingredient);
             }
             catch (Exception ex)
             {

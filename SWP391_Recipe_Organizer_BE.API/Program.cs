@@ -108,7 +108,7 @@ namespace SWP391_Recipe_Organizer_BE.API
             //builder.Services.AddScoped<IPhotoService, PhotoService>();
             //builder.Services.AddScoped<IPlanService, PlanService>();
             //builder.Services.AddScoped<IPlanDetailService, PlanDetailService>();
-            //builder.Services.AddScoped<IRecipeService, RecipeService>();
+            builder.Services.AddScoped<IRecipeService, RecipeService>();
             //builder.Services.AddScoped<IReviewService, ReviewService>();
             builder.Services.AddScoped<IUserAccountService, UserAccountService>();
             var app = builder.Build();

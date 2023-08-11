@@ -9,7 +9,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Interface
 {
     public interface IGenericRepository<T> where T : class
     {
-        T Get(object id);
+        T Get(Func<T, bool> predicate, params Expression<Func<T, object>>[] includeProperties);
         IEnumerable<T> GetAll(Func<T, bool> predicate, params Expression<Func<T, object>>[] includeProperties);
         bool Add(T item);
         bool Remove(object id);

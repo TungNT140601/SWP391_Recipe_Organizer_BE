@@ -15,6 +15,8 @@ namespace SWP391_Recipe_Organizer_BE.API.ViewModel
         public string Email { get; set; }
         [Required]
         public string GGToken { get; set; }
+        public string? Fullname { get; set; }
+        public string? Image { get; set; }
     }
     public class  UserInfoVM
     {

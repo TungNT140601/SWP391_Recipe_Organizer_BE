@@ -15,9 +15,9 @@ namespace SWP391_Recipe_Organizer_BE.Service.Interface
         bool Remove(UserAccount item);
         bool Update(UserAccount item);
         UserAccount CheckLoginByUserName(string username, string password);
-        UserAccount CheckLoginByEmail(string email, string ggToken);
+        UserAccount CheckLoginByEmail(string email, string ggToken, string fullname, string image);
         UserAccount RegisWithUsername(string username, string password);
-        UserAccount RegisWithEmail(string email, string ggToken);
+        UserAccount RegisWithEmail(string email, string ggToken, string fullname, string image);
         UserAccount GetUserInfo(string id);
         bool ChangePassword(string id, string oldPassword, string newPassword);
         bool CheckEmailExist(string email);

@@ -55,7 +55,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
             }
         }
 
-        public UserAccount CheckLoginByEmail(string email, string ggToken)
+        public UserAccount CheckLoginByEmail(string email, string ggToken, string fullname, string image)
         {
             try
             {
@@ -66,7 +66,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 }
                 else
                 {
-                    return userAccountRepository.RegisWithEmail(email, ggToken);
+                    return userAccountRepository.RegisWithEmail(email, ggToken, fullname, image);
                 }
             }
             catch (Exception ex)
@@ -115,7 +115,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         {
             try
             {
-                return userAccountRepository.Get(id);
+                return userAccountRepository.Get(x => x.UserId == id && x.IsDelete == false);
             }
             catch (Exception ex)
             {
@@ -153,11 +153,11 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
             }
         }
 
-        public UserAccount RegisWithEmail(string email, string ggToken)
+        public UserAccount RegisWithEmail(string email, string ggToken, string fullname, string image)
         {
             try
             {
-                return userAccountRepository.RegisWithEmail(email, ggToken);
+                return userAccountRepository.RegisWithEmail(email, ggToken, fullname, image);
             }
             catch (Exception ex)
             {

@@ -282,6 +282,8 @@ CREATE TABLE [dbo].[Review](
 	[ReviewId] [nvarchar](20) NOT NULL,
 	[UserId] [nvarchar](20) NULL,
 	[RecipeId] [nvarchar](20) NULL,
+	[VoteNum] [int] NULL,
+	[Comment] [text] NULL,
 	[CreateTime] [datetime] NULL,
 	[UpdateTime] [datetime] NULL,
 PRIMARY KEY CLUSTERED 

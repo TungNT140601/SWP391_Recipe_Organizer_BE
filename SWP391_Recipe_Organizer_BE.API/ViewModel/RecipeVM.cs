@@ -1,0 +1,28 @@
+﻿using SWP391_Recipe_Organizer_BE.Repo.EntityModel;
+
+namespace SWP391_Recipe_Organizer_BE.API.ViewModel
+{
+    public class RecipeVM
+    {
+        public string? RecipeId { get; set; }
+        public string? RecipeName { get; set; }
+        public string? UserId { get; set; }
+        public string? CountryId { get; set; }
+        public string? MealId { get; set; }
+        public string? Description { get; set; }
+        public int? PrepTime { get; set; }
+        public int? CookTime { get; set; }
+        public int? StandTime { get; set; }
+        public int? TotalTime { get; set; }
+        public int? Servings { get; set; }
+        public DateTime? UpdateTime { get; set; }
+        public UserAccount? User { get; set; }
+        public int? TotalReview { get; set; }
+        public double? AveVote { get; set; }
+        public int? TotalFavorite { get; set; }
+        public ICollection<PhotoVM>? Photos { get; set; }
+        public ICollection<DirectionVM>? Directions { get; set; }
+        public ICollection<ReviewVM>? Reviews { get; set; }
+        public ICollection<FavoriteRecipe> FavoriteRecipes { get; set; }
+    }
+}

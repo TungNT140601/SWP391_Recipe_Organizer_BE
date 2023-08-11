@@ -21,7 +21,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
         {
             try
             {
-                var user = dbSet.Find(id);
+                var user = dbSet.Where(x => x.UserId == id && x.IsDelete == false).FirstOrDefault();
                 if (PasswordHashing.VerifyPassword(oldPassword, user.Password))
                 {
                     user.Password = PasswordHashing.HashPassword(newPassword);
@@ -44,7 +44,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
         {
             try
             {
-                var user = dbSet.Where(x => x.Email == email).FirstOrDefault();
+                var user = dbSet.Where(x => x.Email == email && x.IsDelete == false).FirstOrDefault();
                 return user != null;
             }
             catch (Exception ex)
@@ -57,8 +57,8 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
         {
             try
             {
-                var user = dbSet.Where(x => x.Email == email && x.GoogleToken == ggToken).FirstOrDefault();
-                return user != null ? user : null;
+                var user = dbSet.Where(x => x.Email == email && x.GoogleToken == ggToken && x.IsDelete == false).FirstOrDefault();
+                return user;
             }
             catch (Exception ex)
             {
@@ -70,7 +70,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
         {
             try
             {
-                var user = dbSet.Where(x => x.Username == username).FirstOrDefault();
+                var user = dbSet.Where(x => x.Username == username && x.IsDelete == false).FirstOrDefault();
                 var check = PasswordHashing.VerifyPassword(password, user.Password);
                 return check ? user : null;
             }
@@ -84,7 +84,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
         {
             try
             {
-                var user = dbSet.Where(x => x.PhoneNum == phone).FirstOrDefault();
+                var user = dbSet.Where(x => x.PhoneNum == phone && x.IsDelete == false).FirstOrDefault();
                 return user != null;
             }
             catch (Exception ex)
@@ -97,7 +97,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
         {
             try
             {
-                var user = dbSet.Where(x => x.Username == username).FirstOrDefault();
+                var user = dbSet.Where(x => x.Username == username && x.IsDelete == false).FirstOrDefault();
                 return user != null;
             }
             catch (Exception ex)
@@ -110,8 +110,8 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
         {
             try
             {
-                var user = dbSet.Find(id);
-                return user != null ? user : null;
+                var user = dbSet.Where(x => x.UserId == id && x.IsDelete == false).FirstOrDefault();
+                return user;
             }
             catch (Exception ex)
             {
@@ -119,7 +119,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
             }
         }
 
-        public UserAccount RegisWithEmail(string email, string ggToken)
+        public UserAccount RegisWithEmail(string email, string ggToken, string fullname, string image)
         {
             try
             {
@@ -128,6 +128,8 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                     UserId = GenerateId.AutoGenerateId(),
                     Email = email,
                     GoogleToken = ggToken,
+                    FullName = fullname,
+                    AvatarName = image,
                     CreateDate = DateTime.Now,
                     UpdateDate = DateTime.Now,
                     Role = 1

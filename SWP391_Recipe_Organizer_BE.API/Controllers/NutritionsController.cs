@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace SWP391_Recipe_Organizer_BE.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class NutritionsController : ControllerBase
     {

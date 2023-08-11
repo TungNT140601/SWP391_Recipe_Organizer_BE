@@ -59,7 +59,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.DataAccess
             modelBuilder.Entity<Direction>(entity =>
             {
                 entity.HasKey(e => e.DirectionsId)
-                    .HasName("PK__Directio__D9F441A879D6BC7A");
+                    .HasName("PK__Directio__D9F441A8CFC4D916");
 
                 entity.ToTable("Direction");
 
@@ -78,7 +78,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.DataAccess
             modelBuilder.Entity<FavoriteRecipe>(entity =>
             {
                 entity.HasKey(e => e.FavoriteId)
-                    .HasName("PK__Favorite__CE74FAD56A831364");
+                    .HasName("PK__Favorite__CE74FAD58EC6C1DD");
 
                 entity.ToTable("FavoriteRecipe");
 
@@ -300,6 +300,8 @@ namespace SWP391_Recipe_Organizer_BE.Repo.DataAccess
 
                 entity.Property(e => e.ReviewId).HasMaxLength(20);
 
+                entity.Property(e => e.Comment).HasColumnType("text");
+
                 entity.Property(e => e.CreateTime).HasColumnType("datetime");
 
                 entity.Property(e => e.RecipeId).HasMaxLength(20);
@@ -322,7 +324,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.DataAccess
             modelBuilder.Entity<UserAccount>(entity =>
             {
                 entity.HasKey(e => e.UserId)
-                    .HasName("PK__UserAcco__1788CC4C47760BAB");
+                    .HasName("PK__UserAcco__1788CC4CB4E3D464");
 
                 entity.ToTable("UserAccount");
 

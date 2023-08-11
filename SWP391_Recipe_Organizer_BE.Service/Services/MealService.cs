@@ -4,6 +4,7 @@ using SWP391_Recipe_Organizer_BE.Service.Interface;
 using SWP391_Recipe_Organizer_BE.Ultility;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,8 +36,8 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         {
             try
             {
-                var meal = mealRepository.Get(id);
-                return !meal.IsDelete.Value ? meal : null;
+                var meal = mealRepository.Get(x => x.MealId == id && x.IsDelete == false);
+                return meal;
             }
             catch (Exception ex)
             {
@@ -60,7 +61,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         {
             try
             {
-                var meal = mealRepository.Get(id);
+                var meal = mealRepository.Get(x => x.MealId == id && x.IsDelete == false);
                 if (meal != null)
                 {
                     meal.IsDelete = true;
@@ -81,11 +82,12 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         {
             try
             {
-                var meal = mealRepository.Get(item.MealId);
+                var meal = mealRepository.Get(x => x.MealId == item.MealId && x.IsDelete == false);
                 if (meal != null)
                 {
+                    meal.MealName = item.MealName;
                     meal.IsDelete = false;
-                    return mealRepository.Update(item);
+                    return mealRepository.Update(meal);
                 }
                 else
                 {

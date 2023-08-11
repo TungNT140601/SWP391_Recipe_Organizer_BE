@@ -4,6 +4,7 @@ using SWP391_Recipe_Organizer_BE.Service.Interface;
 using SWP391_Recipe_Organizer_BE.Ultility;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,8 +36,8 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         {
             try
             {
-                var meal = nutritionRepository.Get(id);
-                return !meal.IsDelete.Value ? meal : null;
+                var nutrition = nutritionRepository.Get(x => x.NutritionId == id && x.IsDelete == false);
+                return nutrition;
             }
             catch (Exception ex)
             {
@@ -60,11 +61,11 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         {
             try
             {
-                var meal = nutritionRepository.Get(id);
-                if (meal != null)
+                var nutrition = nutritionRepository.Get(x => x.NutritionId == id && x.IsDelete == false);
+                if (nutrition != null)
                 {
-                    meal.IsDelete = true;
-                    return nutritionRepository.Update(meal);
+                    nutrition.IsDelete = true;
+                    return nutritionRepository.Update(nutrition);
                 }
                 else
                 {
@@ -81,11 +82,12 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         {
             try
             {
-                var meal = nutritionRepository.Get(item.NutritionId);
-                if (meal != null)
+                var nutrition = nutritionRepository.Get(x => x.NutritionId == item.NutritionId && x.IsDelete == false);
+                if (nutrition != null)
                 {
-                    meal.IsDelete = false;
-                    return nutritionRepository.Update(item);
+                    nutrition.NutritionName = item.NutritionName;
+                    nutrition.IsDelete = false;
+                    return nutritionRepository.Update(nutrition);
                 }
                 else
                 {

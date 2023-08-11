@@ -2,6 +2,7 @@
 using SWP391_Recipe_Organizer_BE.Repo.Interface;
 using SWP391_Recipe_Organizer_BE.Service.Interface;
 using SWP391_Recipe_Organizer_BE.Ultility;
+
 namespace SWP391_Recipe_Organizer_BE.Service.Services
 {
     public class CountryService : ICountryService
@@ -30,7 +31,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         {
             try
             {
-                return countryRepository.Get(id);
+                return countryRepository.Get(x => x.CountryId == id && x.IsDelete == false);
             }
             catch (Exception ex)
             {
@@ -66,7 +67,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         {
             try
             {
-                var country = countryRepository.Get(id);
+                var country = countryRepository.Get(x => x.CountryId == id && x.IsDelete == false);
                 if (country != null)
                 {
                     country.IsDelete = true;
@@ -87,7 +88,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         {
             try
             {
-                var country = countryRepository.Get(item.CountryId);
+                var country = countryRepository.Get(x => x.CountryId == item.CountryId && x.IsDelete == false);
                 country.CountryName = item.CountryName;
                 return countryRepository.Update(country);
             }
