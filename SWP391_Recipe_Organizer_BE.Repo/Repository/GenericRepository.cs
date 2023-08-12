@@ -22,7 +22,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
             }
             dbSet = dBContext.Set<T>();
         }
-        public bool Add(T item)
+        public virtual bool Add(T item)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
             }
         }
 
-        public T Get(Func<T, bool> predicate, params Expression<Func<T, object>>[] includeProperties)
+        public virtual T Get(Func<T, bool> predicate, params Expression<Func<T, object>>[] includeProperties)
         {
             try
             {
@@ -55,7 +55,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
             }
         }
 
-        public IEnumerable<T> GetAll(Func<T, bool>? predicate, params Expression<Func<T, object>>[] includeProperties)
+        public virtual IEnumerable<T> GetAll(Func<T, bool>? predicate, params Expression<Func<T, object>>[] includeProperties)
         {
             try
             {

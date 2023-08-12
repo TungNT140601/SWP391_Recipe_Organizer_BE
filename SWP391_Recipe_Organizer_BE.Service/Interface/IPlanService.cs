@@ -11,8 +11,9 @@ namespace SWP391_Recipe_Organizer_BE.Service.Interface
     {
         Plan Get(string id);
         IEnumerable<Plan> GetAll();
+        Plan GetPlanOfWeek(string userId, DateTime dateTime);
         bool Add(Plan item);
-        bool Remove(Plan item);
+        bool Delete(string id);
         bool Update(Plan item);
     }
 }

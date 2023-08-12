@@ -8,10 +8,10 @@ namespace SWP391_Recipe_Organizer_BE.Repo.EntityModel
         public string ReviewId { get; set; } = null!;
         public string? UserId { get; set; }
         public string? RecipeId { get; set; }
-        public int? VoteNum { get; set; }
-        public string? Comment { get; set; }
         public DateTime? CreateTime { get; set; }
         public DateTime? UpdateTime { get; set; }
+        public int? VoteNum { get; set; }
+        public string? Comment { get; set; }
 
         public virtual Recipe? Recipe { get; set; }
         public virtual UserAccount? User { get; set; }

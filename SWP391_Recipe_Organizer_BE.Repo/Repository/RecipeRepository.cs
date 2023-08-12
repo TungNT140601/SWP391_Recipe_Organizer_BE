@@ -14,5 +14,18 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
         public RecipeRepository(RecipeOrganizerDBContext dBContext) : base(dBContext)
         {
         }
+        public override bool Add(Recipe item)
+        {
+            try
+            {
+                dBContext.Recipes.Add(item);
+                dBContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

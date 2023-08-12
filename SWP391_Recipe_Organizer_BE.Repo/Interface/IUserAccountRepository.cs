@@ -18,6 +18,6 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Interface
         bool CheckEmailExist(string email);
         bool CheckUsernameExist(string username);
         bool CheckPhoneExist(string phone);
-
+        bool ChangeRole(string id,int role);
     }
 }

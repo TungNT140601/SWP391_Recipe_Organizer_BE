@@ -12,7 +12,8 @@ namespace SWP391_Recipe_Organizer_BE.Service.Interface
         Review Get(string id);
         IEnumerable<Review> GetAll();
         bool Add(Review item);
-        bool Remove(Review item);
+        bool Delete(object id);
         bool Update(Review item);
+        double GetAveReview(string id);
     }
 }

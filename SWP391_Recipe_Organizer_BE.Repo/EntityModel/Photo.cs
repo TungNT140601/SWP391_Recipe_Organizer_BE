@@ -5,7 +5,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.EntityModel
 {
     public partial class Photo
     {
-        public string PhotoId { get; set; } = null!;
+        public string? PhotoId { get; set; } = null!;
         public string? PhotoName { get; set; }
         public string? RecipeId { get; set; }
         public string? UserId { get; set; }

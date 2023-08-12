@@ -9,11 +9,19 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
     public class RecipeService : IRecipeService
     {
         private readonly IRecipeRepository recipeRepository;
-        public RecipeService(IRecipeRepository recipeRepository)
+        private readonly IPhotoRepository photoRepository;
+        private readonly IDirectionRepository directionRepository;
+        private readonly IIngredientOfRecipeRepository ingredientOfRecipeRepository;
+        private readonly INutritionInRecipeRepository nutritionInRecipeRepository;
+        public RecipeService(IRecipeRepository recipeRepository, IPhotoRepository photoRepository, IDirectionRepository directionRepository, IIngredientOfRecipeRepository ingredientOfRecipeRepository, INutritionInRecipeRepository nutritionInRecipeRepository)
         {
             this.recipeRepository = recipeRepository;
+            this.photoRepository = photoRepository;
+            this.directionRepository = directionRepository;
+            this.ingredientOfRecipeRepository = ingredientOfRecipeRepository;
+            this.nutritionInRecipeRepository = nutritionInRecipeRepository;
         }
-        public bool Add(Recipe item)
+        public bool Add(Recipe item, List<Photo> photos, List<Direction> directions, List<IngredientOfRecipe> lstIngredientOfRecipes, List<NutritionInRecipe> lstNutritionInRecipes)
         {
             try
             {
@@ -21,7 +29,49 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 item.CreateTime = DateTime.Now;
                 item.UpdateTime = DateTime.Now;
                 item.IsDelete = false;
-                return recipeRepository.Add(item);
+                var checkRecipe = recipeRepository.Add(item);
+                var checkPhoto = true;
+                foreach (var photo in photos)
+                {
+                    photo.PhotoId = GenerateId.AutoGenerateId();
+                    photo.RecipeId = item.RecipeId;
+                    photo.UserId = item.UserId;
+                    photo.UploadTime = DateTime.Now;
+                    photo.IsDelete = false;
+                    if (!photoRepository.Add(photo))
+                    {
+                        checkPhoto = false;
+                    }
+                }
+                var checkDirection = true;
+                foreach (var direction in directions)
+                {
+                    direction.DirectionsId = GenerateId.AutoGenerateId();
+                    direction.RecipeId = item.RecipeId;
+                    if (!directionRepository.Add(direction))
+                    {
+                        checkDirection = false;
+                    }
+                }
+                var checkIngredientOfRecipe = true;
+                foreach (var ingredientOfRecipe in lstIngredientOfRecipes)
+                {
+                    ingredientOfRecipe.RecipeId = item.RecipeId;
+                    if (!ingredientOfRecipeRepository.Add(ingredientOfRecipe))
+                    {
+                        checkIngredientOfRecipe = false;
+                    }
+                }
+                var checkNutritionInRecipe = true;
+                foreach (var nutritionInRecipe in lstNutritionInRecipes)
+                {
+                    nutritionInRecipe.RecipeId = item.RecipeId;
+                    if (!nutritionInRecipeRepository.Add(nutritionInRecipe))
+                    {
+                        checkNutritionInRecipe = false;
+                    }
+                }
+                return checkRecipe && checkPhoto && checkDirection && checkIngredientOfRecipe && checkNutritionInRecipe;
             }
             catch (Exception ex)
             {
@@ -40,6 +90,10 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     x => x.Photos,
                     x => x.PlanDetails,
                     x => x.Reviews,
+                    x => x.IngredientOfRecipes,
+                    x => x.NutritionInRecipes,
+                    x => x.Meal,
+                    x => x.User,
                 });
                 return recipe;
             }
@@ -59,7 +113,12 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     x => x.FavoriteRecipes,
                     x => x.Photos,
                     x => x.PlanDetails,
-                    x => x.Reviews });
+                    x => x.Reviews,
+                    x => x.IngredientOfRecipes,
+                    x => x.NutritionInRecipes,
+                    x => x.Meal,
+                    x => x.User,
+                });
             }
             catch (Exception ex)
             {
@@ -89,7 +148,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
             }
         }
 
-        public bool Update(Recipe item)
+        public bool Update(Recipe item, List<Photo> photos, List<Direction> directions, List<IngredientOfRecipe> lstIngredientOfRecipes, List<NutritionInRecipe> lstNutritionInRecipes)
         {
             try
             {
@@ -106,7 +165,66 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     recipe.TotalTime = item.TotalTime;
                     recipe.Servings = item.Servings;
                     recipe.IsDelete = false;
-                    return recipeRepository.Update(item);
+                    var checkRecipe = recipeRepository.Update(recipe);
+                    var checkPhoto = true;
+                    foreach (var photo in photos)
+                    {
+                        if (string.IsNullOrEmpty(photo.PhotoId))
+                        {
+                            photo.PhotoId = GenerateId.AutoGenerateId();
+                            photo.RecipeId = recipe.RecipeId;
+                            photo.UserId = recipe.UserId;
+                            photo.UploadTime = DateTime.Now;
+                            photo.IsDelete = false;
+                            if (!photoRepository.Add(photo))
+                            {
+                                checkPhoto = false;
+                            }
+                        }
+                        else
+                        {
+                            photo.RecipeId = recipe.RecipeId;
+                            photo.UserId = recipe.UserId;
+                            photo.UploadTime = DateTime.Now;
+                            photo.IsDelete = false;
+                            if (!photoRepository.Update(photo))
+                            {
+                                checkPhoto = false;
+                            }
+                        }
+                    }
+                    var checkDirection = true;
+                    foreach (var direction in directions)
+                    {
+                        directionRepository.Remove(direction.DirectionsId);
+                        direction.DirectionsId = GenerateId.AutoGenerateId();
+                        direction.RecipeId = recipe.RecipeId;
+                        if (!directionRepository.Add(direction))
+                        {
+                            checkDirection = false;
+                        }
+                    }
+                    var checkIngredientOfRecipe = true;
+                    foreach (var ingredientOfRecipe in lstIngredientOfRecipes)
+                    {
+                        ingredientOfRecipeRepository.Remove(ingredientOfRecipe.RecipeId, ingredientOfRecipe.IngredientId);
+                        ingredientOfRecipe.RecipeId = recipe.RecipeId;
+                        if (!ingredientOfRecipeRepository.Add(ingredientOfRecipe))
+                        {
+                            checkIngredientOfRecipe = false;
+                        }
+                    }
+                    var checkNutritionInRecipe = true;
+                    foreach (var nutritionInRecipe in lstNutritionInRecipes)
+                    {
+                        nutritionInRecipeRepository.Remove(nutritionInRecipe.NutritionId, nutritionInRecipe.RecipeId);
+                        nutritionInRecipe.RecipeId = item.RecipeId;
+                        if (!nutritionInRecipeRepository.Add(nutritionInRecipe))
+                        {
+                            checkNutritionInRecipe = false;
+                        }
+                    }
+                    return checkRecipe && checkPhoto && checkDirection && checkIngredientOfRecipe && checkNutritionInRecipe;
                 }
                 else
                 {

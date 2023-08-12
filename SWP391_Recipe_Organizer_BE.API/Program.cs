@@ -20,7 +20,7 @@ namespace SWP391_Recipe_Organizer_BE.API
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
             builder.Services.AddDbContext<RecipeOrganizerDBContext>(opt =>
             opt.UseSqlServer(builder.Configuration.GetConnectionString("RecipeOrganizerDB")));
             var jwtSettings = builder.Configuration.GetSection("JwtSettings");
@@ -105,11 +105,11 @@ namespace SWP391_Recipe_Organizer_BE.API
             builder.Services.AddScoped<IMealService, MealService>();
             builder.Services.AddScoped<INutritionService, NutritionService>();
             //builder.Services.AddScoped<INutritionInRecipeService, NutritionInRecipeService>();
-            //builder.Services.AddScoped<IPhotoService, PhotoService>();
-            //builder.Services.AddScoped<IPlanService, PlanService>();
+            builder.Services.AddScoped<IPhotoService, PhotoService>();
+            builder.Services.AddScoped<IPlanService, PlanService>();
             //builder.Services.AddScoped<IPlanDetailService, PlanDetailService>();
             builder.Services.AddScoped<IRecipeService, RecipeService>();
-            //builder.Services.AddScoped<IReviewService, ReviewService>();
+            builder.Services.AddScoped<IReviewService, ReviewService>();
             builder.Services.AddScoped<IUserAccountService, UserAccountService>();
             var app = builder.Build();
 
@@ -128,7 +128,17 @@ namespace SWP391_Recipe_Organizer_BE.API
             app.UseAuthorization();
 
             app.MapControllers();
+            app.UseExceptionHandler(builder =>
+            {
+                builder.Run(async context =>
+                {
+                    var bodyStream = new StreamReader(context.Request.Body);
+                    bodyStream.BaseStream.Seek(0, SeekOrigin.Begin);
+                    var bodyText = bodyStream.ReadToEnd();
 
+                    Console.WriteLine(bodyText);
+                });
+            });
             app.Run();
         }
     }

@@ -71,8 +71,12 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
             try
             {
                 var user = dbSet.Where(x => x.Username == username && x.IsDelete == false).FirstOrDefault();
-                var check = PasswordHashing.VerifyPassword(password, user.Password);
-                return check ? user : null;
+                if(user != null)
+                {
+                    var check = PasswordHashing.VerifyPassword(password, user.Password);
+                    return check ? user : null;
+                }
+                return null;
             }
             catch (Exception ex)
             {
@@ -160,6 +164,28 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                 dbSet.Add(user);
                 dBContext.SaveChanges();
                 return user;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public bool ChangeRole(string id, int role)
+        {
+            try
+            {
+                var user = dbSet.Where(x => x.UserId == id && x.IsDelete == false).FirstOrDefault();
+                if (user != null)
+                {
+                    user.Role = role;
+                    dbSet.Update(user);
+                    dBContext.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch (Exception ex)
             {

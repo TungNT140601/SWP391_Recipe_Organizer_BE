@@ -43,6 +43,26 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
             }
         }
 
+        public bool ChangeRole(string id, string role)
+        {
+            try
+            {
+                if (role.ToLower().Trim() == "cooker")
+                {
+                    return userAccountRepository.ChangeRole(id, 2);
+                }
+                if (role.ToLower().Trim() == "guest")
+                {
+                    return userAccountRepository.ChangeRole(id, 1);
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public bool CheckEmailExist(string email)
         {
             try

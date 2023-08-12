@@ -11,8 +11,8 @@ namespace SWP391_Recipe_Organizer_BE.Service.Interface
     {
         Recipe Get(string id);
         IEnumerable<Recipe> GetAll();
-        bool Add(Recipe item);
+        bool Add(Recipe item, List<Photo> photos, List<Direction> directions, List<IngredientOfRecipe> lstIngredientOfRecipes, List<NutritionInRecipe> lstNutritionInRecipes);
         bool Delete(string id);
-        bool Update(Recipe item);
+        bool Update(Recipe item, List<Photo> photos, List<Direction> directions, List<IngredientOfRecipe> lstIngredientOfRecipes, List<NutritionInRecipe> lstNutritionInRecipes);
     }
 }

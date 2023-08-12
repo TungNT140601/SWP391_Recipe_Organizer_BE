@@ -14,5 +14,27 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
         public PhotoRepository(RecipeOrganizerDBContext dBContext) : base(dBContext)
         {
         }
+        public bool AddRangePhoto(List<Photo> photos)
+        {
+            try
+            {
+                if(photos != null)
+                {
+                    foreach (var item in photos)
+                    {
+                        dbSet.Add(item);
+                    }
+                    dBContext.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

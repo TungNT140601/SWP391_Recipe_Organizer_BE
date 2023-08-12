@@ -10,9 +10,10 @@ namespace SWP391_Recipe_Organizer_BE.Service.Interface
     public interface IPhotoService
     {
         Photo Get(string id);
+        IEnumerable<Photo> GetByRecipeId(string id);
         IEnumerable<Photo> GetAll();
-        bool Add(Photo item);
-        bool Remove(Photo item);
+        bool Add(List<Photo> lst);
+        bool Delete(string id);
         bool Update(Photo item);
     }
 }

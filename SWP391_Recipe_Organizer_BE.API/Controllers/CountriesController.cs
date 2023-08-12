@@ -29,7 +29,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 if (!string.IsNullOrEmpty(role))
                 {
-                    if (role == "Cooker")
+                    if (role == "Cooker" || role == "Admin")
                     {
                         var lst = countryService.GetAllAdd();
                         var countries = new List<CountryVM>();
@@ -40,8 +40,8 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                         return Ok(new
                         {
                             Status = 1,
-                            Message = "Role Accepted",
-                            Data = lst
+                            Message = "Success",
+                            Data = countries
                         });
                     }
                     else
@@ -78,7 +78,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return Ok(new
                 {
                     Status = 1,
-                    Message = "",
+                    Message = "Success",
                     Data = countries
                 });
             }
@@ -97,7 +97,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return Ok(new
                 {
                     Status = 1,
-                    Message = "",
+                    Message = "Success",
                     Data = mapper.Map<CountryVM>(countryService.Get(id))
                 });
             }

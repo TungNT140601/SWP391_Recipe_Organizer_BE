@@ -9,6 +9,8 @@ namespace SWP391_Recipe_Organizer_BE.Repo.EntityModel
         {
             Directions = new HashSet<Direction>();
             FavoriteRecipes = new HashSet<FavoriteRecipe>();
+            IngredientOfRecipes = new HashSet<IngredientOfRecipe>();
+            NutritionInRecipes = new HashSet<NutritionInRecipe>();
             Photos = new HashSet<Photo>();
             PlanDetails = new HashSet<PlanDetail>();
             Reviews = new HashSet<Review>();
@@ -35,8 +37,12 @@ namespace SWP391_Recipe_Organizer_BE.Repo.EntityModel
         public virtual UserAccount? User { get; set; }
         public virtual ICollection<Direction> Directions { get; set; }
         public virtual ICollection<FavoriteRecipe> FavoriteRecipes { get; set; }
+        public virtual ICollection<IngredientOfRecipe> IngredientOfRecipes { get; set; }
+        public virtual ICollection<NutritionInRecipe> NutritionInRecipes { get; set; }
         public virtual ICollection<Photo> Photos { get; set; }
         public virtual ICollection<PlanDetail> PlanDetails { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }
     }
 }
+
+

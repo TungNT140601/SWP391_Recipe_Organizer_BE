@@ -221,6 +221,57 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
             }
         }
         [HttpGet]
+        public async Task<IActionResult> GetUserInfoByAdmin(string id)
+        {
+            try
+            {
+                var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                if (!string.IsNullOrEmpty(role))
+                {
+                    if (role == "Admin")
+                    {
+                        var user = userAccountService.GetUserInfo(id);
+                        var userVM = mapper.Map<UserAccountVM>(user);
+                        if (user != null)
+                        {
+                            return Ok(new
+                            {
+                                Status = 1,
+                                Message = "Success",
+                                Data = userVM
+                            });
+                        }
+                        else
+                        {
+                            return Ok(new
+                            {
+                                Status = 0,
+                                Message = "Not Found User",
+                                Data = new { }
+                            });
+                        }
+                    }
+                    else
+                    {
+                        return Ok(new
+                        {
+                            Status = 0,
+                            Message = "Role Denied",
+                            Data = new { }
+                        });
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet]
         public async Task<IActionResult> GetAllUser()
         {
             try
@@ -250,6 +301,45 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                             Status = 0,
                             Message = "Role Denied",
                             Data = new { }
+                        });
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> ChangeRole(string id, string roleChange)
+        {
+            try
+            {
+                var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                if (!string.IsNullOrEmpty(role))
+                {
+                    if (role == "Admin")
+                    {
+                        return userAccountService.ChangeRole(id, roleChange) ? Ok(new
+                        {
+                            Status = 1,
+                            Message = "Success"
+                        }) : Ok(new
+                        {
+                            Status = 0,
+                            Message = "Fail"
+                        });
+                    }
+                    else
+                    {
+                        return Ok(new
+                        {
+                            Status = -1,
+                            Message = "Role Denied"
                         });
                     }
                 }

@@ -9,5 +9,6 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Interface
 {
     public interface INutritionInRecipeRepository : IGenericRepository<NutritionInRecipe>
     {
+        bool Remove(string nutritionId, string recipeId);
     }
 }

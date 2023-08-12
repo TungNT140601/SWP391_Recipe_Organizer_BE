@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SWP391_Recipe_Organizer_BE.API.ViewModel;
 using SWP391_Recipe_Organizer_BE.Repo.EntityModel;
 using SWP391_Recipe_Organizer_BE.Service.Interface;
+using SWP391_Recipe_Organizer_BE.Service.Services;
 using System.Security.Claims;
 
 namespace SWP391_Recipe_Organizer_BE.API.Controllers
@@ -24,10 +25,17 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
         {
             try
             {
+                var lst = ingredientService.GetAll();
+                var ingredients = new List<IngredientVM>();
+                foreach (var item in lst)
+                {
+                    ingredients.Add(mapper.Map<IngredientVM>(item));
+                }
                 return Ok(new
                 {
                     Status = 1,
-                    Data = ingredientService.GetAll()
+                    Message = "Success",
+                    Data = ingredients
                 });
             }
             catch (Exception ex)
@@ -43,7 +51,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return Ok(new
                 {
                     Status = 1,
-                    Data = ingredientService.Get(id)
+                    Data = mapper.Map<IngredientVM>(ingredientService.Get(id))
                 });
             }
             catch (Exception ex)
