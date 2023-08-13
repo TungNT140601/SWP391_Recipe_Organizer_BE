@@ -36,5 +36,26 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                 throw new Exception(ex.Message);
             }
         }
+        public override bool Add(IngredientOfRecipe ingredientOfRecipe)
+        {
+            try
+            {
+                var item = dbSet.Where(x => x.IngredientId == ingredientOfRecipe.IngredientId && x.RecipeId == ingredientOfRecipe.RecipeId).FirstOrDefault();
+                if (item == null)
+                {
+                    dbSet.Add(ingredientOfRecipe);
+                    dBContext.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

@@ -356,7 +356,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPut("{id}")]
+        [HttpPut]
         public async Task<IActionResult> UpdateRecipe(string id, RecipeVM recipeVM)
         {
             if (id != recipeVM.RecipeId)

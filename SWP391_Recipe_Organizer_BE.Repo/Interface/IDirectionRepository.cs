@@ -9,5 +9,6 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Interface
 {
     public interface IDirectionRepository : IGenericRepository<Direction>
     {
+        bool Remove(string directionId, string recipeId);
     }
 }
