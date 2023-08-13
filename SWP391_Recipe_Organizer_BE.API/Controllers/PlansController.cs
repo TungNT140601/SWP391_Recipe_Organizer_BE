@@ -6,6 +6,7 @@ using SWP391_Recipe_Organizer_BE.API.ViewModel;
 using SWP391_Recipe_Organizer_BE.Repo.EntityModel;
 using SWP391_Recipe_Organizer_BE.Service.Interface;
 using SWP391_Recipe_Organizer_BE.Service.Services;
+using System.Numerics;
 using System.Security.Claims;
 
 namespace SWP391_Recipe_Organizer_BE.API.Controllers
@@ -40,6 +41,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                         {
                             var planReturn = mapper.Map<PlanVM>(plan);
                             planReturn.PlanDetailVMs.Clear();
+                            planReturn.PlanDetailVMs = new List<PlanDetailVM>();
                             foreach (var planDetail in plan.PlanDetails)
                             {
                                 planReturn.PlanDetailVMs.Add(mapper.Map<PlanDetailVM>(planDetail));
@@ -81,7 +83,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPut]
+        [HttpPost]
         public async Task<IActionResult> CreatePlan(PlanVM planVM)
         {
             try
@@ -91,14 +93,16 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 {
                     if (role == "Guest")
                     {
+                        var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                         var plan = mapper.Map<Plan>(planVM);
+                        plan.UserId = userId;
                         plan.PlanDetails.Clear();
+                        plan.PlanDetails = new List<PlanDetail>();
                         foreach (var planDetail in planVM.PlanDetailVMs)
                         {
                             plan.PlanDetails.Add(mapper.Map<PlanDetail>(planDetail));
                         }
-                        //var check = planService.Add(plan);
-                        return true ? Ok(new
+                        return planService.Add(plan) ? Ok(new
                         {
                             Status = 1,
                             Message = "Success"
@@ -129,7 +133,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> UpdatePlan(string id,PlanUpdateVM planVM)
+        public async Task<IActionResult> CreatePlanDetail(PlanDetailUpdateVM planDetailVM)
         {
             try
             {
@@ -138,22 +142,260 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 {
                     if (role == "Guest")
                     {
-                        //var plan = mapper.Map<Plan>(planVM);
-                        //plan.PlanDetails.Clear();
-                        //foreach (var planDetail in planVM.PlanDetails)
-                        //{
-                        //    plan.PlanDetails.Add(mapper.Map<PlanDetail>(planDetail));
-                        //}
-                        //var check = planService.Add(plan);
-                        return true ? Ok(new
+                        var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                        var planDetail = mapper.Map<PlanDetail>(planDetailVM);
+                        var planDT = planService.Get(planDetailVM.PlanId);
+                        if (planDT != null)
                         {
-                            Status = 1,
-                            Message = "Success"
-                        }) : Ok(new
+                            return planService.AddPlanDetail(planDetail) ? Ok(new
+                            {
+                                Status = 1,
+                                Message = "Success"
+                            }) : Ok(new
+                            {
+                                Status = 0,
+                                Message = "Fail"
+                            });
+                        }
+                        else
                         {
-                            Status = 0,
-                            Message = "Fail"
+                            return Ok(new
+                            {
+                                Status = 0,
+                                Message = "Not Found"
+                            });
+                        }
+                    }
+                    else
+                    {
+                        return Ok(new
+                        {
+                            Status = -1,
+                            Message = "Role Denied",
+                            Data = new { }
                         });
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdatePlan(string id, PlanUpdateVM planVM)
+        {
+            try
+            {
+                var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                if (!string.IsNullOrEmpty(role))
+                {
+                    if (role == "Guest")
+                    {
+                        if (id == planVM.PlanId)
+                        {
+                            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                            var plan = mapper.Map<Plan>(planVM);
+                            plan.UserId = userId;
+                            plan.PlanDetails.Clear();
+                            plan.PlanDetails = new List<PlanDetail>();
+                            foreach (var planDetail in planVM.PlanDetailVMs)
+                            {
+                                plan.PlanDetails.Add(mapper.Map<PlanDetail>(planDetail));
+                            }
+                            return planService.Update(plan) ? Ok(new
+                            {
+                                Status = 1,
+                                Message = "Success"
+                            }) : Ok(new
+                            {
+                                Status = 0,
+                                Message = "Fail"
+                            });
+                        }
+                        else
+                        {
+                            return Ok(new
+                            {
+                                Status = 0,
+                                Message = "Not Found"
+                            });
+                        }
+                    }
+                    else
+                    {
+                        return Ok(new
+                        {
+                            Status = -1,
+                            Message = "Role Denied",
+                            Data = new { }
+                        });
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdatePlanDetail(string id, PlanDetailUpdateVM planDetailVM)
+        {
+            try
+            {
+                var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                if (!string.IsNullOrEmpty(role))
+                {
+                    if (role == "Guest")
+                    {
+                        if (id == planDetailVM.PlanDetailId)
+                        {
+                            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                            var planDetail = mapper.Map<PlanDetail>(planDetailVM);
+                            var planDT = planService.GetDetail(planDetailVM.PlanDetailId);
+                            if (planDetail.PlanId == planDT.PlanId && planDetail.PlanDetailId == planDT.PlanDetailId)
+                            {
+                                return planService.UpdatePlanDetail(planDetail) ? Ok(new
+                                {
+                                    Status = 1,
+                                    Message = "Success"
+                                }) : Ok(new
+                                {
+                                    Status = 0,
+                                    Message = "Fail"
+                                });
+                            }
+                            else
+                            {
+                                return Ok(new
+                                {
+                                    Status = 0,
+                                    Message = "Not Found"
+                                });
+                            }
+                        }
+                        else
+                        {
+                            return Ok(new
+                            {
+                                Status = 0,
+                                Message = "Not Found"
+                            });
+                        }
+                    }
+                    else
+                    {
+                        return Ok(new
+                        {
+                            Status = -1,
+                            Message = "Role Denied",
+                            Data = new { }
+                        });
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePlan(string id)
+        {
+            try
+            {
+                var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                if (!string.IsNullOrEmpty(role))
+                {
+                    if (role == "Guest")
+                    {
+                        var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                        var plan = planService.Get(id);
+                        if (plan != null && plan.UserId == userId)
+                        {
+                            return planService.Delete(id) ? Ok(new
+                            {
+                                Status = 1,
+                                Message = "Success"
+                            }) : Ok(new
+                            {
+                                Status = 0,
+                                Message = "Fail"
+                            });
+                        }
+                        else
+                        {
+                            return Ok(new
+                            {
+                                Status = 0,
+                                Message = "Not Found Plan"
+                            });
+                        }
+                    }
+                    else
+                    {
+                        return Ok(new
+                        {
+                            Status = -1,
+                            Message = "Role Denied",
+                            Data = new { }
+                        });
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePlanDetail(string id)
+        {
+            try
+            {
+                var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                if (!string.IsNullOrEmpty(role))
+                {
+                    if (role == "Guest")
+                    {
+                        var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                        var planDetail = planService.GetDetail(id);
+                        if (planDetail != null && planDetail.Plan.UserId == userId)
+                        {
+                            return planService.DeletePlanDetail(id) ? Ok(new
+                            {
+                                Status = 1,
+                                Message = "Success"
+                            }) : Ok(new
+                            {
+                                Status = 0,
+                                Message = "Fail"
+                            });
+                        }
+                        else
+                        {
+                            return Ok(new
+                            {
+                                Status = 0,
+                                Message = "Not Found PlanDetail"
+                            });
+                        }
                     }
                     else
                     {

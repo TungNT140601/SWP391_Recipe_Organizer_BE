@@ -15,5 +15,6 @@ namespace SWP391_Recipe_Organizer_BE.Service.Interface
         bool Add(Country item);
         bool Delete(string id);
         bool Update(Country item);
+        void CheckCountryHasRecipe(string id);
     }
 }

@@ -101,7 +101,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMeal(string id, MealVM mealVM)
         {
             if (id != mealVM.MealId)

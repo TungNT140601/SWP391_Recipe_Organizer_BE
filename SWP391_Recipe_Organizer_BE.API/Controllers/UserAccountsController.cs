@@ -220,7 +220,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetUserInfoByAdmin(string id)
         {
             try

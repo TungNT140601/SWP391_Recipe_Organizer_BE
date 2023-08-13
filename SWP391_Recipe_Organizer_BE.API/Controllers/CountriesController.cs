@@ -20,7 +20,6 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
             this.mapper = mapper;
         }
 
-        // GET: api/Countries
         [HttpGet]
         public async Task<IActionResult> GetCountriesAdd()
         {
@@ -63,7 +62,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
             {
                 return BadRequest(ex.Message);
             }
-        }// GET: api/Countries
+        }
         [HttpGet]
         public async Task<IActionResult> GetCountriesFilter()
         {
@@ -87,8 +86,6 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        // GET: api/Countries/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCountry(string id)
         {
@@ -106,10 +103,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        // PUT: api/Countries/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCountry(string id, CountryVM countryVM)
         {
             if (id != countryVM.CountryId)
@@ -167,9 +161,6 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        // POST: api/Countries
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<IActionResult> AddCountry(CountryVM countryVM)
         {
@@ -222,8 +213,6 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        // DELETE: api/Countries/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCountry(string id)
         {

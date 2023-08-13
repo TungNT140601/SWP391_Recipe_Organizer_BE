@@ -102,7 +102,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateNutrition(string id, NutritionVM nutritionVM)
         {
             if (id != nutritionVM.NutritionId)

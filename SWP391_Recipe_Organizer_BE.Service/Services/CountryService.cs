@@ -8,9 +8,11 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
     public class CountryService : ICountryService
     {
         private readonly ICountryRepository countryRepository;
-        public CountryService(ICountryRepository countryRepository)
+        private readonly IRecipeRepository recipeRepository;
+        public CountryService(ICountryRepository countryRepository, IRecipeRepository recipeRepository)
         {
             this.countryRepository = countryRepository;
+            this.recipeRepository = recipeRepository;
         }
 
         public bool Add(Country item)
@@ -91,6 +93,31 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 var country = countryRepository.Get(x => x.CountryId == item.CountryId && x.IsDelete == false);
                 country.CountryName = item.CountryName;
                 return countryRepository.Update(country);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public void CheckCountryHasRecipe(string id)
+        {
+            try
+            {
+                var country = countryRepository.Get(x =>x.CountryId == id && x.IsDelete == false);
+                if(country != null)
+                {
+                    var recipes = recipeRepository.GetAll(x => x.CountryId == country.CountryId && x.IsDelete == false);
+                    if (recipes != null && recipes.Count() > 0)
+                    {
+                        country.HasRecipe = true;
+                    }
+                    else
+                    {
+                        country.HasRecipe = false;
+                    }
+                    countryRepository.Update(country);
+                }
             }
             catch (Exception ex)
             {

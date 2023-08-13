@@ -122,6 +122,131 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetByCooker(string id)
+        {
+            try
+            {
+                var lst = recipeService.GetByCooker(id);
+                foreach (var item in lst)
+                {
+                    var recipe = mapper.Map<RecipeVM>(item);
+                    recipe.MealVMs = mapper.Map<MealVM>(item.Meal);
+                    recipe.UserAccountVMs = mapper.Map<UserAccountVM>(item.User);
+                    recipe.TotalReview = 0;
+                    recipe.AveVote = 0;
+                    recipe.TotalFavorite = 0;
+                    recipe.PhotoVMs = new List<PhotoVM>();
+                    foreach (var photo in item.Photos)
+                    {
+                        recipe.PhotoVMs.Add(mapper.Map<PhotoVM>(photo));
+                    }
+                    recipe.DirectionVMs = new List<DirectionVM>();
+                    foreach (var direction in item.Directions)
+                    {
+                        recipe.DirectionVMs.Add(mapper.Map<DirectionVM>(direction));
+                    }
+                    recipe.ReviewVMs = new List<ReviewVM>();
+                    foreach (var review in item.Reviews)
+                    {
+                        recipe.ReviewVMs.Add(mapper.Map<ReviewVM>(review));
+                    }
+                    recipe.IngredientOfRecipeVMs = new List<IngredientOfRecipeVM>();
+                    foreach (var ingredientOfRecipe in item.IngredientOfRecipes)
+                    {
+                        recipe.IngredientOfRecipeVMs.Add(mapper.Map<IngredientOfRecipeVM>(ingredientOfRecipe));
+                    }
+                    recipe.NutritionInRecipeVMs = new List<NutritionInRecipeVM>();
+                    foreach (var nutritionInRecipe in item.NutritionInRecipes)
+                    {
+                        recipe.NutritionInRecipeVMs.Add(mapper.Map<NutritionInRecipeVM>(nutritionInRecipe));
+                    }
+                    return Ok(new
+                    {
+                        Status = 1,
+                        Data = recipe
+                    });
+                }
+                return Ok(new
+                {
+                    Status = 0,
+                    Data = new { }
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetByUser()
+        {
+            try
+            {
+                var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                if (!string.IsNullOrEmpty(role))
+                {
+                    if (role == "Cooker")
+                    {
+                        var id = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                        var lst = recipeService.GetByCooker(id);
+                        foreach (var item in lst)
+                        {
+                            var recipe = mapper.Map<RecipeVM>(item);
+                            recipe.MealVMs = mapper.Map<MealVM>(item.Meal);
+                            recipe.UserAccountVMs = mapper.Map<UserAccountVM>(item.User);
+                            recipe.TotalReview = 0;
+                            recipe.AveVote = 0;
+                            recipe.TotalFavorite = 0;
+                            recipe.PhotoVMs = new List<PhotoVM>();
+                            foreach (var photo in item.Photos)
+                            {
+                                recipe.PhotoVMs.Add(mapper.Map<PhotoVM>(photo));
+                            }
+                            recipe.DirectionVMs = new List<DirectionVM>();
+                            foreach (var direction in item.Directions)
+                            {
+                                recipe.DirectionVMs.Add(mapper.Map<DirectionVM>(direction));
+                            }
+                            recipe.ReviewVMs = new List<ReviewVM>();
+                            foreach (var review in item.Reviews)
+                            {
+                                recipe.ReviewVMs.Add(mapper.Map<ReviewVM>(review));
+                            }
+                            recipe.IngredientOfRecipeVMs = new List<IngredientOfRecipeVM>();
+                            foreach (var ingredientOfRecipe in item.IngredientOfRecipes)
+                            {
+                                recipe.IngredientOfRecipeVMs.Add(mapper.Map<IngredientOfRecipeVM>(ingredientOfRecipe));
+                            }
+                            recipe.NutritionInRecipeVMs = new List<NutritionInRecipeVM>();
+                            foreach (var nutritionInRecipe in item.NutritionInRecipes)
+                            {
+                                recipe.NutritionInRecipeVMs.Add(mapper.Map<NutritionInRecipeVM>(nutritionInRecipe));
+                            }
+                            return Ok(new
+                            {
+                                Status = 1,
+                                Data = recipe
+                            });
+                        }
+                    }
+                    return Ok(new
+                    {
+                        Status = 0,
+                        Data = new { }
+                    });
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         [HttpPost]
         public async Task<IActionResult> AddRecipe(RecipeAddUpdateVM recipeVM)
         {
@@ -230,7 +355,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateRecipe(string id, RecipeVM recipeVM)
         {
             if (id != recipeVM.RecipeId)
@@ -387,5 +512,6 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
     }
 }

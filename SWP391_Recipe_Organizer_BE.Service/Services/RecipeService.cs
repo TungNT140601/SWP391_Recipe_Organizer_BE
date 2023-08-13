@@ -13,13 +13,15 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         private readonly IDirectionRepository directionRepository;
         private readonly IIngredientOfRecipeRepository ingredientOfRecipeRepository;
         private readonly INutritionInRecipeRepository nutritionInRecipeRepository;
-        public RecipeService(IRecipeRepository recipeRepository, IPhotoRepository photoRepository, IDirectionRepository directionRepository, IIngredientOfRecipeRepository ingredientOfRecipeRepository, INutritionInRecipeRepository nutritionInRecipeRepository)
+        private readonly ICountryService countryService;
+        public RecipeService(IRecipeRepository recipeRepository, IPhotoRepository photoRepository, IDirectionRepository directionRepository, IIngredientOfRecipeRepository ingredientOfRecipeRepository, INutritionInRecipeRepository nutritionInRecipeRepository, ICountryService countryService)
         {
             this.recipeRepository = recipeRepository;
             this.photoRepository = photoRepository;
             this.directionRepository = directionRepository;
             this.ingredientOfRecipeRepository = ingredientOfRecipeRepository;
             this.nutritionInRecipeRepository = nutritionInRecipeRepository;
+            this.countryService = countryService;
         }
         public bool Add(Recipe item, List<Photo> photos, List<Direction> directions, List<IngredientOfRecipe> lstIngredientOfRecipes, List<NutritionInRecipe> lstNutritionInRecipes)
         {
@@ -71,7 +73,15 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                         checkNutritionInRecipe = false;
                     }
                 }
-                return checkRecipe && checkPhoto && checkDirection && checkIngredientOfRecipe && checkNutritionInRecipe;
+                if (checkRecipe && checkPhoto && checkDirection && checkIngredientOfRecipe && checkNutritionInRecipe)
+                {
+                    countryService.CheckCountryHasRecipe(item.CountryId);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch (Exception ex)
             {
@@ -103,6 +113,30 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
             }
         }
 
+        public IEnumerable<Recipe> GetByCooker(string id)
+        {
+            try
+            {
+                var recipe = recipeRepository.GetAll(x => x.UserId == id && x.IsDelete == false, new System.Linq.Expressions.Expression<Func<Recipe, object>>[]
+                {
+                    x => x.Directions,
+                    x => x.FavoriteRecipes,
+                    x => x.Photos,
+                    x => x.PlanDetails,
+                    x => x.Reviews,
+                    x => x.IngredientOfRecipes,
+                    x => x.NutritionInRecipes,
+                    x => x.Meal,
+                    x => x.User,
+                });
+                return recipe;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        
         public IEnumerable<Recipe> GetAll()
         {
             try
@@ -135,7 +169,15 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 {
                     recipe.DeleteTime = DateTime.Now;
                     recipe.IsDelete = true;
-                    return recipeRepository.Update(recipe);
+                    if (recipeRepository.Update(recipe))
+                    {
+                        countryService.CheckCountryHasRecipe(recipe.CountryId);
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
                 else
                 {
@@ -224,7 +266,15 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                             checkNutritionInRecipe = false;
                         }
                     }
-                    return checkRecipe && checkPhoto && checkDirection && checkIngredientOfRecipe && checkNutritionInRecipe;
+                    if (checkRecipe && checkPhoto && checkDirection && checkIngredientOfRecipe && checkNutritionInRecipe)
+                    {
+                        countryService.CheckCountryHasRecipe(recipe.CountryId);
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
                 else
                 {

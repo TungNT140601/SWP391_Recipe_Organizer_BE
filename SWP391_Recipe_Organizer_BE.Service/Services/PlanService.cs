@@ -25,26 +25,84 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         {
             try
             {
-                item.PlanId = GenerateId.AutoGenerateId();
-                item.CreateTime = DateTime.Now;
-                item.UpdateTime = DateTime.Now;
-                item.IsDelete = false;
-                planRepository.Add(item);
-                var planDetails = item.PlanDetails;
-                foreach (var planDetail in planDetails)
+                var plan = planRepository.GetAll(x => x.UserId == item.UserId && x.IsDelete == false).FirstOrDefault();
+                if(plan == null)
                 {
-                    planDetail.PlanDetailId = GenerateId.AutoGenerateId();
-                    planDetail.PlanId = item.PlanId;
-                    planDetailRepository.Add(planDetail);
+                    item.PlanId = GenerateId.AutoGenerateId();
+                    item.CreateTime = DateTime.Now;
+                    item.UpdateTime = DateTime.Now;
+                    item.IsDelete = false;
+                    planRepository.Add(item);
+                    var planDetails = item.PlanDetails;
+                    foreach (var planDetail in planDetails)
+                    {
+                        planDetail.PlanDetailId = GenerateId.AutoGenerateId();
+                        planDetail.PlanId = item.PlanId;
+                        planDetailRepository.Add(planDetail);
+                    }
+                    return true;
                 }
-                return true;
+                else
+                {
+                    plan.UpdateTime = DateTime.Now;
+                    plan.IsDelete = false;
+                    planRepository.Update(plan);
+                    foreach (var planDetail in item.PlanDetails)
+                    {
+                        if (string.IsNullOrEmpty(planDetail.PlanDetailId))
+                        {
+                            planDetail.PlanDetailId = GenerateId.AutoGenerateId();
+                            planDetail.PlanId = item.PlanId;
+                            planDetailRepository.Add(planDetail);
+                        }
+                        else
+                        {
+                            var planDT = planDetailRepository.Get(x => x.PlanDetailId == planDetail.PlanDetailId);
+                            if(planDT != null)
+                            {
+                                planDT.MealOfDate = planDetail.MealOfDate;
+                                planDT.Date = planDetail.Date;
+                                planDT.RecipeId = planDetail.RecipeId;
+                                planDetailRepository.Update(planDT);
+                            }
+                            else
+                            {
+                                planDetail.PlanDetailId = GenerateId.AutoGenerateId();
+                                planDetail.PlanId = item.PlanId;
+                                planDetailRepository.Add(planDetail);
+                            }
+                        }
+                    }
+                    return true;
+                }
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
         }
-
+        public bool AddPlanDetail(PlanDetail item)
+        {
+            try
+            {
+                var plan = planRepository.Get(x => x.PlanId == item.PlanId);
+                if(plan != null)
+                {
+                    item.PlanDetailId = GenerateId.AutoGenerateId();
+                    item.PlanId = plan.PlanId;
+                    planDetailRepository.Add(item); 
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         public Plan Get(string id)
         {
             try
@@ -52,6 +110,21 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 var plan = planRepository.Get(x => x.PlanId == id && x.IsDelete == false, new System.Linq.Expressions.Expression<Func<Plan, object>>[]
                 {
                     x => x.PlanDetails
+                });
+                return plan;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public PlanDetail GetDetail(string id)
+        {
+            try
+            {
+                var plan = planDetailRepository.Get(x => x.PlanDetailId == id, new System.Linq.Expressions.Expression<Func<PlanDetail, object>>[]
+                {
+                    x => x.Plan
                 });
                 return plan;
             }
@@ -131,7 +204,29 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 throw new Exception(ex.Message);
             }
         }
-
+        public bool DeletePlanDetail(string id)
+        {
+            try
+            {
+                var plan = planDetailRepository.Get(x => x.PlanDetailId == id, new System.Linq.Expressions.Expression<Func<PlanDetail, object>>[]
+                {
+                    x => x.Plan
+                });
+                if (plan != null)
+                {
+                    planDetailRepository.Remove(id);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         public bool Update(Plan item)
         {
             try
@@ -147,13 +242,37 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     planRepository.Update(plan);
                     foreach (var itemDetail in plan.PlanDetails)
                     {
-                        var planDetail = planDetailRepository.Get(x => x.PlanDetailId == itemDetail.PlanDetailId);
-                        planDetail.MealOfDate = itemDetail.MealOfDate;
-                        planDetail.Date = itemDetail.Date;
-                        planDetail.RecipeId = itemDetail.RecipeId;
-                        planDetailRepository.Update(planDetail);
+                        planDetailRepository.Remove(itemDetail.PlanDetailId);
+                        itemDetail.PlanDetailId = GenerateId.AutoGenerateId();
+                        itemDetail.PlanId = plan.PlanId;
+                        planDetailRepository.Add(itemDetail);
                     }
                     return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public bool UpdatePlanDetail(PlanDetail item)
+        {
+            try
+            {
+                var planDetail = planDetailRepository.Get(x => x.PlanDetailId == item.PlanDetailId, new System.Linq.Expressions.Expression<Func<PlanDetail, object>>[]
+                {
+                    x => x.Plan
+                });
+                if (planDetail != null)
+                {
+                    planDetail.Date = item.Date;
+                    planDetail.MealOfDate = item.MealOfDate;
+                    planDetail.RecipeId = item.RecipeId;
+                    return planDetailRepository.Update(planDetail);
                 }
                 else
                 {
