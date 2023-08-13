@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using SWP391_Recipe_Organizer_BE.API.ViewModel;
 using SWP391_Recipe_Organizer_BE.Repo.EntityModel;
 using SWP391_Recipe_Organizer_BE.Service.Interface;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace SWP391_Recipe_Organizer_BE.API.Controllers
@@ -83,9 +85,9 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 var recipe = mapper.Map<RecipeVM>(item);
                 recipe.MealVMs = mapper.Map<MealVM>(item.Meal);
                 recipe.UserAccountVMs = mapper.Map<UserAccountVM>(item.User);
-                recipe.TotalReview = 0;
-                recipe.AveVote = 0;
-                recipe.TotalFavorite = 0;
+                recipe.TotalReview = item.Reviews.Count();
+                recipe.AveVote = reviewService.GetAveReview(recipe.RecipeId);
+                recipe.TotalFavorite = item.FavoriteRecipes.Count();
                 recipe.PhotoVMs = new List<PhotoVM>();
                 foreach (var photo in item.Photos)
                 {
@@ -123,19 +125,20 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
             }
         }
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetByCooker(string id)
+        public async Task<IActionResult> GetByUser(string id)
         {
             try
             {
                 var lst = recipeService.GetByCooker(id);
+                var data = new List<RecipeVM>();
                 foreach (var item in lst)
                 {
                     var recipe = mapper.Map<RecipeVM>(item);
                     recipe.MealVMs = mapper.Map<MealVM>(item.Meal);
                     recipe.UserAccountVMs = mapper.Map<UserAccountVM>(item.User);
-                    recipe.TotalReview = 0;
-                    recipe.AveVote = 0;
-                    recipe.TotalFavorite = 0;
+                    recipe.TotalReview = item.Reviews.Count();
+                    recipe.AveVote = reviewService.GetAveReview(recipe.RecipeId);
+                    recipe.TotalFavorite = item.FavoriteRecipes.Count();
                     recipe.PhotoVMs = new List<PhotoVM>();
                     foreach (var photo in item.Photos)
                     {
@@ -161,16 +164,12 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                     {
                         recipe.NutritionInRecipeVMs.Add(mapper.Map<NutritionInRecipeVM>(nutritionInRecipe));
                     }
-                    return Ok(new
-                    {
-                        Status = 1,
-                        Data = recipe
-                    });
+                    data.Add(recipe);
                 }
                 return Ok(new
                 {
-                    Status = 0,
-                    Data = new { }
+                    Status = 1,
+                    Data = data
                 });
             }
             catch (Exception ex)
@@ -179,7 +178,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetByUser()
+        public async Task<IActionResult> GetByCooker()
         {
             try
             {
@@ -190,14 +189,15 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                     {
                         var id = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                         var lst = recipeService.GetByCooker(id);
+                        var data = new List<RecipeVM>();
                         foreach (var item in lst)
                         {
                             var recipe = mapper.Map<RecipeVM>(item);
                             recipe.MealVMs = mapper.Map<MealVM>(item.Meal);
                             recipe.UserAccountVMs = mapper.Map<UserAccountVM>(item.User);
-                            recipe.TotalReview = 0;
-                            recipe.AveVote = 0;
-                            recipe.TotalFavorite = 0;
+                            recipe.TotalReview = item.Reviews.Count();
+                            recipe.AveVote = reviewService.GetAveReview(recipe.RecipeId);
+                            recipe.TotalFavorite = item.FavoriteRecipes.Count();
                             recipe.PhotoVMs = new List<PhotoVM>();
                             foreach (var photo in item.Photos)
                             {
@@ -223,12 +223,13 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                             {
                                 recipe.NutritionInRecipeVMs.Add(mapper.Map<NutritionInRecipeVM>(nutritionInRecipe));
                             }
-                            return Ok(new
-                            {
-                                Status = 1,
-                                Data = recipe
-                            });
+                            data.Add(recipe);
                         }
+                        return Ok(new
+                        {
+                            Status = 1,
+                            Data = data
+                        });
                     }
                     return Ok(new
                     {
@@ -512,6 +513,108 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+        [HttpGet("{search}")]
+        public async Task<IActionResult> SearchRecipe(string search, [FromBody] RecipeSearch? recipeSearch)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(search))
+                {
+                    var result = recipeService.SearchRecipe(
+                        search, 
+                        recipeSearch.CountryId, 
+                        recipeSearch.MealId, 
+                        recipeSearch.NutritionId, 
+                        recipeSearch.MinTotalTime, 
+                        recipeSearch.MaxTotalTime, 
+                        recipeSearch.MinServing, 
+                        recipeSearch.MaxServing);
+                    var data = new List<RecipeVM>();
+                    foreach (var item in result)
+                    {
+                        var recipe = mapper.Map<RecipeVM>(item);
+                        recipe.MealVMs = mapper.Map<MealVM>(item.Meal);
+                        recipe.UserAccountVMs = mapper.Map<UserAccountVM>(item.User);
+                        recipe.TotalReview = item.Reviews.Count();
+                        recipe.AveVote = reviewService.GetAveReview(recipe.RecipeId);
+                        recipe.TotalFavorite = item.FavoriteRecipes.Count();
+                        recipe.PhotoVMs = new List<PhotoVM>();
+                        foreach (var photo in item.Photos)
+                        {
+                            recipe.PhotoVMs.Add(mapper.Map<PhotoVM>(photo));
+                        }
+                        recipe.DirectionVMs = new List<DirectionVM>();
+                        foreach (var direction in item.Directions)
+                        {
+                            recipe.DirectionVMs.Add(mapper.Map<DirectionVM>(direction));
+                        }
+                        recipe.ReviewVMs = new List<ReviewVM>();
+                        foreach (var review in item.Reviews)
+                        {
+                            recipe.ReviewVMs.Add(mapper.Map<ReviewVM>(review));
+                        }
+                        recipe.IngredientOfRecipeVMs = new List<IngredientOfRecipeVM>();
+                        foreach (var ingredientOfRecipe in item.IngredientOfRecipes)
+                        {
+                            recipe.IngredientOfRecipeVMs.Add(mapper.Map<IngredientOfRecipeVM>(ingredientOfRecipe));
+                        }
+                        recipe.NutritionInRecipeVMs = new List<NutritionInRecipeVM>();
+                        foreach (var nutritionInRecipe in item.NutritionInRecipes)
+                        {
+                            recipe.NutritionInRecipeVMs.Add(mapper.Map<NutritionInRecipeVM>(nutritionInRecipe));
+                        }
+                        data.Add(recipe);
+                    }
+                    return Ok(new
+                    {
+                        Status = 1,
+                        Data = data
+                    });
+                }
+                else
+                {
+                    return Ok(new
+                    {
+                        Status = 0,
+                        Message = "Fail",
+                        Data = new { }
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet("{search}")]
+        public async Task<IActionResult> SuggestRecipe([Required][MinLength(3)] string search)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(search) && search.Length >= 3)
+                {
+                    var suggest = recipeService.GetSuggest(search);
+                    return Ok(new
+                    {
+                        Status = 1,
+                        Message = "Success",
+                        Data = suggest
+                    });
+                }
+                else
+                {
+                    return Ok(new
+                    {
+                        Status = 0,
+                        Message = "Fail",
+                        Data = new { }
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

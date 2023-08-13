@@ -45,4 +45,15 @@ namespace SWP391_Recipe_Organizer_BE.API.ViewModel
         public virtual ICollection<IngredientOfRecipeVM>? IngredientOfRecipeVMs { get; set; }
         public virtual ICollection<NutritionInRecipeVM>? NutritionInRecipeVMs { get; set; }
     }
+    public class RecipeSearch
+    {
+        public string? RecipeName { get; set; }
+        public string? CountryId { get; set; }
+        public string? MealId { get; set; }
+        public string? NutritionId { get; set; }
+        public int? MinTotalTime { get; set; } = 0;
+        public int? MaxTotalTime { get; set; } = int.MaxValue;
+        public int? MinServing { get; set; } = 0;
+        public int? MaxServing { get; set; } = int.MaxValue;
+    }
 }

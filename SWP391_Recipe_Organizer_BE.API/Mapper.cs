@@ -52,6 +52,9 @@ namespace SWP391_Recipe_Organizer_BE.API
 
             CreateMap<NutritionInRecipe, NutritionInRecipeVM>();
             CreateMap<NutritionInRecipeVM, NutritionInRecipe>();
+
+            CreateMap<Review, ReviewVM>();
+            CreateMap<ReviewVM, Review>();
         }
     }
 }

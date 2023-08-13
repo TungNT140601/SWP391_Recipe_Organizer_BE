@@ -136,7 +136,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 throw new Exception(ex.Message);
             }
         }
-        
+
         public IEnumerable<Recipe> GetAll()
         {
             try
@@ -159,7 +159,63 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 throw new Exception(ex.Message);
             }
         }
-
+        public IEnumerable<Recipe> SearchRecipe(string? name, string? countryId, string? mealId, string? nutritionId, int? minTime, int? maxTime, int? minServing, int? maxServing)
+        {
+            try
+            {
+                return recipeRepository.GetAll(x => x.IsDelete == false
+                || (!string.IsNullOrEmpty(name) && x.RecipeName.ToLower().Trim().Contains(name.Trim().ToLower()))
+                || (!string.IsNullOrEmpty(countryId) && x.CountryId.ToLower().Trim().Contains(countryId.Trim().ToLower()))
+                || (!string.IsNullOrEmpty(mealId) && x.MealId.ToLower().Trim().Contains(mealId.Trim().ToLower()))
+                || (!string.IsNullOrEmpty(nutritionId) && x.NutritionInRecipes.Where(nx => nx.Nutrition.NutritionId.ToLower().Trim().Contains(nutritionId.Trim().ToLower())).Any())
+                || (minTime != null && maxTime != null && x.TotalTime >= minTime && x.TotalTime <= maxTime)
+                || (minServing != null && maxServing != null && x.Servings >= minServing && x.TotalTime <= maxServing)
+                , new System.Linq.Expressions.Expression<Func<Recipe, object>>[]
+                {
+                    x => x.Directions,
+                    x => x.FavoriteRecipes,
+                    x => x.Photos,
+                    x => x.PlanDetails,
+                    x => x.Reviews,
+                    x => x.IngredientOfRecipes,
+                    x => x.NutritionInRecipes,
+                    x => x.Meal,
+                    x => x.User,
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public IEnumerable<string> GetSuggest(string search)
+        {
+            try
+            {
+                var lst = recipeRepository.GetAll(x => x.RecipeName.ToLower().Trim().Contains(search.Trim().ToLower()) && x.IsDelete == false, new System.Linq.Expressions.Expression<Func<Recipe, object>>[]
+                {
+                    x => x.Directions,
+                    x => x.FavoriteRecipes,
+                    x => x.Photos,
+                    x => x.PlanDetails,
+                    x => x.Reviews,
+                    x => x.IngredientOfRecipes,
+                    x => x.NutritionInRecipes,
+                    x => x.Meal,
+                    x => x.User,
+                });
+                var strings = new List<string>();
+                foreach (var item in lst)
+                {
+                    strings.Add(item.RecipeName);
+                }
+                return strings;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         public bool Delete(string id)
         {
             try
