@@ -12,14 +12,10 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
     [ApiController]
     public class ReviewsController : ControllerBase
     {
-        private readonly IRecipeService recipeService;
         private readonly IReviewService reviewService;
-        private readonly IMapper mapper;
-        public ReviewsController(IRecipeService recipeService, IReviewService reviewService, IMapper mapper)
+        public ReviewsController(IReviewService reviewService)
         {
-            this.recipeService = recipeService;
             this.reviewService = reviewService;
-            this.mapper = mapper;
         }
 
         [HttpPost]
