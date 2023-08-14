@@ -86,7 +86,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("{id}")]
+        [HttpGet]
         public async Task<IActionResult> GetCountry(string id)
         {
             try
@@ -103,7 +103,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPut("{id}")]
+        [HttpPut]
         public async Task<IActionResult> UpdateCountry(string id, CountryVM countryVM)
         {
             if (id != countryVM.CountryId)
@@ -213,7 +213,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpDelete("{id}")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteCountry(string id)
         {
             if (countryService.Get(id) == null)

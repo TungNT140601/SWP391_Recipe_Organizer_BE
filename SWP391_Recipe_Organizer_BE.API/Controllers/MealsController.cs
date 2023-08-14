@@ -33,7 +33,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("{id}")]
+        [HttpGet]
         public async Task<IActionResult> Get(string id)
         {
             try
@@ -101,7 +101,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPut("{id}")]
+        [HttpPut]
         public async Task<IActionResult> UpdateMeal(string id, MealVM mealVM)
         {
             if (id != mealVM.MealId)
@@ -159,7 +159,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpDelete("{id}")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteMeal(string id)
         {
             if (mealService.Get(id) == null)

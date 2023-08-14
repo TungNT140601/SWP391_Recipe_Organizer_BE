@@ -43,7 +43,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("{id}")]
+        [HttpGet]
         public async Task<IActionResult> Get(string id)
         {
             try
@@ -111,7 +111,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPut("{id}")]
+        [HttpPut]
         public async Task<IActionResult> UpdateIngredient(string id, IngredientVM ingredientVM)
         {
             if (id != ingredientVM.IngredientId)
@@ -169,7 +169,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpDelete("{id}")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteIngredient(string id)
         {
             if (ingredientService.Get(id) == null)

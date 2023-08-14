@@ -9,10 +9,9 @@ namespace SWP391_Recipe_Organizer_BE.Service.Interface
 {
     public interface IFavoriteRecipeService
     {
-        FavoriteRecipe Get(string id);
-        IEnumerable<FavoriteRecipe> GetAll();
+        FavoriteRecipe Get(string recipeId,string userId);
+        IEnumerable<FavoriteRecipe> GetAll(string userId);
         bool Add(FavoriteRecipe item);
         bool Remove(FavoriteRecipe item);
-        bool Update(FavoriteRecipe item);
     }
 }

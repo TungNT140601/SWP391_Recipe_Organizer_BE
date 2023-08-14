@@ -24,4 +24,7 @@ namespace SWP391_Recipe_Organizer_BE.API.ViewModel
         public string? PlanDescription { get; set; }
         public ICollection<PlanDetailVM>? PlanDetailVMs { get; set; }
     }
+    public class PlanVMReturn
+    {
+    }
 }
