@@ -22,6 +22,7 @@ namespace SWP391_Recipe_Organizer_BE.API.ViewModel
         public double? AveVote { get; set; }
         public int? TotalFavorite { get; set; }
         public bool? IsFavorite { get; set; } = false;
+        public ReviewVM? UserReview { get; set; }
         public ICollection<PhotoVM>? PhotoVMs { get; set; }
         public ICollection<DirectionVM>? DirectionVMs { get; set; }
         public ICollection<ReviewVM>? ReviewVMs { get; set; }

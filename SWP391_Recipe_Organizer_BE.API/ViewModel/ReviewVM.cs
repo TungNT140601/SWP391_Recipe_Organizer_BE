@@ -11,4 +11,11 @@ namespace SWP391_Recipe_Organizer_BE.API.ViewModel
         public DateTime? UpdateTime { get; set; }
         public UserAccountVM? User { get; set; }
     }
+    public class ReviewAddVM
+    {
+        public string? ReviewId { get; set; }
+        public string RecipeId { get; set; }
+        public int VoteNum { get; set; }
+        public string? Comment { get; set; }
+    }
 }

@@ -141,7 +141,14 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 recipe.ReviewVMs = new List<ReviewVM>();
                 foreach (var review in item.Reviews)
                 {
-                    recipe.ReviewVMs.Add(mapper.Map<ReviewVM>(review));
+                    if(review.UserId == userId)
+                    {
+                        recipe.UserReview = mapper.Map<ReviewVM>(review);
+                    }
+                    else
+                    {
+                        recipe.ReviewVMs.Add(mapper.Map<ReviewVM>(review));
+                    }
                 }
                 recipe.IngredientOfRecipeVMs = new List<IngredientOfRecipeVM>();
                 foreach (var ingredientOfRecipe in item.IngredientOfRecipes)
