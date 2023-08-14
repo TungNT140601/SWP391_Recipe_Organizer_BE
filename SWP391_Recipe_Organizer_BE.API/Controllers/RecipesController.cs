@@ -56,12 +56,18 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                     recipe.IngredientOfRecipeVMs = new List<IngredientOfRecipeVM>();
                     foreach (var ingredientOfRecipe in item.IngredientOfRecipes)
                     {
-                        recipe.IngredientOfRecipeVMs.Add(mapper.Map<IngredientOfRecipeVM>(ingredientOfRecipe));
+                        var ingredientOfRecipeVM = mapper.Map<IngredientOfRecipeVM>(ingredientOfRecipe);
+                        var ingredient = mapper.Map<IngredientVM>(ingredientOfRecipe.Ingredient);
+                        ingredientOfRecipeVM.IngredientVM = ingredient;
+                        recipe.IngredientOfRecipeVMs.Add(ingredientOfRecipeVM);
                     }
                     recipe.NutritionInRecipeVMs = new List<NutritionInRecipeVM>();
                     foreach (var nutritionInRecipe in item.NutritionInRecipes)
                     {
-                        recipe.NutritionInRecipeVMs.Add(mapper.Map<NutritionInRecipeVM>(nutritionInRecipe));
+                        var nutritionInRecipeVM = mapper.Map<NutritionInRecipeVM>(nutritionInRecipe);
+                        var nutritionVM = mapper.Map<NutritionVM>(nutritionInRecipe.Nutrition);
+                        nutritionInRecipeVM.NutritionVM = nutritionVM;
+                        recipe.NutritionInRecipeVMs.Add(nutritionInRecipeVM);
                     }
                     recipes.Add(recipe);
                 }
@@ -106,12 +112,18 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 recipe.IngredientOfRecipeVMs = new List<IngredientOfRecipeVM>();
                 foreach (var ingredientOfRecipe in item.IngredientOfRecipes)
                 {
-                    recipe.IngredientOfRecipeVMs.Add(mapper.Map<IngredientOfRecipeVM>(ingredientOfRecipe));
+                    var ingredientOfRecipeVM = mapper.Map<IngredientOfRecipeVM>(ingredientOfRecipe);
+                    var ingredient = mapper.Map<IngredientVM>(ingredientOfRecipe.Ingredient);
+                    ingredientOfRecipeVM.IngredientVM = ingredient;
+                    recipe.IngredientOfRecipeVMs.Add(ingredientOfRecipeVM);
                 }
                 recipe.NutritionInRecipeVMs = new List<NutritionInRecipeVM>();
                 foreach (var nutritionInRecipe in item.NutritionInRecipes)
                 {
-                    recipe.NutritionInRecipeVMs.Add(mapper.Map<NutritionInRecipeVM>(nutritionInRecipe));
+                    var nutritionInRecipeVM = mapper.Map<NutritionInRecipeVM>(nutritionInRecipe);
+                    var nutritionVM = mapper.Map<NutritionVM>(nutritionInRecipe.Nutrition);
+                    nutritionInRecipeVM.NutritionVM = nutritionVM;
+                    recipe.NutritionInRecipeVMs.Add(nutritionInRecipeVM);
                 }
                 return Ok(new
                 {
@@ -157,12 +169,18 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                     recipe.IngredientOfRecipeVMs = new List<IngredientOfRecipeVM>();
                     foreach (var ingredientOfRecipe in item.IngredientOfRecipes)
                     {
-                        recipe.IngredientOfRecipeVMs.Add(mapper.Map<IngredientOfRecipeVM>(ingredientOfRecipe));
+                        var ingredientOfRecipeVM = mapper.Map<IngredientOfRecipeVM>(ingredientOfRecipe);
+                        var ingredient = mapper.Map<IngredientVM>(ingredientOfRecipe.Ingredient);
+                        ingredientOfRecipeVM.IngredientVM = ingredient;
+                        recipe.IngredientOfRecipeVMs.Add(ingredientOfRecipeVM);
                     }
                     recipe.NutritionInRecipeVMs = new List<NutritionInRecipeVM>();
                     foreach (var nutritionInRecipe in item.NutritionInRecipes)
                     {
-                        recipe.NutritionInRecipeVMs.Add(mapper.Map<NutritionInRecipeVM>(nutritionInRecipe));
+                        var nutritionInRecipeVM = mapper.Map<NutritionInRecipeVM>(nutritionInRecipe);
+                        var nutritionVM = mapper.Map<NutritionVM>(nutritionInRecipe.Nutrition);
+                        nutritionInRecipeVM.NutritionVM = nutritionVM;
+                        recipe.NutritionInRecipeVMs.Add(nutritionInRecipeVM);
                     }
                     data.Add(recipe);
                 }
@@ -216,12 +234,18 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                             recipe.IngredientOfRecipeVMs = new List<IngredientOfRecipeVM>();
                             foreach (var ingredientOfRecipe in item.IngredientOfRecipes)
                             {
-                                recipe.IngredientOfRecipeVMs.Add(mapper.Map<IngredientOfRecipeVM>(ingredientOfRecipe));
+                                var ingredientOfRecipeVM = mapper.Map<IngredientOfRecipeVM>(ingredientOfRecipe);
+                                var ingredient = mapper.Map<IngredientVM>(ingredientOfRecipe.Ingredient);
+                                ingredientOfRecipeVM.IngredientVM = ingredient;
+                                recipe.IngredientOfRecipeVMs.Add(ingredientOfRecipeVM);
                             }
                             recipe.NutritionInRecipeVMs = new List<NutritionInRecipeVM>();
                             foreach (var nutritionInRecipe in item.NutritionInRecipes)
                             {
-                                recipe.NutritionInRecipeVMs.Add(mapper.Map<NutritionInRecipeVM>(nutritionInRecipe));
+                                var nutritionInRecipeVM = mapper.Map<NutritionInRecipeVM>(nutritionInRecipe);
+                                var nutritionVM = mapper.Map<NutritionVM>(nutritionInRecipe.Nutrition);
+                                nutritionInRecipeVM.NutritionVM = nutritionVM;
+                                recipe.NutritionInRecipeVMs.Add(nutritionInRecipeVM);
                             }
                             data.Add(recipe);
                         }
@@ -521,13 +545,13 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 if (!string.IsNullOrEmpty(search))
                 {
                     var result = recipeService.SearchRecipe(
-                        search, 
-                        recipeSearch.CountryId, 
-                        recipeSearch.MealId, 
-                        recipeSearch.NutritionId, 
-                        recipeSearch.MinTotalTime, 
-                        recipeSearch.MaxTotalTime, 
-                        recipeSearch.MinServing, 
+                        search,
+                        recipeSearch.CountryId,
+                        recipeSearch.MealId,
+                        recipeSearch.NutritionId,
+                        recipeSearch.MinTotalTime,
+                        recipeSearch.MaxTotalTime,
+                        recipeSearch.MinServing,
                         recipeSearch.MaxServing);
                     var data = new List<RecipeVM>();
                     foreach (var item in result)
@@ -556,12 +580,18 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                         recipe.IngredientOfRecipeVMs = new List<IngredientOfRecipeVM>();
                         foreach (var ingredientOfRecipe in item.IngredientOfRecipes)
                         {
-                            recipe.IngredientOfRecipeVMs.Add(mapper.Map<IngredientOfRecipeVM>(ingredientOfRecipe));
+                            var ingredientOfRecipeVM = mapper.Map<IngredientOfRecipeVM>(ingredientOfRecipe);
+                            var ingredient = mapper.Map<IngredientVM>(ingredientOfRecipe.Ingredient);
+                            ingredientOfRecipeVM.IngredientVM = ingredient;
+                            recipe.IngredientOfRecipeVMs.Add(ingredientOfRecipeVM);
                         }
                         recipe.NutritionInRecipeVMs = new List<NutritionInRecipeVM>();
                         foreach (var nutritionInRecipe in item.NutritionInRecipes)
                         {
-                            recipe.NutritionInRecipeVMs.Add(mapper.Map<NutritionInRecipeVM>(nutritionInRecipe));
+                            var nutritionInRecipeVM = mapper.Map<NutritionInRecipeVM>(nutritionInRecipe);
+                            var nutritionVM = mapper.Map<NutritionVM>(nutritionInRecipe.Nutrition);
+                            nutritionInRecipeVM.NutritionVM = nutritionVM;
+                            recipe.NutritionInRecipeVMs.Add(nutritionInRecipeVM);
                         }
                         data.Add(recipe);
                     }

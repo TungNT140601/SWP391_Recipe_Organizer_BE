@@ -5,5 +5,6 @@
         public string? IngredientId { get; set; } = null!;
         public string? RecipeId { get; set; } = null!;
         public string? Description { get; set; }
+        public IngredientVM? IngredientVM { get; set; }
     }
 }
