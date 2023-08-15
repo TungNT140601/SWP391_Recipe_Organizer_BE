@@ -102,20 +102,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
             try
             {
                 var reviews = reviewRepository.GetAll(x => x.RecipeId == id).ToList();
-                var sum = 0;
-                if (reviews.Any())
-                {
-                    foreach (var review in reviews)
-                    {
-                        sum += review.VoteNum.Value;
-                    }
-                    double average = (double)sum / reviews.Count();
-                    return Math.Round(average, 1);
-                }
-                else
-                {
-                    return 0;
-                }
+                return reviews != null ? reviews.Average(x => x.VoteNum ?? 0) : 0;
             }
             catch (Exception ex)
             {
