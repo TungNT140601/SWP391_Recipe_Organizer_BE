@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SWP391_Recipe_Organizer_BE.API.ViewModel;
+using SWP391_Recipe_Organizer_BE.Repo;
 using SWP391_Recipe_Organizer_BE.Repo.EntityModel;
 using SWP391_Recipe_Organizer_BE.Service.Interface;
 using System.Collections.Generic;
@@ -260,7 +261,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 if (!string.IsNullOrEmpty(role))
                 {
-                    if (role == "Cooker")
+                    if (role == CommonValues.COOKER)
                     {
                         var id = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                         var lst = recipeService.GetByCooker(id);
@@ -337,7 +338,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 if (!string.IsNullOrEmpty(role))
                 {
-                    if (role == "Cooker")
+                    if (role == CommonValues.COOKER)
                     {
                         if (string.IsNullOrEmpty(recipeVM.RecipeName))
                         {
@@ -450,7 +451,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 if (!string.IsNullOrEmpty(role))
                 {
-                    if (role == "Cooker")
+                    if (role == CommonValues.COOKER)
                     {
                         if (string.IsNullOrEmpty(recipeVM.RecipeName))
                         {
@@ -559,7 +560,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 if (!string.IsNullOrEmpty(role))
                 {
-                    if (role == "Cooker")
+                    if (role == CommonValues.COOKER)
                     {
                         var check = recipeService.Delete(id);
                         return check ? Ok(new

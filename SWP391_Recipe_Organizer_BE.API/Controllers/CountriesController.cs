@@ -2,6 +2,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using SWP391_Recipe_Organizer_BE.API.ViewModel;
+using SWP391_Recipe_Organizer_BE.Repo;
 using SWP391_Recipe_Organizer_BE.Repo.EntityModel;
 using SWP391_Recipe_Organizer_BE.Service.Interface;
 
@@ -28,7 +29,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 if (!string.IsNullOrEmpty(role))
                 {
-                    if (role == "Cooker" || role == "Admin")
+                    if (role == CommonValues.COOKER || role == CommonValues.ADMIN)
                     {
                         var lst = countryService.GetAllAdd();
                         var countries = new List<CountryVM>();
@@ -116,7 +117,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 if (!string.IsNullOrEmpty(role))
                 {
-                    if (role == "Admin")
+                    if (role == CommonValues.ADMIN)
                     {
                         if (string.IsNullOrEmpty(countryVM.CountryName))
                         {
@@ -169,7 +170,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 if (!string.IsNullOrEmpty(role))
                 {
-                    if (role == "Admin")
+                    if (role == CommonValues.ADMIN)
                     {
                         if (string.IsNullOrEmpty(countryVM.CountryName))
                         {
@@ -226,7 +227,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 if (!string.IsNullOrEmpty(role))
                 {
-                    if (role == "Admin")
+                    if (role == CommonValues.ADMIN)
                     {
                         var check = countryService.Delete(id);
                         return check ? Ok(new

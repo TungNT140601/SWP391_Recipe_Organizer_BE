@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SWP391_Recipe_Organizer_BE.API.ViewModel;
+using SWP391_Recipe_Organizer_BE.Repo;
 using SWP391_Recipe_Organizer_BE.Repo.EntityModel;
 using SWP391_Recipe_Organizer_BE.Service.Interface;
 using SWP391_Recipe_Organizer_BE.Service.Services;
@@ -34,7 +35,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 if (role != null)
                 {
-                    if (role == "Guest")
+                    if (role == CommonValues.USER)
                     {
                         var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                         var recipe = recipeService.Get(id);
@@ -90,7 +91,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 if (role != null)
                 {
-                    if (role == "Guest")
+                    if (role == CommonValues.USER)
                     {
                         var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                         var recipe = recipeService.Get(id);
@@ -147,7 +148,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 if (role != null)
                 {
-                    if (role == "Guest")
+                    if (role == CommonValues.USER)
                     {
                         var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                         var favorLst = favoriteRecipeService.GetAll(userId);
@@ -234,7 +235,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 if (role != null)
                 {
-                    if (role == "Guest")
+                    if (role == CommonValues.USER)
                     {
                         var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                         var favorLst = favoriteRecipeService.GetAll(userId);

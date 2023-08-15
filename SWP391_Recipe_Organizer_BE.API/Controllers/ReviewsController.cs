@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SWP391_Recipe_Organizer_BE.API.ViewModel;
+using SWP391_Recipe_Organizer_BE.Repo;
 using SWP391_Recipe_Organizer_BE.Repo.EntityModel;
 using SWP391_Recipe_Organizer_BE.Service.Interface;
 using System.Security.Claims;
@@ -26,7 +27,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 if (role != null)
                 {
-                    if (role == "Guest")
+                    if (role == CommonValues.USER)
                     {
                         var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                         return reviewService.Add(new Review
@@ -72,7 +73,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 if (role != null)
                 {
-                    if (role == "Guest")
+                    if (role == CommonValues.USER)
                     {
                         var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                         if (!string.IsNullOrEmpty(id) && id == reviewAddVM.ReviewId)
@@ -126,7 +127,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 if (role != null)
                 {
-                    if (role == "Guest")
+                    if (role == CommonValues.USER)
                     {
                         var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                         if (!string.IsNullOrEmpty(id))

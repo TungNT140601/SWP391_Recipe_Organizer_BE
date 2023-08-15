@@ -5,6 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using SWP391_Recipe_Organizer_BE.API.ViewModel;
+using SWP391_Recipe_Organizer_BE.Repo;
 using SWP391_Recipe_Organizer_BE.Service.Interface;
 
 namespace SWP391_Recipe_Organizer_BE.API.Controllers
@@ -35,13 +36,13 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                     switch (user.Role)
                     {
                         case 0:
-                            role = "Admin";
+                            role = CommonValues.ADMIN;
                             break;
                         case 1:
-                            role = "Guest";
+                            role = CommonValues.USER;
                             break;
                         case 2:
-                            role = "Cooker";
+                            role = CommonValues.COOKER;
                             break;
                     }
                     return Ok(new
@@ -80,20 +81,20 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                     switch (user.Role)
                     {
                         case 0:
-                            role = "Admin";
+                            role = CommonValues.ADMIN;
                             break;
                         case 1:
-                            role = "Guest";
+                            role = CommonValues.USER;
                             break;
                         case 2:
-                            role = "Cooker";
+                            role = CommonValues.COOKER;
                             break;
                     }
                     return Ok(new
                     {
                         Status = 1,
                         Message = "Login Success",
-                        Role = "",
+                        Role = role,
                         Token = GenerateJwtToken(user.UserId, role)
                     });
                 }
@@ -228,7 +229,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 if (!string.IsNullOrEmpty(role))
                 {
-                    if (role == "Admin")
+                    if (role == CommonValues.ADMIN)
                     {
                         var user = userAccountService.GetUserInfo(id);
                         var userVM = mapper.Map<UserAccountVM>(user);
@@ -279,7 +280,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 if (!string.IsNullOrEmpty(role))
                 {
-                    if (role == "Admin")
+                    if (role == CommonValues.ADMIN)
                     {
                         var lst = userAccountService.GetAll();
                         var users = new List<UserAccountVM>();
@@ -322,7 +323,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 if (!string.IsNullOrEmpty(role))
                 {
-                    if (role == "Admin")
+                    if (role == CommonValues.ADMIN)
                     {
                         return userAccountService.ChangeRole(id, roleChange) ? Ok(new
                         {
