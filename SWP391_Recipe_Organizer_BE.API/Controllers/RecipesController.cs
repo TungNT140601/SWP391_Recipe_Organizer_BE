@@ -80,7 +80,6 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                     //    ingredientOfRecipeVM.IngredientVM = ingredient;
                     //    recipe.IngredientOfRecipeVMs.Add(ingredientOfRecipeVM);
                     //}
-                    recipe.NutritionInRecipeVMs = new List<NutritionInRecipeVM>();
                     //foreach (var nutritionInRecipe in item.NutritionInRecipes)
                     //{
                     //    var nutritionInRecipeVM = mapper.Map<NutritionInRecipeVM>(nutritionInRecipe);
@@ -159,14 +158,6 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                     ingredientOfRecipeVM.IngredientVM = ingredient;
                     recipe.IngredientOfRecipeVMs.Add(ingredientOfRecipeVM);
                 }
-                recipe.NutritionInRecipeVMs = new List<NutritionInRecipeVM>();
-                foreach (var nutritionInRecipe in item.NutritionInRecipes)
-                {
-                    var nutritionInRecipeVM = mapper.Map<NutritionInRecipeVM>(nutritionInRecipe);
-                    var nutritionVM = mapper.Map<NutritionVM>(nutritionInRecipe.Nutrition);
-                    nutritionInRecipeVM.NutritionVM = nutritionVM;
-                    recipe.NutritionInRecipeVMs.Add(nutritionInRecipeVM);
-                }
                 return Ok(new
                 {
                     Status = 1,
@@ -232,14 +223,6 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                         ingredientOfRecipeVM.IngredientVM = ingredient;
                         recipe.IngredientOfRecipeVMs.Add(ingredientOfRecipeVM);
                     }
-                    recipe.NutritionInRecipeVMs = new List<NutritionInRecipeVM>();
-                    foreach (var nutritionInRecipe in item.NutritionInRecipes)
-                    {
-                        var nutritionInRecipeVM = mapper.Map<NutritionInRecipeVM>(nutritionInRecipe);
-                        var nutritionVM = mapper.Map<NutritionVM>(nutritionInRecipe.Nutrition);
-                        nutritionInRecipeVM.NutritionVM = nutritionVM;
-                        recipe.NutritionInRecipeVMs.Add(nutritionInRecipeVM);
-                    }
                     data.Add(recipe);
                 }
                 return Ok(new
@@ -297,14 +280,6 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                                 ingredientOfRecipeVM.IngredientVM = ingredient;
                                 recipe.IngredientOfRecipeVMs.Add(ingredientOfRecipeVM);
                             }
-                            recipe.NutritionInRecipeVMs = new List<NutritionInRecipeVM>();
-                            foreach (var nutritionInRecipe in item.NutritionInRecipes)
-                            {
-                                var nutritionInRecipeVM = mapper.Map<NutritionInRecipeVM>(nutritionInRecipe);
-                                var nutritionVM = mapper.Map<NutritionVM>(nutritionInRecipe.Nutrition);
-                                nutritionInRecipeVM.NutritionVM = nutritionVM;
-                                recipe.NutritionInRecipeVMs.Add(nutritionInRecipeVM);
-                            }
                             data.Add(recipe);
                         }
                         return Ok(new
@@ -355,7 +330,6 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                             recipe.TotalTime = (recipe.PrepTime != null ? recipe.PrepTime : 0)
                                 + (recipe.CookTime != null ? recipe.CookTime : 0)
                                 + (recipe.StandTime != null ? recipe.StandTime : 0);
-                            recipe.NutritionInRecipes.Clear();
                             recipe.IngredientOfRecipes.Clear();
                             recipe.Photos.Clear();
                             recipe.Directions.Clear();
@@ -389,24 +363,12 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                                 {
                                     lstIngredientOfRecipes.Add(new IngredientOfRecipe
                                     {
-                                        Description = ingredientOfRecipe.Description,
+                                        Quantity = ingredientOfRecipe.Quantity,
                                         IngredientId = ingredientOfRecipe.IngredientId
                                     });
                                 }
                             }
-                            var lstNutritionInRecipes = new List<NutritionInRecipe>();
-                            if (recipeVM.NutritionInRecipeVMs.Any())
-                            {
-                                foreach (var nutritionInRecipeVM in recipeVM.NutritionInRecipeVMs)
-                                {
-                                    lstNutritionInRecipes.Add(new NutritionInRecipe
-                                    {
-                                        NutritionId = nutritionInRecipeVM.NutritionId,
-                                        Quantity = nutritionInRecipeVM.Quantity
-                                    });
-                                }
-                            }
-                            var check = recipeService.Add(recipe, lstPhoto, lstDirection, lstIngredientOfRecipes, lstNutritionInRecipes);
+                            var check = recipeService.Add(recipe, lstPhoto, lstDirection, lstIngredientOfRecipes);
                             return check ? Ok(new
                             {
                                 Status = 1,
@@ -497,24 +459,12 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                                 {
                                     lstIngredientOfRecipes.Add(new IngredientOfRecipe
                                     {
-                                        Description = ingredientOfRecipe.Description,
+                                        Quantity = ingredientOfRecipe.Quantity,
                                         IngredientId = ingredientOfRecipe.IngredientId
                                     });
                                 }
                             }
-                            var lstNutritionInRecipes = new List<NutritionInRecipe>();
-                            if (recipeVM.NutritionInRecipeVMs.Any())
-                            {
-                                foreach (var nutritionInRecipeVM in recipeVM.NutritionInRecipeVMs)
-                                {
-                                    lstNutritionInRecipes.Add(new NutritionInRecipe
-                                    {
-                                        NutritionId = nutritionInRecipeVM.NutritionId,
-                                        Quantity = nutritionInRecipeVM.Quantity
-                                    });
-                                }
-                            }
-                            var check = recipeService.Update(recipe, lstPhoto, lstDirection, lstIngredientOfRecipes, lstNutritionInRecipes);
+                            var check = recipeService.Update(recipe, lstPhoto, lstDirection, lstIngredientOfRecipes);
                             return check ? Ok(new
                             {
                                 Status = 1,
@@ -606,7 +556,6 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                         search,
                         recipeSearch.CountryId,
                         recipeSearch.MealId,
-                        recipeSearch.NutritionId,
                         recipeSearch.MinTotalTime,
                         recipeSearch.MaxTotalTime,
                         recipeSearch.MinServing,
@@ -642,14 +591,6 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                             var ingredient = mapper.Map<IngredientVM>(ingredientOfRecipe.Ingredient);
                             ingredientOfRecipeVM.IngredientVM = ingredient;
                             recipe.IngredientOfRecipeVMs.Add(ingredientOfRecipeVM);
-                        }
-                        recipe.NutritionInRecipeVMs = new List<NutritionInRecipeVM>();
-                        foreach (var nutritionInRecipe in item.NutritionInRecipes)
-                        {
-                            var nutritionInRecipeVM = mapper.Map<NutritionInRecipeVM>(nutritionInRecipe);
-                            var nutritionVM = mapper.Map<NutritionVM>(nutritionInRecipe.Nutrition);
-                            nutritionInRecipeVM.NutritionVM = nutritionVM;
-                            recipe.NutritionInRecipeVMs.Add(nutritionInRecipeVM);
                         }
                         data.Add(recipe);
                     }

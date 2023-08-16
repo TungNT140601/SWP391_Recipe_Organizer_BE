@@ -20,9 +20,6 @@ namespace SWP391_Recipe_Organizer_BE.API
             CreateMap<Ingredient, IngredientVM>();
             CreateMap<IngredientVM, Ingredient>();
 
-            CreateMap<Nutrition, NutritionVM>();
-            CreateMap<NutritionVM, Nutrition>();
-
             CreateMap<Photo, PhotoVM>();
             CreateMap<PhotoVM, Photo>();
 
@@ -49,9 +46,6 @@ namespace SWP391_Recipe_Organizer_BE.API
 
             CreateMap<IngredientOfRecipe, IngredientOfRecipeVM>();
             CreateMap<IngredientOfRecipeVM, IngredientOfRecipe>();
-
-            CreateMap<NutritionInRecipe, NutritionInRecipeVM>();
-            CreateMap<NutritionInRecipeVM, NutritionInRecipe>();
 
             CreateMap<Review, ReviewVM>();
             CreateMap<ReviewVM, Review>();

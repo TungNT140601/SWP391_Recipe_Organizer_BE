@@ -13,6 +13,7 @@ namespace SWP391_Recipe_Organizer_BE.API.ViewModel
         public string? AvatarName { get; set; }
         public string? PhoneNum { get; set; }
         public string? Address { get; set; }
+        public int? Role { get; set; }
     }
     public class LoginVM
     {

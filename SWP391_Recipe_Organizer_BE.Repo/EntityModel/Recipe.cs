@@ -10,7 +10,6 @@ namespace SWP391_Recipe_Organizer_BE.Repo.EntityModel
             Directions = new HashSet<Direction>();
             FavoriteRecipes = new HashSet<FavoriteRecipe>();
             IngredientOfRecipes = new HashSet<IngredientOfRecipe>();
-            NutritionInRecipes = new HashSet<NutritionInRecipe>();
             Photos = new HashSet<Photo>();
             PlanDetails = new HashSet<PlanDetail>();
             Reviews = new HashSet<Review>();
@@ -27,6 +26,10 @@ namespace SWP391_Recipe_Organizer_BE.Repo.EntityModel
         public int? StandTime { get; set; }
         public int? TotalTime { get; set; }
         public int? Servings { get; set; }
+        public int? Carbohydrate { get; set; }
+        public int? Protein { get; set; }
+        public int? Fat { get; set; }
+        public int? Calories { get; set; }
         public DateTime? CreateTime { get; set; }
         public DateTime? UpdateTime { get; set; }
         public DateTime? DeleteTime { get; set; }
@@ -38,11 +41,8 @@ namespace SWP391_Recipe_Organizer_BE.Repo.EntityModel
         public virtual ICollection<Direction> Directions { get; set; }
         public virtual ICollection<FavoriteRecipe> FavoriteRecipes { get; set; }
         public virtual ICollection<IngredientOfRecipe> IngredientOfRecipes { get; set; }
-        public virtual ICollection<NutritionInRecipe> NutritionInRecipes { get; set; }
         public virtual ICollection<Photo> Photos { get; set; }
         public virtual ICollection<PlanDetail> PlanDetails { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }
     }
 }
-
-

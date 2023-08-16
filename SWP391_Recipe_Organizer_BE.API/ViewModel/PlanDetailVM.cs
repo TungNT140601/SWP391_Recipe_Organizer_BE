@@ -28,13 +28,16 @@ namespace SWP391_Recipe_Organizer_BE.API.ViewModel
         public int? MealOfDate { get; set; }
         public string? RecipeId { get; set; }
         public string? RecipeName { get; set; }
-        public int? RecipeCalo { get; set; }
+        public double? RecipeCalo { get; set; }
     }
     public class PlanDetailDateVM
     {
         public string? PlanDetailId { get; set; }
-        public int? MealOfDate { get; set; }
-        public RecipeVM? Food { get; set; }
+        public string? RecipeName { get; set; }
+        public string? RecipeId { get; set; }
+        public string? Photos { get; set; }
+        public int? TotalTime { get; set; }
+        public int? TotalIngredient { get; set; }
     }
 
     public class PlanDetailWeekVM

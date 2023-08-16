@@ -13,28 +13,22 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         private readonly IDirectionRepository directionRepository;
         private readonly IIngredientOfRecipeRepository ingredientOfRecipeRepository;
         private readonly IIngredientRepository ingredientRepository;
-        private readonly INutritionInRecipeRepository nutritionInRecipeRepository;
-        private readonly INutritionRepository nutritionRepository;
         private readonly ICountryService countryService;
         public RecipeService(IRecipeRepository recipeRepository,
             IPhotoRepository photoRepository,
             IDirectionRepository directionRepository,
             IIngredientOfRecipeRepository ingredientOfRecipeRepository,
-            INutritionInRecipeRepository nutritionInRecipeRepository,
             ICountryService countryService,
-            IIngredientRepository ingredientRepository,
-            INutritionRepository nutritionRepository)
+            IIngredientRepository ingredientRepository)
         {
             this.recipeRepository = recipeRepository;
             this.photoRepository = photoRepository;
             this.directionRepository = directionRepository;
             this.ingredientOfRecipeRepository = ingredientOfRecipeRepository;
-            this.nutritionInRecipeRepository = nutritionInRecipeRepository;
             this.countryService = countryService;
-            this.nutritionRepository = nutritionRepository;
             this.ingredientRepository = ingredientRepository;
         }
-        public bool Add(Recipe item, List<Photo> photos, List<Direction> directions, List<IngredientOfRecipe> lstIngredientOfRecipes, List<NutritionInRecipe> lstNutritionInRecipes)
+        public bool Add(Recipe item, List<Photo> photos, List<Direction> directions, List<IngredientOfRecipe> lstIngredientOfRecipes)
         {
             try
             {
@@ -75,16 +69,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                         checkIngredientOfRecipe = false;
                     }
                 }
-                var checkNutritionInRecipe = true;
-                foreach (var nutritionInRecipe in lstNutritionInRecipes)
-                {
-                    nutritionInRecipe.RecipeId = item.RecipeId;
-                    if (!nutritionInRecipeRepository.Add(nutritionInRecipe))
-                    {
-                        checkNutritionInRecipe = false;
-                    }
-                }
-                if (checkRecipe && checkPhoto && checkDirection && checkIngredientOfRecipe && checkNutritionInRecipe)
+                if (checkRecipe && checkPhoto && checkDirection && checkIngredientOfRecipe)
                 {
                     countryService.CheckCountryHasRecipe(item.CountryId);
                     return true;
@@ -108,22 +93,16 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 {
                     x => x.Directions,
                     x => x.FavoriteRecipes,
-                    x => x.Photos,
                     x => x.PlanDetails,
                     x => x.Reviews,
-                    x => x.IngredientOfRecipes,
-                    x => x.NutritionInRecipes,
+                    x => x.Photos,
                     x => x.Meal,
                     x => x.User,
                 });
-                foreach (var ingredientOfRecipes in recipes.IngredientOfRecipes)
+                recipes.IngredientOfRecipes = ingredientOfRecipeRepository.GetAll(x => x.RecipeId == recipes.RecipeId, new System.Linq.Expressions.Expression<Func<IngredientOfRecipe, object>>[]
                 {
-                    ingredientOfRecipes.Ingredient = ingredientRepository.Get(x => x.IngredientId == ingredientOfRecipes.IngredientId);
-                }
-                foreach (var nutritionInRecipes in recipes.NutritionInRecipes)
-                {
-                    nutritionInRecipes.Nutrition = nutritionRepository.Get(x => x.NutritionId == nutritionInRecipes.NutritionId);
-                }
+                    x => x.Ingredient
+                }).ToList();
                 return recipes;
             }
             catch (Exception ex)
@@ -140,24 +119,18 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 {
                     x => x.Directions,
                     x => x.FavoriteRecipes,
-                    x => x.Photos,
                     x => x.PlanDetails,
                     x => x.Reviews,
-                    x => x.IngredientOfRecipes,
-                    x => x.NutritionInRecipes,
+                    x => x.Photos,
                     x => x.Meal,
                     x => x.User,
-                });
+                }).OrderByDescending(x => x.CreateTime);
                 foreach (var recipe in recipes)
                 {
-                    foreach (var ingredientOfRecipes in recipe.IngredientOfRecipes)
+                    recipe.IngredientOfRecipes = ingredientOfRecipeRepository.GetAll(x => x.RecipeId == recipe.RecipeId, new System.Linq.Expressions.Expression<Func<IngredientOfRecipe, object>>[]
                     {
-                        ingredientOfRecipes.Ingredient = ingredientRepository.Get(x => x.IngredientId == ingredientOfRecipes.IngredientId);
-                    }
-                    foreach (var nutritionInRecipes in recipe.NutritionInRecipes)
-                    {
-                        nutritionInRecipes.Nutrition = nutritionRepository.Get(x => x.NutritionId == nutritionInRecipes.NutritionId);
-                    }
+                    x => x.Ingredient
+                    }).ToList();
                 }
                 return recipes;
             }
@@ -175,25 +148,19 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 {
                     x => x.Directions,
                     x => x.FavoriteRecipes,
-                    x => x.Photos,
                     x => x.PlanDetails,
                     x => x.Reviews,
-                    x => x.IngredientOfRecipes,
-                    x => x.NutritionInRecipes,
+                    x => x.Photos,
                     x => x.Meal,
                     x => x.User,
                 });
 
                 foreach (var recipe in recipes)
                 {
-                    foreach (var ingredientOfRecipes in recipe.IngredientOfRecipes)
+                    recipe.IngredientOfRecipes = ingredientOfRecipeRepository.GetAll(x => x.RecipeId == recipe.RecipeId, new System.Linq.Expressions.Expression<Func<IngredientOfRecipe, object>>[]
                     {
-                        ingredientOfRecipes.Ingredient = ingredientRepository.Get(x => x.IngredientId == ingredientOfRecipes.IngredientId);
-                    }
-                    foreach (var nutritionInRecipes in recipe.NutritionInRecipes)
-                    {
-                        nutritionInRecipes.Nutrition = nutritionRepository.Get(x => x.NutritionId == nutritionInRecipes.NutritionId);
-                    }
+                    x => x.Ingredient
+                    }).ToList();
                 }
                 return recipes;
             }
@@ -213,22 +180,16 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     x => x.Photos,
                     x => x.PlanDetails,
                     x => x.Reviews,
-                    x => x.IngredientOfRecipes,
-                    x => x.NutritionInRecipes,
                     x => x.Meal,
                     x => x.User,
                 });
 
                 foreach (var recipe in recipes)
                 {
-                    foreach (var ingredientOfRecipes in recipe.IngredientOfRecipes)
+                    recipe.IngredientOfRecipes = ingredientOfRecipeRepository.GetAll(x => x.RecipeId == recipe.RecipeId, new System.Linq.Expressions.Expression<Func<IngredientOfRecipe, object>>[]
                     {
-                        ingredientOfRecipes.Ingredient = ingredientRepository.Get(x => x.IngredientId == ingredientOfRecipes.IngredientId);
-                    }
-                    foreach (var nutritionInRecipes in recipe.NutritionInRecipes)
-                    {
-                        nutritionInRecipes.Nutrition = nutritionRepository.Get(x => x.NutritionId == nutritionInRecipes.NutritionId);
-                    }
+                    x => x.Ingredient
+                    }).ToList();
                 }
                 return recipes;
             }
@@ -237,7 +198,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 throw new Exception(ex.Message);
             }
         }
-        public IEnumerable<Recipe> SearchRecipe(string? name, string? countryId, string? mealId, string? nutritionId, int? minTime, int? maxTime, int? minServing, int? maxServing)
+        public IEnumerable<Recipe> SearchRecipe(string? name, string? countryId, string? mealId, int? minTime, int? maxTime, int? minServing, int? maxServing)
         {
             try
             {
@@ -245,7 +206,6 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 && ((!string.IsNullOrEmpty(name) && x.RecipeName.ToLower().Trim().Contains(name.Trim().ToLower()))
                 || (!string.IsNullOrEmpty(countryId) && x.CountryId.ToLower().Trim().Contains(countryId.Trim().ToLower()))
                 || (!string.IsNullOrEmpty(mealId) && x.MealId.ToLower().Trim().Contains(mealId.Trim().ToLower()))
-                || (!string.IsNullOrEmpty(nutritionId) && x.NutritionInRecipes.Where(nx => nx.Nutrition.NutritionId.ToLower().Trim().Contains(nutritionId.Trim().ToLower())).Any())
                 || (minTime != null && maxTime != null && x.TotalTime >= minTime && x.TotalTime <= maxTime)
                 || (minServing != null && maxServing != null && x.Servings >= minServing && x.TotalTime <= maxServing))
                 , new System.Linq.Expressions.Expression<Func<Recipe, object>>[]
@@ -255,21 +215,15 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     x => x.Photos,
                     x => x.PlanDetails,
                     x => x.Reviews,
-                    x => x.IngredientOfRecipes,
-                    x => x.NutritionInRecipes,
                     x => x.Meal,
                     x => x.User,
                 });
                 foreach (var recipe in recipes)
                 {
-                    foreach (var ingredientOfRecipes in recipe.IngredientOfRecipes)
+                    recipe.IngredientOfRecipes = ingredientOfRecipeRepository.GetAll(x => x.RecipeId == recipe.RecipeId, new System.Linq.Expressions.Expression<Func<IngredientOfRecipe, object>>[]
                     {
-                        ingredientOfRecipes.Ingredient = ingredientRepository.Get(x => x.IngredientId == ingredientOfRecipes.IngredientId);
-                    }
-                    foreach (var nutritionInRecipes in recipe.NutritionInRecipes)
-                    {
-                        nutritionInRecipes.Nutrition = nutritionRepository.Get(x => x.NutritionId == nutritionInRecipes.NutritionId);
-                    }
+                    x => x.Ingredient
+                    }).ToList();
                 }
                 return recipes;
             }
@@ -278,7 +232,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 throw new Exception(ex.Message);
             }
         }
-        public IEnumerable<Recipe> SearchFavoriteRecipe(List<string> recipeIds,string? name, string? countryId, string? mealId, string? nutritionId, int? minTime, int? maxTime, int? minServing, int? maxServing)
+        public IEnumerable<Recipe> SearchFavoriteRecipe(List<string> recipeIds, string? name, string? countryId, string? mealId, int? minTime, int? maxTime, int? minServing, int? maxServing)
         {
             try
             {
@@ -287,7 +241,6 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 && ((!string.IsNullOrEmpty(name) && x.RecipeName.ToLower().Trim().Contains(name.Trim().ToLower()))
                 || (!string.IsNullOrEmpty(countryId) && x.CountryId.ToLower().Trim().Contains(countryId.Trim().ToLower()))
                 || (!string.IsNullOrEmpty(mealId) && x.MealId.ToLower().Trim().Contains(mealId.Trim().ToLower()))
-                || (!string.IsNullOrEmpty(nutritionId) && x.NutritionInRecipes.Where(nx => nx.Nutrition.NutritionId.ToLower().Trim().Contains(nutritionId.Trim().ToLower())).Any())
                 || (minTime != null && maxTime != null && x.TotalTime >= minTime && x.TotalTime <= maxTime)
                 || (minServing != null && maxServing != null && x.Servings >= minServing && x.TotalTime <= maxServing))
                 , new System.Linq.Expressions.Expression<Func<Recipe, object>>[]
@@ -297,21 +250,15 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     x => x.Photos,
                     x => x.PlanDetails,
                     x => x.Reviews,
-                    x => x.IngredientOfRecipes,
-                    x => x.NutritionInRecipes,
                     x => x.Meal,
                     x => x.User,
                 });
                 foreach (var recipe in recipes)
                 {
-                    foreach (var ingredientOfRecipes in recipe.IngredientOfRecipes)
+                    recipe.IngredientOfRecipes = ingredientOfRecipeRepository.GetAll(x => x.RecipeId == recipe.RecipeId, new System.Linq.Expressions.Expression<Func<IngredientOfRecipe, object>>[]
                     {
-                        ingredientOfRecipes.Ingredient = ingredientRepository.Get(x => x.IngredientId == ingredientOfRecipes.IngredientId);
-                    }
-                    foreach (var nutritionInRecipes in recipe.NutritionInRecipes)
-                    {
-                        nutritionInRecipes.Nutrition = nutritionRepository.Get(x => x.NutritionId == nutritionInRecipes.NutritionId);
-                    }
+                    x => x.Ingredient
+                    }).ToList();
                 }
                 return recipes;
             }
@@ -324,18 +271,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         {
             try
             {
-                var lst = recipeRepository.GetAll(x => x.RecipeName.ToLower().Trim().Contains(search.Trim().ToLower()) && x.IsDelete == false, new System.Linq.Expressions.Expression<Func<Recipe, object>>[]
-                {
-                    x => x.Directions,
-                    x => x.FavoriteRecipes,
-                    x => x.Photos,
-                    x => x.PlanDetails,
-                    x => x.Reviews,
-                    x => x.IngredientOfRecipes,
-                    x => x.NutritionInRecipes,
-                    x => x.Meal,
-                    x => x.User,
-                });
+                var lst = recipeRepository.GetAll(x => x.RecipeName.ToLower().Trim().Contains(search.Trim().ToLower()) && x.IsDelete == false);
                 var strings = new List<string>();
                 foreach (var item in lst)
                 {
@@ -378,7 +314,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
             }
         }
 
-        public bool Update(Recipe item, List<Photo> photos, List<Direction> directions, List<IngredientOfRecipe> lstIngredientOfRecipes, List<NutritionInRecipe> lstNutritionInRecipes)
+        public bool Update(Recipe item, List<Photo> photos, List<Direction> directions, List<IngredientOfRecipe> lstIngredientOfRecipes)
         {
             try
             {
@@ -387,7 +323,6 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     x => x.Photos,
                     x => x.Directions,
                     x => x.IngredientOfRecipes,
-                    x => x.NutritionInRecipes
                 });
                 if (recipe != null)
                 {
@@ -400,6 +335,10 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     recipe.StandTime = item.StandTime;
                     recipe.TotalTime = item.TotalTime;
                     recipe.Servings = item.Servings;
+                    recipe.Carbohydrate = item.Carbohydrate;
+                    recipe.Protein = item.Protein;
+                    recipe.Fat = item.Fat;
+                    recipe.Calories = item.Calories;
                     recipe.IsDelete = false;
                     var checkRecipe = recipeRepository.Update(recipe);
                     var checkPhoto = true;
@@ -455,23 +394,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                             checkIngredientOfRecipe = false;
                         }
                     }
-                    var checkNutritionInRecipe = true;
-                    foreach (var item1 in recipe.NutritionInRecipes)
-                    {
-                        if (!nutritionInRecipeRepository.Remove(item1.NutritionId, recipe.RecipeId))
-                        {
-                            checkNutritionInRecipe = false;
-                        }
-                    }
-                    foreach (var nutritionInRecipe in lstNutritionInRecipes)
-                    {
-                        nutritionInRecipe.RecipeId = item.RecipeId;
-                        if (!nutritionInRecipeRepository.Add(nutritionInRecipe))
-                        {
-                            checkNutritionInRecipe = false;
-                        }
-                    }
-                    if (checkRecipe && checkPhoto && checkDirection && checkIngredientOfRecipe && checkNutritionInRecipe)
+                    if (checkRecipe && checkPhoto && checkDirection && checkIngredientOfRecipe)
                     {
                         countryService.CheckCountryHasRecipe(recipe.CountryId);
                         return true;

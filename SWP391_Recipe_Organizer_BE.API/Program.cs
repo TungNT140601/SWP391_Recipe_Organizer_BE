@@ -88,8 +88,6 @@ namespace SWP391_Recipe_Organizer_BE.API
             builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
             builder.Services.AddScoped<IIngredientOfRecipeRepository, IngredientOfRecipeRepository>();
             builder.Services.AddScoped<IMealRepository, MealRepository>();
-            builder.Services.AddScoped<INutritionRepository, NutritionRepository>();
-            builder.Services.AddScoped<INutritionInRecipeRepository, NutritionInRecipeRepository>();
             builder.Services.AddScoped<IPhotoRepository, PhotoRepository>();
             builder.Services.AddScoped<IPlanRepository, PlanRepository>();
             builder.Services.AddScoped<IPlanDetailRepository, PlanDetailRepository>();
@@ -103,8 +101,6 @@ namespace SWP391_Recipe_Organizer_BE.API
             builder.Services.AddScoped<IIngredientService, IngredientService>();
             //builder.Services.AddScoped<IIngredientOfRecipeService, IngredientOfRecipeService>();
             builder.Services.AddScoped<IMealService, MealService>();
-            builder.Services.AddScoped<INutritionService, NutritionService>();
-            //builder.Services.AddScoped<INutritionInRecipeService, NutritionInRecipeService>();
             builder.Services.AddScoped<IPhotoService, PhotoService>();
             builder.Services.AddScoped<IPlanService, PlanService>();
             //builder.Services.AddScoped<IPlanDetailService, PlanDetailService>();

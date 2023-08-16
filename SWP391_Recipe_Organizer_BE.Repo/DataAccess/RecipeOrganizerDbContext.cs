@@ -23,8 +23,6 @@ namespace SWP391_Recipe_Organizer_BE.Repo.DataAccess
         public virtual DbSet<Ingredient> Ingredients { get; set; } = null!;
         public virtual DbSet<IngredientOfRecipe> IngredientOfRecipes { get; set; } = null!;
         public virtual DbSet<Meal> Meals { get; set; } = null!;
-        public virtual DbSet<Nutrition> Nutritions { get; set; } = null!;
-        public virtual DbSet<NutritionInRecipe> NutritionInRecipes { get; set; } = null!;
         public virtual DbSet<Photo> Photos { get; set; } = null!;
         public virtual DbSet<Plan> Plans { get; set; } = null!;
         public virtual DbSet<PlanDetail> PlanDetails { get; set; } = null!;
@@ -37,7 +35,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.DataAccess
             if (!optionsBuilder.IsConfigured)
             {
                 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                //optionsBuilder.UseSqlServer("server=(local);uid=sa;pwd=1;database=RecipeOrganizerDB;TrustServerCertificate=True;");
+                //                optionsBuilder.UseSqlServer("server=(local);uid=sa;pwd=1;database=RecipeOrganizerDB;TrustServerCertificate=True;");
             }
         }
 
@@ -120,8 +118,6 @@ namespace SWP391_Recipe_Organizer_BE.Repo.DataAccess
 
                 entity.Property(e => e.RecipeId).HasMaxLength(20);
 
-                entity.Property(e => e.Description).HasMaxLength(255);
-
                 entity.HasOne(d => d.Ingredient)
                     .WithMany(p => p.IngredientOfRecipes)
                     .HasForeignKey(d => d.IngredientId)
@@ -144,40 +140,6 @@ namespace SWP391_Recipe_Organizer_BE.Repo.DataAccess
                 entity.Property(e => e.IsDelete).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.MealName).HasMaxLength(255);
-            });
-
-            modelBuilder.Entity<Nutrition>(entity =>
-            {
-                entity.ToTable("Nutrition");
-
-                entity.Property(e => e.NutritionId).HasMaxLength(20);
-
-                entity.Property(e => e.IsDelete).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.NutritionName).HasMaxLength(255);
-            });
-
-            modelBuilder.Entity<NutritionInRecipe>(entity =>
-            {
-                entity.HasKey(e => new { e.NutritionId, e.RecipeId });
-
-                entity.ToTable("NutritionInRecipe");
-
-                entity.Property(e => e.NutritionId).HasMaxLength(20);
-
-                entity.Property(e => e.RecipeId).HasMaxLength(20);
-
-                entity.HasOne(d => d.Nutrition)
-                    .WithMany(p => p.NutritionInRecipes)
-                    .HasForeignKey(d => d.NutritionId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_NutritionInRecipe_Nutrition");
-
-                entity.HasOne(d => d.Recipe)
-                    .WithMany(p => p.NutritionInRecipes)
-                    .HasForeignKey(d => d.RecipeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_NutritionInRecipe_Recipe");
             });
 
             modelBuilder.Entity<Photo>(entity =>

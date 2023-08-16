@@ -13,12 +13,14 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
     public class PlanService : IPlanService
     {
         private readonly IPlanRepository planRepository;
+        private readonly IRecipeService recipeService;
         private readonly IPlanDetailRepository planDetailRepository;
 
-        public PlanService(IPlanRepository planRepository, IPlanDetailRepository planDetailRepository)
+        public PlanService(IPlanRepository planRepository, IPlanDetailRepository planDetailRepository,IRecipeService recipeService)
         {
             this.planRepository = planRepository;
             this.planDetailRepository = planDetailRepository;
+            this.recipeService = recipeService;
         }
         public bool AddPlanDetail(PlanDetail item, string userId)
         {
@@ -129,6 +131,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     {
                         if (planDetail.Date.Value.Date == dateTime.Date)
                         {
+                            planDetail.Recipe = recipeService.Get(planDetail.RecipeId);
                             planReturn.Add(planDetail);
                         }
                     }

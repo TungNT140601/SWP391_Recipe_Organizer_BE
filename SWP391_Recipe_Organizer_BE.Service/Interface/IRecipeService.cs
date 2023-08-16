@@ -14,10 +14,10 @@ namespace SWP391_Recipe_Organizer_BE.Service.Interface
         IEnumerable<Recipe> GetAll();
         IEnumerable<Recipe> GetAll(List<string> recipeIds);
         IEnumerable<string> GetSuggest(string search);
-        IEnumerable<Recipe> SearchRecipe(string? name, string? countryId, string? mealId, string? nutritionId, int? minTime, int? maxTime, int? minServing, int? maxServing);
-        IEnumerable<Recipe> SearchFavoriteRecipe(List<string> recipeIds, string? name, string? countryId, string? mealId, string? nutritionId, int? minTime, int? maxTime, int? minServing, int? maxServing);
-        bool Add(Recipe item, List<Photo> photos, List<Direction> directions, List<IngredientOfRecipe> lstIngredientOfRecipes, List<NutritionInRecipe> lstNutritionInRecipes);
+        IEnumerable<Recipe> SearchRecipe(string? name, string? countryId, string? mealId, int? minTime, int? maxTime, int? minServing, int? maxServing);
+        IEnumerable<Recipe> SearchFavoriteRecipe(List<string> recipeIds, string? name, string? countryId, string? mealId, int? minTime, int? maxTime, int? minServing, int? maxServing);
+        bool Add(Recipe item, List<Photo> photos, List<Direction> directions, List<IngredientOfRecipe> lstIngredientOfRecipes);
         bool Delete(string id);
-        bool Update(Recipe item, List<Photo> photos, List<Direction> directions, List<IngredientOfRecipe> lstIngredientOfRecipes, List<NutritionInRecipe> lstNutritionInRecipes);
+        bool Update(Recipe item, List<Photo> photos, List<Direction> directions, List<IngredientOfRecipe> lstIngredientOfRecipes);
     }
 }

@@ -27,7 +27,6 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
             this.planService = planService;
             this.mapper = mapper;
             this.recipeService = recipeService;
-
         }
 
         [HttpGet()]
@@ -62,7 +61,6 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                                         PlanDetailId = planDetail.PlanDetailId,
                                         RecipeId = item.RecipeId,
                                         RecipeName = item.RecipeName,
-                                        RecipeCalo = item.NutritionInRecipes != null ? item.NutritionInRecipes.Where(x => x.NutritionId == "NUT001").First().Quantity : 0
                                     };
                                     if (planDetail.MealOfDate == 1)
                                     {
@@ -144,44 +142,17 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                             var dinner = new List<PlanDetailDateVM>();
                             foreach (var planDetail in planDetails)
                             {
-                                #region Recipe
-                                var item = recipeService.Get(planDetail.RecipeId);
-                                var recipe = mapper.Map<RecipeVM>(item);
-                                recipe.MealVMs = mapper.Map<MealVM>(item.Meal);
-                                recipe.UserAccountVMs = null;
-                                recipe.TotalReview = 0;
-                                recipe.AveVote = 0;
-                                recipe.TotalFavorite = 0;
-                                recipe.PhotoVMs = new List<PhotoVM>();
-                                foreach (var photo in item.Photos)
-                                {
-                                    recipe.PhotoVMs.Add(mapper.Map<PhotoVM>(photo));
-                                }
-                                recipe.IngredientOfRecipeVMs = new List<IngredientOfRecipeVM>();
-                                foreach (var ingredientOfRecipe in item.IngredientOfRecipes)
-                                {
-                                    var ingredientOfRecipeVM = mapper.Map<IngredientOfRecipeVM>(ingredientOfRecipe);
-                                    var ingredient = mapper.Map<IngredientVM>(ingredientOfRecipe.Ingredient);
-                                    ingredientOfRecipeVM.IngredientVM = ingredient;
-                                    recipe.IngredientOfRecipeVMs.Add(ingredientOfRecipeVM);
-                                }
-                                recipe.NutritionInRecipeVMs = new List<NutritionInRecipeVM>();
-                                foreach (var nutritionInRecipe in item.NutritionInRecipes)
-                                {
-                                    var nutritionInRecipeVM = mapper.Map<NutritionInRecipeVM>(nutritionInRecipe);
-                                    var nutritionVM = mapper.Map<NutritionVM>(nutritionInRecipe.Nutrition);
-                                    nutritionInRecipeVM.NutritionVM = nutritionVM;
-                                    recipe.NutritionInRecipeVMs.Add(nutritionInRecipeVM);
-                                }
-                                #endregion
-
+                                var recipe = planDetail.Recipe;
                                 if (planDetail.MealOfDate == 1)
                                 {
                                     breakfast.Add(new PlanDetailDateVM
                                     {
                                         PlanDetailId = planDetail.PlanDetailId,
-                                        MealOfDate = planDetail.MealOfDate,
-                                        Food = recipe
+                                        Photos = recipe.Photos.FirstOrDefault().PhotoName,
+                                        RecipeId = recipe.RecipeId,
+                                        RecipeName = recipe.RecipeName,
+                                        TotalIngredient = recipe.IngredientOfRecipes.Count(),
+                                        TotalTime = recipe.TotalTime
                                     });
                                 }
                                 if (planDetail.MealOfDate == 2)
@@ -189,8 +160,11 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                                     lunch.Add(new PlanDetailDateVM
                                     {
                                         PlanDetailId = planDetail.PlanDetailId,
-                                        MealOfDate = planDetail.MealOfDate,
-                                        Food = recipe
+                                        Photos = recipe.Photos.FirstOrDefault().PhotoName,
+                                        RecipeId = recipe.RecipeId,
+                                        RecipeName = recipe.RecipeName,
+                                        TotalIngredient = recipe.IngredientOfRecipes.Count(),
+                                        TotalTime = recipe.TotalTime
                                     });
                                 }
                                 if (planDetail.MealOfDate == 3)
@@ -198,8 +172,11 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                                     dinner.Add(new PlanDetailDateVM
                                     {
                                         PlanDetailId = planDetail.PlanDetailId,
-                                        MealOfDate = planDetail.MealOfDate,
-                                        Food = recipe
+                                        Photos = recipe.Photos.FirstOrDefault().PhotoName,
+                                        RecipeId = recipe.RecipeId,
+                                        RecipeName = recipe.RecipeName,
+                                        TotalIngredient = recipe.IngredientOfRecipes.Count(),
+                                        TotalTime = recipe.TotalTime
                                     });
                                 }
                             }
@@ -209,6 +186,11 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                                 Message = "Success",
                                 Data = new
                                 {
+                                    Nutrition = new { },
+                                    Ingredient = new
+                                    {
+
+                                    },
                                     Food = new
                                     {
                                         Breakfast = breakfast,

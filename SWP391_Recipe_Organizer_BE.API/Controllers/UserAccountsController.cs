@@ -1,4 +1,5 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using System.Data;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using AutoMapper;
@@ -32,25 +33,15 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 var user = userAccountService.CheckLoginByUserName(loginVM.Username, loginVM.Password);
                 if (user != null)
                 {
-                    string role = "";
-                    switch (user.Role)
-                    {
-                        case 0:
-                            role = CommonValues.ADMIN;
-                            break;
-                        case 1:
-                            role = CommonValues.USER;
-                            break;
-                        case 2:
-                            role = CommonValues.COOKER;
-                            break;
-                    }
                     return Ok(new
                     {
                         Status = 1,
                         Message = "Login Success",
-                        Role = role,
-                        Token = GenerateJwtToken(user.UserId, role)
+                        Fullname = user.FullName,
+                        Email = user.Email,
+                        Photo = user.AvatarName,
+                        Role = CommonValues.ADMIN,
+                        Token = GenerateJwtToken(user.UserId, CommonValues.ADMIN)
                     });
                 }
                 else
@@ -59,6 +50,9 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                     {
                         Status = 0,
                         Message = "Login Fail",
+                        Fullname = "",
+                        Email = "",
+                        Photo = "",
                         Role = "",
                         Token = ""
                     });
@@ -94,6 +88,9 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                     {
                         Status = 1,
                         Message = "Login Success",
+                        Fullname = user.FullName,
+                        Email = user.Email,
+                        Photo = user.AvatarName,
                         Role = role,
                         Token = GenerateJwtToken(user.UserId, role)
                     });
@@ -104,6 +101,9 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                     {
                         Status = 0,
                         Message = "Login Fail",
+                        Fullname = "",
+                        Email = "",
+                        Photo = "",
                         Role = "",
                         Token = ""
                     });
