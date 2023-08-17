@@ -10,5 +10,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Interface
     public interface IIngredientOfRecipeRepository : IGenericRepository<IngredientOfRecipe>
     {
         bool Remove(string recipeId, string ingredientId);
+        void RemoveAll(string recipeId);
+        bool AddRange(List<IngredientOfRecipe> ingredientOfRecipes, string recipeId);
     }
 }

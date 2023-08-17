@@ -11,8 +11,10 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
 {
     public class IngredientOfRecipeRepository : GenericRepository<IngredientOfRecipe>, IIngredientOfRecipeRepository
     {
-        public IngredientOfRecipeRepository(RecipeOrganizerDBContext dBContext) : base(dBContext)
+        private readonly IIngredientRepository ingredientRepository;
+        public IngredientOfRecipeRepository(RecipeOrganizerDBContext dBContext, IIngredientRepository ingredientRepository) : base(dBContext)
         {
+            this.ingredientRepository = ingredientRepository;
         }
 
         public bool Remove(string recipeId, string ingredientId)
@@ -36,24 +38,55 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                 throw new Exception(ex.Message);
             }
         }
-        public override bool Add(IngredientOfRecipe ingredientOfRecipe)
+
+        public void RemoveAll(string recipeId)
         {
             try
             {
-                var item = dbSet.Where(x => x.IngredientId == ingredientOfRecipe.IngredientId && x.RecipeId == ingredientOfRecipe.RecipeId).FirstOrDefault();
-                if (item == null)
+                var items = dbSet.Where(x => x.RecipeId == recipeId).ToList();
+                if (items != null)
                 {
-                    dbSet.Add(ingredientOfRecipe);
+                    foreach (var item in items)
+                    {
+                        dbSet.Remove(item);
+                    }
                     dBContext.SaveChanges();
-                    return true;
                 }
-                else
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public bool AddRange(List<IngredientOfRecipe> ingredientOfRecipes,string recipeId)
+        {
+            try
+            {
+                bool check = true;
+                foreach (var ingredientOfRecipe in ingredientOfRecipes)
                 {
-                    dBContext.Attach(item).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
-                    dbSet.Update(ingredientOfRecipe);
-                    dBContext.SaveChanges();
-                    return true;
+                    var ingredient = ingredientRepository.Get(x => x.IngredientId == ingredientOfRecipe.IngredientId && x.IsDelete == false);
+                    if (ingredient != null)
+                    {
+                        ingredientOfRecipe.RecipeId = recipeId;
+                        var item = dbSet.Where(x => x.IngredientId == ingredientOfRecipe.IngredientId && x.RecipeId == recipeId).FirstOrDefault();
+                        if (item == null)
+                        {
+                            dbSet.Add(ingredientOfRecipe);
+                        }
+                        else
+                        {
+                            dBContext.Attach(item).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
+                            dbSet.Update(ingredientOfRecipe);
+                        }
+                    }
+                    else
+                    {
+                        check = false;
+                    }
                 }
+                dBContext.SaveChanges();
+                return check;
             }
             catch (Exception ex)
             {

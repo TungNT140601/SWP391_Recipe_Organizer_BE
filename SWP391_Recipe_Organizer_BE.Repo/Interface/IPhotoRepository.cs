@@ -9,6 +9,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Interface
 {
     public interface IPhotoRepository : IGenericRepository<Photo>
     {
-        bool AddRangePhoto(List<Photo> photos);
+        bool AddRangePhoto(List<Photo> photos, string userId, string recipeId);
+        void RemoveAll(string recipeId);
     }
 }
