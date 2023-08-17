@@ -49,7 +49,10 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                 }
                 else
                 {
-                    return false;
+                    dBContext.Attach(item).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
+                    dbSet.Update(ingredientOfRecipe);
+                    dBContext.SaveChanges();
+                    return true;
                 }
             }
             catch (Exception ex)

@@ -38,9 +38,9 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                     var recipe = mapper.Map<RecipeVM>(item);
                     recipe.MealVMs = mapper.Map<MealVM>(item.Meal);
                     recipe.UserAccountVMs = mapper.Map<UserAccountVM>(item.User);
-                    recipe.TotalReview = item.Reviews.Count();
+                    recipe.TotalReview = item.Reviews != null ? item.Reviews.Count() : 0;
                     recipe.AveVote = reviewService.GetAveReview(recipe.RecipeId);
-                    recipe.TotalFavorite = item.FavoriteRecipes.Count();
+                    recipe.TotalFavorite = item.FavoriteRecipes != null ? item.FavoriteRecipes.Count() : 0;
                     var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                     if (userId != null)
                     {
@@ -109,9 +109,9 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 var recipe = mapper.Map<RecipeVM>(item);
                 recipe.MealVMs = mapper.Map<MealVM>(item.Meal);
                 recipe.UserAccountVMs = mapper.Map<UserAccountVM>(item.User);
-                recipe.TotalReview = item.Reviews.Count();
+                recipe.TotalReview = item.Reviews != null ? item.Reviews.Count() : 0;
                 recipe.AveVote = reviewService.GetAveReview(recipe.RecipeId);
-                recipe.TotalFavorite = item.FavoriteRecipes.Count();
+                recipe.TotalFavorite = item.FavoriteRecipes != null ? item.FavoriteRecipes.Count() : 0;
                 var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                 if (userId != null)
                 {
@@ -141,7 +141,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 recipe.ReviewVMs = new List<ReviewVM>();
                 foreach (var review in item.Reviews)
                 {
-                    if(review.UserId == userId)
+                    if (review.UserId == userId)
                     {
                         recipe.UserReview = mapper.Map<ReviewVM>(review);
                     }
@@ -181,9 +181,9 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                     var recipe = mapper.Map<RecipeVM>(item);
                     recipe.MealVMs = mapper.Map<MealVM>(item.Meal);
                     recipe.UserAccountVMs = mapper.Map<UserAccountVM>(item.User);
-                    recipe.TotalReview = item.Reviews.Count();
+                    recipe.TotalReview = item.Reviews != null ? item.Reviews.Count() : 0;
                     recipe.AveVote = reviewService.GetAveReview(recipe.RecipeId);
-                    recipe.TotalFavorite = item.FavoriteRecipes.Count();
+                    recipe.TotalFavorite = item.FavoriteRecipes != null ? item.FavoriteRecipes.Count() : 0;
                     var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                     if (userId != null)
                     {
@@ -254,9 +254,9 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                             var recipe = mapper.Map<RecipeVM>(item);
                             recipe.MealVMs = mapper.Map<MealVM>(item.Meal);
                             recipe.UserAccountVMs = mapper.Map<UserAccountVM>(item.User);
-                            recipe.TotalReview = item.Reviews.Count();
+                            recipe.TotalReview = item.Reviews != null ? item.Reviews.Count() : 0;
                             recipe.AveVote = reviewService.GetAveReview(recipe.RecipeId);
-                            recipe.TotalFavorite = item.FavoriteRecipes.Count();
+                            recipe.TotalFavorite = item.FavoriteRecipes != null ? item.FavoriteRecipes.Count() : 0;
                             recipe.PhotoVMs = new List<PhotoVM>();
                             foreach (var photo in item.Photos)
                             {

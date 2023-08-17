@@ -102,7 +102,14 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
             try
             {
                 var reviews = reviewRepository.GetAll(x => x.RecipeId == id).ToList();
-                return reviews != null ? reviews.Average(x => x.VoteNum ?? 0) : 0;
+                if (reviews != null)
+                {
+                    if (reviews.Count > 0)
+                    {
+                        return reviews.Average(x => x.VoteNum ?? 0);
+                    }
+                }
+                return 0;
             }
             catch (Exception ex)
             {

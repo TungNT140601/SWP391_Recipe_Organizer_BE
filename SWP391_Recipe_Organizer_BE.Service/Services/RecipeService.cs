@@ -69,9 +69,12 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                         checkIngredientOfRecipe = false;
                     }
                 }
-                if (checkRecipe && checkPhoto && checkDirection && checkIngredientOfRecipe)
+                if (checkRecipe)
                 {
                     countryService.CheckCountryHasRecipe(item.CountryId);
+                }
+                if (checkRecipe && checkPhoto && checkDirection && checkIngredientOfRecipe)
+                {
                     return true;
                 }
                 else
@@ -124,7 +127,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     x => x.Photos,
                     x => x.Meal,
                     x => x.User,
-                }).OrderByDescending(x => x.CreateTime);
+                });
                 foreach (var recipe in recipes)
                 {
                     recipe.IngredientOfRecipes = ingredientOfRecipeRepository.GetAll(x => x.RecipeId == recipe.RecipeId, new System.Linq.Expressions.Expression<Func<IngredientOfRecipe, object>>[]
@@ -132,7 +135,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     x => x.Ingredient
                     }).ToList();
                 }
-                return recipes;
+                return recipes.OrderByDescending(x => x.CreateTime);
             }
             catch (Exception ex)
             {
@@ -162,7 +165,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     x => x.Ingredient
                     }).ToList();
                 }
-                return recipes;
+                return recipes.OrderByDescending(x => x.CreateTime);
             }
             catch (Exception ex)
             {
@@ -191,7 +194,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     x => x.Ingredient
                     }).ToList();
                 }
-                return recipes;
+                return recipes.OrderByDescending(x => x.CreateTime);
             }
             catch (Exception ex)
             {
@@ -225,7 +228,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     x => x.Ingredient
                     }).ToList();
                 }
-                return recipes;
+                return recipes.OrderByDescending(x => x.CreateTime);
             }
             catch (Exception ex)
             {
@@ -260,7 +263,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     x => x.Ingredient
                     }).ToList();
                 }
-                return recipes;
+                return recipes.OrderByDescending(x => x.CreateTime);
             }
             catch (Exception ex)
             {
