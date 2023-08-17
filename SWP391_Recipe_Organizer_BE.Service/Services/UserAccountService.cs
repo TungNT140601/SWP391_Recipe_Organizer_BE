@@ -197,11 +197,42 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
             }
         }
 
-        public bool Remove(UserAccount item)
+        public bool BanUser(string id)
         {
             try
             {
-                return userAccountRepository.Remove(item);
+                var user = userAccountRepository.Get(x => x.UserId == id && x.IsDelete == false);
+                if (user != null)
+                {
+                    user.IsDelete = true;
+                    user.UpdateDate = DateTime.Now;
+                    return userAccountRepository.Update(user);
+                }
+                else
+                {
+                    throw new Exception("Not Found User");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public bool UnBanUser(string id)
+        {
+            try
+            {
+                var user = userAccountRepository.Get(x => x.UserId == id && x.IsDelete == true);
+                if (user != null)
+                {
+                    user.IsDelete = false;
+                    user.UpdateDate = DateTime.Now;
+                    return userAccountRepository.Update(user);
+                }
+                else
+                {
+                    throw new Exception("Not Found User");
+                }
             }
             catch (Exception ex)
             {

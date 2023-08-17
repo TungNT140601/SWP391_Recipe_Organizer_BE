@@ -12,7 +12,8 @@ namespace SWP391_Recipe_Organizer_BE.Service.Interface
         UserAccount Get(string id);
         IEnumerable<UserAccount> GetAll();
         bool Add(UserAccount item);
-        bool Remove(UserAccount item);
+        bool BanUser(string id);
+        bool UnBanUser(string id);
         bool Update(UserAccount item);
         UserAccount CheckLoginByUserName(string username, string password);
         UserAccount CheckLoginByEmail(string email, string ggToken, string fullname, string image);
