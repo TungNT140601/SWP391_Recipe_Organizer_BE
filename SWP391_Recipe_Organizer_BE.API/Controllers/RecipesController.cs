@@ -41,6 +41,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                     recipe.TotalReview = item.Reviews != null ? item.Reviews.Count() : 0;
                     recipe.AveVote = reviewService.GetAveReview(recipe.RecipeId);
                     recipe.TotalFavorite = item.FavoriteRecipes != null ? item.FavoriteRecipes.Count() : 0;
+                    recipe.CountryVM = mapper.Map<CountryVM>(item.Country);
                     var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                     if (userId != null)
                     {
@@ -101,6 +102,156 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
             }
         }
         [HttpGet]
+        public async Task<IActionResult> GetBestRecipes()
+        {
+            try
+            {
+                var lst = recipeService.GetAll();
+                var recipes = new List<RecipeVM>();
+                foreach (var item in lst)
+                {
+                    var recipe = mapper.Map<RecipeVM>(item);
+                    recipe.MealVMs = mapper.Map<MealVM>(item.Meal);
+                    recipe.UserAccountVMs = mapper.Map<UserAccountVM>(item.User);
+                    recipe.TotalReview = item.Reviews != null ? item.Reviews.Count() : 0;
+                    recipe.AveVote = reviewService.GetAveReview(recipe.RecipeId);
+                    recipe.TotalFavorite = item.FavoriteRecipes != null ? item.FavoriteRecipes.Count() : 0;
+                    recipe.CountryVM = mapper.Map<CountryVM>(item.Country);
+                    var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                    if (userId != null)
+                    {
+                        if (favoriteRecipeService.Get(recipe.RecipeId, userId) != null)
+                        {
+                            recipe.IsFavorite = true;
+                        }
+                        else
+                        {
+                            recipe.IsFavorite = false;
+                        }
+                    }
+                    else
+                    {
+                        recipe.IsFavorite = false;
+                    }
+                    recipe.PhotoVMs = new List<PhotoVM>();
+                    foreach (var photo in item.Photos)
+                    {
+                        recipe.PhotoVMs.Add(mapper.Map<PhotoVM>(photo));
+                    }
+                    recipe.DirectionVMs = new List<DirectionVM>();
+                    //foreach (var direction in item.Directions)
+                    //{
+                    //    recipe.DirectionVMs.Add(mapper.Map<DirectionVM>(direction));
+                    //}
+                    recipe.ReviewVMs = new List<ReviewVM>();
+                    //foreach (var review in item.Reviews)
+                    //{
+                    //    recipe.ReviewVMs.Add(mapper.Map<ReviewVM>(review));
+                    //}
+                    recipe.IngredientOfRecipeVMs = new List<IngredientOfRecipeVM>();
+                    //foreach (var ingredientOfRecipe in item.IngredientOfRecipes)
+                    //{
+                    //    var ingredientOfRecipeVM = mapper.Map<IngredientOfRecipeVM>(ingredientOfRecipe);
+                    //    var ingredient = mapper.Map<IngredientVM>(ingredientOfRecipe.Ingredient);
+                    //    ingredientOfRecipeVM.IngredientVM = ingredient;
+                    //    recipe.IngredientOfRecipeVMs.Add(ingredientOfRecipeVM);
+                    //}
+                    //foreach (var nutritionInRecipe in item.NutritionInRecipes)
+                    //{
+                    //    var nutritionInRecipeVM = mapper.Map<NutritionInRecipeVM>(nutritionInRecipe);
+                    //    var nutritionVM = mapper.Map<NutritionVM>(nutritionInRecipe.Nutrition);
+                    //    nutritionInRecipeVM.NutritionVM = nutritionVM;
+                    //    recipe.NutritionInRecipeVMs.Add(nutritionInRecipeVM);
+                    //}
+                    recipes.Add(recipe);
+                }
+                return Ok(new
+                {
+                    Status = 1,
+                    Data = recipes.OrderByDescending(x => x.AveVote).Take(6).ToList()
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetMostFavoriteRecipes()
+        {
+            try
+            {
+                var lst = recipeService.GetAll();
+                var recipes = new List<RecipeVM>();
+                foreach (var item in lst)
+                {
+                    var recipe = mapper.Map<RecipeVM>(item);
+                    recipe.MealVMs = mapper.Map<MealVM>(item.Meal);
+                    recipe.UserAccountVMs = mapper.Map<UserAccountVM>(item.User);
+                    recipe.TotalReview = item.Reviews != null ? item.Reviews.Count() : 0;
+                    recipe.AveVote = reviewService.GetAveReview(recipe.RecipeId);
+                    recipe.TotalFavorite = item.FavoriteRecipes != null ? item.FavoriteRecipes.Count() : 0;
+                    recipe.CountryVM = mapper.Map<CountryVM>(item.Country);
+                    var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                    if (userId != null)
+                    {
+                        if (favoriteRecipeService.Get(recipe.RecipeId, userId) != null)
+                        {
+                            recipe.IsFavorite = true;
+                        }
+                        else
+                        {
+                            recipe.IsFavorite = false;
+                        }
+                    }
+                    else
+                    {
+                        recipe.IsFavorite = false;
+                    }
+                    recipe.PhotoVMs = new List<PhotoVM>();
+                    foreach (var photo in item.Photos)
+                    {
+                        recipe.PhotoVMs.Add(mapper.Map<PhotoVM>(photo));
+                    }
+                    recipe.DirectionVMs = new List<DirectionVM>();
+                    //foreach (var direction in item.Directions)
+                    //{
+                    //    recipe.DirectionVMs.Add(mapper.Map<DirectionVM>(direction));
+                    //}
+                    recipe.ReviewVMs = new List<ReviewVM>();
+                    //foreach (var review in item.Reviews)
+                    //{
+                    //    recipe.ReviewVMs.Add(mapper.Map<ReviewVM>(review));
+                    //}
+                    recipe.IngredientOfRecipeVMs = new List<IngredientOfRecipeVM>();
+                    //foreach (var ingredientOfRecipe in item.IngredientOfRecipes)
+                    //{
+                    //    var ingredientOfRecipeVM = mapper.Map<IngredientOfRecipeVM>(ingredientOfRecipe);
+                    //    var ingredient = mapper.Map<IngredientVM>(ingredientOfRecipe.Ingredient);
+                    //    ingredientOfRecipeVM.IngredientVM = ingredient;
+                    //    recipe.IngredientOfRecipeVMs.Add(ingredientOfRecipeVM);
+                    //}
+                    //foreach (var nutritionInRecipe in item.NutritionInRecipes)
+                    //{
+                    //    var nutritionInRecipeVM = mapper.Map<NutritionInRecipeVM>(nutritionInRecipe);
+                    //    var nutritionVM = mapper.Map<NutritionVM>(nutritionInRecipe.Nutrition);
+                    //    nutritionInRecipeVM.NutritionVM = nutritionVM;
+                    //    recipe.NutritionInRecipeVMs.Add(nutritionInRecipeVM);
+                    //}
+                    recipes.Add(recipe);
+                }
+                return Ok(new
+                {
+                    Status = 1,
+                    Data = recipes.OrderByDescending(x => x.TotalFavorite).Take(6).ToList()
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet]
         public async Task<IActionResult> Get(string id)
         {
             try
@@ -112,6 +263,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 recipe.TotalReview = item.Reviews != null ? item.Reviews.Count() : 0;
                 recipe.AveVote = reviewService.GetAveReview(recipe.RecipeId);
                 recipe.TotalFavorite = item.FavoriteRecipes != null ? item.FavoriteRecipes.Count() : 0;
+                recipe.CountryVM = mapper.Map<CountryVM>(item.Country);
                 var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                 if (userId != null)
                 {
@@ -184,6 +336,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                     recipe.TotalReview = item.Reviews != null ? item.Reviews.Count() : 0;
                     recipe.AveVote = reviewService.GetAveReview(recipe.RecipeId);
                     recipe.TotalFavorite = item.FavoriteRecipes != null ? item.FavoriteRecipes.Count() : 0;
+                    recipe.CountryVM = mapper.Map<CountryVM>(item.Country);
                     var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                     if (userId != null)
                     {
@@ -256,6 +409,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                             recipe.UserAccountVMs = mapper.Map<UserAccountVM>(item.User);
                             recipe.TotalReview = item.Reviews != null ? item.Reviews.Count() : 0;
                             recipe.AveVote = reviewService.GetAveReview(recipe.RecipeId);
+                            recipe.CountryVM = mapper.Map<CountryVM>(item.Country);
                             recipe.TotalFavorite = item.FavoriteRecipes != null ? item.FavoriteRecipes.Count() : 0;
                             recipe.PhotoVMs = new List<PhotoVM>();
                             foreach (var photo in item.Photos)
@@ -569,6 +723,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                         recipe.TotalReview = item.Reviews.Count();
                         recipe.AveVote = reviewService.GetAveReview(recipe.RecipeId);
                         recipe.TotalFavorite = item.FavoriteRecipes.Count();
+                        recipe.CountryVM = mapper.Map<CountryVM>(item.Country);
                         recipe.PhotoVMs = new List<PhotoVM>();
                         foreach (var photo in item.Photos)
                         {

@@ -286,7 +286,23 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                         var users = new List<UserAccountVM>();
                         foreach (var item in lst)
                         {
-                            users.Add(mapper.Map<UserAccountVM>(item));
+                            if (item.Role != 0)
+                            {
+                                var user = mapper.Map<UserAccountVM>(item);
+                                switch (item.Role)
+                                {
+                                    case 0:
+                                        user.RoleName = CommonValues.ADMIN;
+                                        break;
+                                    case 1:
+                                        user.RoleName = CommonValues.USER;
+                                        break;
+                                    case 2:
+                                        user.RoleName = CommonValues.COOKER;
+                                        break;
+                                }
+                                users.Add(user);
+                            }
                         }
                         return Ok(new
                         {

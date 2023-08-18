@@ -101,6 +101,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     x => x.Photos,
                     x => x.Meal,
                     x => x.User,
+                    x => x.Country
                 });
                 recipes.IngredientOfRecipes = ingredientOfRecipeRepository.GetAll(x => x.RecipeId == recipes.RecipeId, new System.Linq.Expressions.Expression<Func<IngredientOfRecipe, object>>[]
                 {
@@ -127,6 +128,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     x => x.Photos,
                     x => x.Meal,
                     x => x.User,
+                    x => x.Country
                 });
                 foreach (var recipe in recipes)
                 {
@@ -156,6 +158,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     x => x.Photos,
                     x => x.Meal,
                     x => x.User,
+                    x => x.Country
                 });
 
                 foreach (var recipe in recipes)
@@ -185,6 +188,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     x => x.Reviews,
                     x => x.Meal,
                     x => x.User,
+                    x => x.Country
                 });
 
                 foreach (var recipe in recipes)
@@ -220,6 +224,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     x => x.Reviews,
                     x => x.Meal,
                     x => x.User,
+                    x => x.Country
                 });
                 foreach (var recipe in recipes)
                 {
@@ -255,6 +260,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     x => x.Reviews,
                     x => x.Meal,
                     x => x.User,
+                    x => x.Country
                 });
                 foreach (var recipe in recipes)
                 {
