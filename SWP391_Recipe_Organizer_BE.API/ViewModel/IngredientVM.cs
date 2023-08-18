@@ -4,5 +4,6 @@
     {
         public string? IngredientId { get; set; }
         public string? IngredientName { get; set; }
+        public string? Measure { get; set; }
     }
 }
