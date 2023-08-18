@@ -27,5 +27,21 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                 throw new Exception(ex.Message);
             }
         }
+        public void RemoveAddFail(string recipeId)
+        {
+            try
+            {
+                var recipe = Get(x => x.RecipeId == recipeId);
+                if (recipe != null)
+                {
+                    dbSet.Remove(recipe);
+                    dBContext.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

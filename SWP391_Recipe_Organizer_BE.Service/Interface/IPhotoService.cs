@@ -12,7 +12,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Interface
         Photo Get(string id);
         IEnumerable<Photo> GetByRecipeId(string id);
         IEnumerable<Photo> GetAll();
-        bool Add(List<Photo> lst);
+        bool Add(List<Photo> lst, string userId, string recipeId);
         bool Delete(string id);
         bool Update(Photo item);
     }

@@ -370,6 +370,45 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpDelete]
+        public async Task<IActionResult> BanUser(string userId)
+        {
+            try
+            {
+                var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                if (!string.IsNullOrEmpty(role))
+                {
+                    if (role == CommonValues.ADMIN)
+                    {
+                        return userAccountService.BanUser(userId) ? Ok(new
+                        {
+                            Status = 1,
+                            Message = "Success"
+                        }) : Ok(new
+                        {
+                            Status = 0,
+                            Message = "Fail"
+                        });
+                    }
+                    else
+                    {
+                        return Ok(new
+                        {
+                            Status = -1,
+                            Message = "Role Denied"
+                        });
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         private string GenerateJwtToken(string id, string role)
         {
             var jwtSettings = configuration.GetSection("JwtSettings");

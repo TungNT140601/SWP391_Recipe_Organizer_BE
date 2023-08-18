@@ -30,60 +30,37 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         }
         public bool Add(Recipe item, List<Photo> photos, List<Direction> directions, List<IngredientOfRecipe> lstIngredientOfRecipes)
         {
+            var id = "";
             try
             {
                 item.RecipeId = GenerateId.AutoGenerateId();
+                id = item.RecipeId;
                 item.CreateTime = DateTime.Now;
                 item.UpdateTime = DateTime.Now;
                 item.IsDelete = false;
                 var checkRecipe = recipeRepository.Add(item);
-                var checkPhoto = true;
-                foreach (var photo in photos)
-                {
-                    photo.PhotoId = GenerateId.AutoGenerateId();
-                    photo.RecipeId = item.RecipeId;
-                    photo.UserId = item.UserId;
-                    photo.UploadTime = DateTime.Now;
-                    photo.IsDelete = false;
-                    if (!photoRepository.Add(photo))
-                    {
-                        checkPhoto = false;
-                    }
-                }
-                var checkDirection = true;
-                foreach (var direction in directions)
-                {
-                    direction.DirectionsId = GenerateId.AutoGenerateId();
-                    direction.RecipeId = item.RecipeId;
-                    if (!directionRepository.Add(direction))
-                    {
-                        checkDirection = false;
-                    }
-                }
-                var checkIngredientOfRecipe = true;
-                foreach (var ingredientOfRecipe in lstIngredientOfRecipes)
-                {
-                    ingredientOfRecipe.RecipeId = item.RecipeId;
-                    if (!ingredientOfRecipeRepository.Add(ingredientOfRecipe))
-                    {
-                        checkIngredientOfRecipe = false;
-                    }
-                }
-                if (checkRecipe)
+                var checkPhoto = photoRepository.AddRangePhoto(photos, item.UserId, item.RecipeId);
+                var checkDirection = directionRepository.AddRange(directions, item.RecipeId);
+                var checkIngredientOfRecipe = ingredientOfRecipeRepository.AddRange(lstIngredientOfRecipes, item.RecipeId);
+                if (checkRecipe && checkPhoto && checkDirection && checkIngredientOfRecipe)
                 {
                     countryService.CheckCountryHasRecipe(item.CountryId);
                 }
-                if (checkRecipe && checkPhoto && checkDirection && checkIngredientOfRecipe)
-                {
-                    return true;
-                }
                 else
                 {
-                    return false;
+                    directionRepository.RemoveAll(id);
+                    ingredientOfRecipeRepository.RemoveAll(id);
+                    photoRepository.RemoveAll(id);
+                    recipeRepository.RemoveAddFail(id);
                 }
+                return checkRecipe && checkPhoto && checkDirection && checkIngredientOfRecipe;
             }
             catch (Exception ex)
             {
+                directionRepository.RemoveAll(id);
+                ingredientOfRecipeRepository.RemoveAll(id);
+                photoRepository.RemoveAll(id);
+                recipeRepository.RemoveAddFail(id);
                 throw new Exception(ex.Message);
             }
         }
@@ -327,12 +304,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         {
             try
             {
-                var recipe = recipeRepository.Get(x => x.RecipeId == item.RecipeId && x.IsDelete == false, new System.Linq.Expressions.Expression<Func<Recipe, object>>[]
-                {
-                    x => x.Photos,
-                    x => x.Directions,
-                    x => x.IngredientOfRecipes,
-                });
+                var recipe = recipeRepository.Get(x => x.RecipeId == item.RecipeId && x.IsDelete == false);
                 if (recipe != null)
                 {
                     recipe.RecipeName = item.RecipeName;
@@ -350,59 +322,12 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     recipe.Calories = item.Calories;
                     recipe.IsDelete = false;
                     var checkRecipe = recipeRepository.Update(recipe);
-                    var checkPhoto = true;
-                    foreach (var item1 in recipe.Photos)
-                    {
-                        if (!photoRepository.Remove(item1.PhotoId))
-                        {
-                            checkPhoto = false;
-                        }
-                    }
-                    foreach (var photo in photos)
-                    {
-                        photo.PhotoId = GenerateId.AutoGenerateId();
-                        photo.RecipeId = recipe.RecipeId;
-                        photo.UserId = recipe.UserId;
-                        photo.UploadTime = DateTime.Now;
-                        photo.IsDelete = false;
-                        if (!photoRepository.Add(photo))
-                        {
-                            checkPhoto = false;
-                        }
-                    }
-                    var checkDirection = true;
-                    foreach (var item1 in recipe.Directions)
-                    {
-                        if (!directionRepository.Remove(item1.DirectionsId, item1.RecipeId))
-                        {
-                            checkDirection = false;
-                        }
-                    }
-                    foreach (var direction in directions)
-                    {
-                        direction.DirectionsId = GenerateId.AutoGenerateId();
-                        direction.RecipeId = recipe.RecipeId;
-                        if (!directionRepository.Add(direction))
-                        {
-                            checkDirection = false;
-                        }
-                    }
-                    var checkIngredientOfRecipe = true;
-                    foreach (var item1 in recipe.IngredientOfRecipes)
-                    {
-                        if (!ingredientOfRecipeRepository.Remove(item1.IngredientId, item1.RecipeId))
-                        {
-                            checkIngredientOfRecipe = false;
-                        }
-                    }
-                    foreach (var ingredientOfRecipe in lstIngredientOfRecipes)
-                    {
-                        ingredientOfRecipe.RecipeId = recipe.RecipeId;
-                        if (!ingredientOfRecipeRepository.Add(ingredientOfRecipe))
-                        {
-                            checkIngredientOfRecipe = false;
-                        }
-                    }
+                    photoRepository.RemoveAll(recipe.RecipeId);
+                    var checkPhoto = photoRepository.AddRangePhoto(photos, recipe.UserId, recipe.RecipeId);
+                    directionRepository.RemoveAll(recipe.RecipeId);
+                    var checkDirection = directionRepository.AddRange(directions, recipe.RecipeId);
+                    ingredientOfRecipeRepository.RemoveAll(recipe.RecipeId);
+                    var checkIngredientOfRecipe = ingredientOfRecipeRepository.AddRange(lstIngredientOfRecipes, recipe.RecipeId);
                     if (checkRecipe && checkPhoto && checkDirection && checkIngredientOfRecipe)
                     {
                         countryService.CheckCountryHasRecipe(recipe.CountryId);
