@@ -11,6 +11,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Interface
     {
         UserAccount Get(string id);
         IEnumerable<UserAccount> GetAll();
+        IEnumerable<UserAccount> GetAllAdmin();
         bool Add(UserAccount item);
         bool BanUser(string id);
         bool UnBanUser(string id);

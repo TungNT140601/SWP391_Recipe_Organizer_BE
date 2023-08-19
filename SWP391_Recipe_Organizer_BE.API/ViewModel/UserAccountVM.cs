@@ -14,6 +14,19 @@ namespace SWP391_Recipe_Organizer_BE.API.ViewModel
         public string? Address { get; set; }
         public string? RoleName { get; set; }
     }
+    public class UserAccountAdminVM
+    {
+        [Required]
+        public string UserId { get; set; }
+        public string? UserInfo { get; set; }
+        public string? FullName { get; set; }
+        public string? Email { get; set; }
+        public string? AvatarName { get; set; }
+        public string? PhoneNum { get; set; }
+        public string? Address { get; set; }
+        public string? RoleName { get; set; }
+        public string? Status { get; set; }
+    }
     public class LoginVM
     {
         [Required]

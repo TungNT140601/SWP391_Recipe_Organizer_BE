@@ -104,7 +104,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
             }
         }
 
-        public bool Update(T item)
+        public virtual bool Update(T item)
         {
             try
             {

@@ -52,7 +52,7 @@ namespace SWP391_Recipe_Organizer_BE.API.ViewModel
         public int Calories { get; set; }
         public ICollection<PhotoVM>? PhotoVMs { get; set; }
         public ICollection<DirectionVM> DirectionVMs { get; set; }
-        public virtual ICollection<IngredientOfRecipeVM> IngredientOfRecipeVMs { get; set; }
+        public virtual ICollection<IoRAddUpdateVM> IngredientOfRecipeVMs { get; set; }
     }
     public class RecipeSearch
     {

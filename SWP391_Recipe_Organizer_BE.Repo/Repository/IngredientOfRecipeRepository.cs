@@ -65,7 +65,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                 bool check = true;
                 foreach (var ingredientOfRecipe in ingredientOfRecipes)
                 {
-                    var ingredient = ingredientRepository.Get(x => x.IngredientId == ingredientOfRecipe.IngredientId && x.IsDelete == false);
+                    var ingredient = ingredientRepository.Get(x => x.IngredientName == ingredientOfRecipe.Ingredient.IngredientName && x.IsDelete == false);
                     if (ingredient != null)
                     {
                         ingredientOfRecipe.RecipeId = recipeId;

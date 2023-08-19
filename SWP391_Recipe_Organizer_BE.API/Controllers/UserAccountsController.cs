@@ -282,13 +282,21 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 {
                     if (role == CommonValues.ADMIN)
                     {
-                        var lst = userAccountService.GetAll();
-                        var users = new List<UserAccountVM>();
+                        var lst = userAccountService.GetAllAdmin();
+                        var users = new List<UserAccountAdminVM>();
                         foreach (var item in lst)
                         {
                             if (item.Role != 0)
                             {
-                                var user = mapper.Map<UserAccountVM>(item);
+                                var user = mapper.Map<UserAccountAdminVM>(item);
+                                if (item.IsDelete.Value)
+                                {
+                                    user.Status = "Inactive";
+                                }
+                                else
+                                {
+                                    user.Status = "Active";
+                                }
                                 switch (item.Role)
                                 {
                                     case 0:
@@ -380,15 +388,132 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 {
                     if (role == CommonValues.ADMIN)
                     {
-                        return userAccountService.BanUser(userId) ? Ok(new
+                        if (userAccountService.BanUser(userId))
                         {
-                            Status = 1,
-                            Message = "Success"
-                        }) : Ok(new
+                            var lst = userAccountService.GetAllAdmin();
+                            var users = new List<UserAccountAdminVM>();
+                            foreach (var item in lst)
+                            {
+                                if (item.Role != 0)
+                                {
+                                    var user = mapper.Map<UserAccountAdminVM>(item);
+                                    if (item.IsDelete.Value)
+                                    {
+                                        user.Status = "Inactive";
+                                    }
+                                    else
+                                    {
+                                        user.Status = "Active";
+                                    }
+                                    switch (item.Role)
+                                    {
+                                        case 0:
+                                            user.RoleName = CommonValues.ADMIN;
+                                            break;
+                                        case 1:
+                                            user.RoleName = CommonValues.USER;
+                                            break;
+                                        case 2:
+                                            user.RoleName = CommonValues.COOKER;
+                                            break;
+                                    }
+                                    users.Add(user);
+                                }
+                            }
+                            return Ok(new
+                            {
+                                Status = 1,
+                                Message = "Success",
+                                Data = users
+                            });
+                        }
+                        else
                         {
-                            Status = 0,
-                            Message = "Fail"
+                            return Ok(new
+                            {
+                                Status = 0,
+                                Message = "Fail",
+                                Data = new { }
+                            });
+                        }
+                    }
+                    else
+                    {
+                        return Ok(new
+                        {
+                            Status = -1,
+                            Message = "Role Denied"
                         });
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPut]
+        public async Task<IActionResult> UnBanUser(string userId)
+        {
+            try
+            {
+                var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                if (!string.IsNullOrEmpty(role))
+                {
+                    if (role == CommonValues.ADMIN)
+                    {
+                        if (userAccountService.UnBanUser(userId))
+                        {
+                            var lst = userAccountService.GetAllAdmin();
+                            var users = new List<UserAccountAdminVM>();
+                            foreach (var item in lst)
+                            {
+                                if (item.Role != 0)
+                                {
+                                    var user = mapper.Map<UserAccountAdminVM>(item);
+                                    if (item.IsDelete.Value)
+                                    {
+                                        user.Status = "Inactive";
+                                    }
+                                    else
+                                    {
+                                        user.Status = "Active";
+                                    }
+                                    switch (item.Role)
+                                    {
+                                        case 0:
+                                            user.RoleName = CommonValues.ADMIN;
+                                            break;
+                                        case 1:
+                                            user.RoleName = CommonValues.USER;
+                                            break;
+                                        case 2:
+                                            user.RoleName = CommonValues.COOKER;
+                                            break;
+                                    }
+                                    users.Add(user);
+                                }
+                            }
+                            return Ok(new
+                            {
+                                Status = 1,
+                                Message = "Success",
+                                Data = users
+                            });
+                        }
+                        else
+                        {
+                            return Ok(new
+                            {
+                                Status = 0,
+                                Message = "Fail",
+                                Data = new { }
+                            });
+                        }
                     }
                     else
                     {

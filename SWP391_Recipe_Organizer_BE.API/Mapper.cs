@@ -11,6 +11,9 @@ namespace SWP391_Recipe_Organizer_BE.API
             CreateMap<UserAccountVM, UserAccount>();
             CreateMap<UserAccount, UserAccountVM>();
 
+            CreateMap<UserAccountAdminVM, UserAccount>();
+            CreateMap<UserAccount, UserAccountAdminVM>();
+
             CreateMap<Country, CountryVM>();
             CreateMap<CountryVM, Country>();
 

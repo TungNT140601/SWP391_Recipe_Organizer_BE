@@ -26,38 +26,38 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
         {
             try
             {
-                var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-                if (!string.IsNullOrEmpty(role))
+                //var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                //if (!string.IsNullOrEmpty(role))
+                //{
+                //    if (role == CommonValues.COOKER || role == CommonValues.ADMIN)
+                //    {
+                var lst = countryService.GetAllAdd();
+                var countries = new List<CountryVM>();
+                foreach (var item in lst)
                 {
-                    if (role == CommonValues.COOKER || role == CommonValues.ADMIN)
-                    {
-                        var lst = countryService.GetAllAdd();
-                        var countries = new List<CountryVM>();
-                        foreach (var item in lst)
-                        {
-                            countries.Add(mapper.Map<CountryVM>(item));
-                        }
-                        return Ok(new
-                        {
-                            Status = 1,
-                            Message = "Success",
-                            Data = countries
-                        });
-                    }
-                    else
-                    {
-                        return Ok(new
-                        {
-                            Status = 0,
-                            Message = "Role Denied",
-                            Data = new { }
-                        });
-                    }
+                    countries.Add(mapper.Map<CountryVM>(item));
                 }
-                else
+                return Ok(new
                 {
-                    return Unauthorized();
-                }
+                    Status = 1,
+                    Message = "Success",
+                    Data = countries
+                });
+                //    }
+                //    else
+                //    {
+                //        return Ok(new
+                //        {
+                //            Status = 0,
+                //            Message = "Role Denied",
+                //            Data = new { }
+                //        });
+                //    }
+                //}
+                //else
+                //{
+                //    return Unauthorized();
+                //}
             }
             catch (Exception ex)
             {

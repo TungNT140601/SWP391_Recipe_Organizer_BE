@@ -79,6 +79,8 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
             {
                 var ingredient = ingredientRepository.Get(x => x.IngredientId == item.IngredientId && x.IsDelete == false);
                 ingredient.IngredientName = item.IngredientName;
+                ingredient.Measure = item.Measure;
+                ingredient.IsDelete = false;
                 return ingredientRepository.Update(ingredient);
             }
             catch (Exception ex)

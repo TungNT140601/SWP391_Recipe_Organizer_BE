@@ -51,7 +51,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 {
                     return userAccountRepository.ChangeRole(id, 2);
                 }
-                if (role.ToLower().Trim() == "guest")
+                if (role.ToLower().Trim() == "user")
                 {
                     return userAccountRepository.ChangeRole(id, 1);
                 }
@@ -161,6 +161,23 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
             }
         }
 
+        public IEnumerable<UserAccount> GetAllAdmin()
+        {
+            try
+            {
+                return userAccountRepository.GetAll(x => 1 == 1,
+                    new System.Linq.Expressions.Expression<Func<UserAccount, object>>[] {
+                x => x.Plans,
+                x => x.Recipes,
+                x => x.Reviews,
+                x => x.FavoriteRecipes
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         public UserAccount GetUserInfo(string id)
         {
             try

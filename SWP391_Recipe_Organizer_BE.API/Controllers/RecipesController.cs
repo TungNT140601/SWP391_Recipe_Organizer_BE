@@ -290,6 +290,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 {
                     recipe.DirectionVMs.Add(mapper.Map<DirectionVM>(direction));
                 }
+                recipe.DirectionVMs.OrderBy(x => x.DirectionsNum);
                 recipe.ReviewVMs = new List<ReviewVM>();
                 foreach (var review in item.Reviews)
                 {
@@ -518,7 +519,10 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                                     lstIngredientOfRecipes.Add(new IngredientOfRecipe
                                     {
                                         Quantity = ingredientOfRecipe.Quantity,
-                                        IngredientId = ingredientOfRecipe.IngredientId
+                                        Ingredient = new Ingredient
+                                        {
+                                            IngredientName = ingredientOfRecipe.IngredientName.Split(" - ")[0].Trim()
+                                        }
                                     });
                                 }
                             }
