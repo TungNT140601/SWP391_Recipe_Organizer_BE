@@ -65,10 +65,10 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         {
             try
             {
-                var favor = favoriteRecipeRepository.Get(x => x.FavoriteId == item.FavoriteId && x.UserId == item.UserId);
+                var favor = favoriteRecipeRepository.Get(x => x.RecipeId == item.RecipeId && x.UserId == item.UserId);
                 if (favor != null)
                 {
-                    return favoriteRecipeRepository.Remove(favor);
+                    return favoriteRecipeRepository.Remove(favor.FavoriteId);
                 }
                 else
                 {
