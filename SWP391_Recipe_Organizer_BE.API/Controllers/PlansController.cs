@@ -212,7 +212,11 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                                         RecipeId = recipe.RecipeId,
                                         RecipeName = recipe.RecipeName,
                                         TotalIngredient = recipe.IngredientOfRecipes.Count(),
-                                        TotalTime = recipe.TotalTime
+                                        TotalTime = recipe.TotalTime,
+                                        Calories = recipe.Calories.GetValueOrDefault(),
+                                        Fat = recipe.Fat.GetValueOrDefault(),
+                                        Carbohydrate = recipe.Carbohydrate.GetValueOrDefault(),
+                                        Protein = recipe.Protein.GetValueOrDefault(),
                                     });
                                 }
                                 if (planDetail.MealOfDate == 2)
@@ -224,7 +228,11 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                                         RecipeId = recipe.RecipeId,
                                         RecipeName = recipe.RecipeName,
                                         TotalIngredient = recipe.IngredientOfRecipes.Count(),
-                                        TotalTime = recipe.TotalTime
+                                        TotalTime = recipe.TotalTime,
+                                        Calories = recipe.Calories.GetValueOrDefault(),
+                                        Fat = recipe.Fat.GetValueOrDefault(),
+                                        Carbohydrate = recipe.Carbohydrate.GetValueOrDefault(),
+                                        Protein = recipe.Protein.GetValueOrDefault(),
                                     });
                                 }
                                 if (planDetail.MealOfDate == 3)
@@ -236,7 +244,11 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                                         RecipeId = recipe.RecipeId,
                                         RecipeName = recipe.RecipeName,
                                         TotalIngredient = recipe.IngredientOfRecipes.Count(),
-                                        TotalTime = recipe.TotalTime
+                                        TotalTime = recipe.TotalTime,
+                                        Calories = recipe.Calories.GetValueOrDefault(),
+                                        Fat = recipe.Fat.GetValueOrDefault(),
+                                        Carbohydrate = recipe.Carbohydrate.GetValueOrDefault(),
+                                        Protein = recipe.Protein.GetValueOrDefault(),
                                     });
                                 }
                             }

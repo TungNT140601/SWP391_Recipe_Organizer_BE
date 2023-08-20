@@ -38,6 +38,10 @@ namespace SWP391_Recipe_Organizer_BE.API.ViewModel
         public string? Photos { get; set; }
         public int? TotalTime { get; set; }
         public int? TotalIngredient { get; set; }
+        public int? Carbohydrate { get; set; }
+        public int? Protein { get; set; }
+        public int? Fat { get; set; }
+        public int? Calories { get; set; }
     }
 
     public class PlanDetailWeekVM
