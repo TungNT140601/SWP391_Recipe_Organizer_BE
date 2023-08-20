@@ -71,15 +71,23 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 throw new Exception(ex.Message);
             }
         }
-        public PlanDetail GetDetail(string id)
+        public PlanDetail GetDetail(string userId, string id)
         {
             try
             {
-                var plan = planDetailRepository.Get(x => x.PlanDetailId == id, new System.Linq.Expressions.Expression<Func<PlanDetail, object>>[]
+                var plan = planRepository.Get(x => x.UserId == userId && x.IsDelete == false,new System.Linq.Expressions.Expression<Func<Plan, object>>[]
                 {
-                    x => x.Plan
+                    x => x.PlanDetails
                 });
-                return plan;
+                if(plan != null)
+                {
+                    var planDetai = plan.PlanDetails.Where(x => x.PlanDetailId == id).FirstOrDefault();
+                    return planDetai;
+                }
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception ex)
             {

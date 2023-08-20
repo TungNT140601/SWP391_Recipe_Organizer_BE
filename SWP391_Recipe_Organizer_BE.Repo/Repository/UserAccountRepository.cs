@@ -40,11 +40,11 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
             }
         }
 
-        public bool CheckEmailExist(string email)
+        public bool CheckEmailExist(string email,string ggToken)
         {
             try
             {
-                var user = dbSet.Where(x => x.Email == email && x.IsDelete == false).FirstOrDefault();
+                var user = dbSet.Where(x => x.Email == email || x.GoogleToken == ggToken).FirstOrDefault();
                 return user != null;
             }
             catch (Exception ex)

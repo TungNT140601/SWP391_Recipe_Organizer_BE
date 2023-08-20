@@ -22,7 +22,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Interface
         UserAccount RegisWithEmail(string email, string ggToken, string fullname, string image);
         UserAccount GetUserInfo(string id);
         bool ChangePassword(string id, string oldPassword, string newPassword);
-        bool CheckEmailExist(string email);
+        bool CheckEmailExist(string email,string ggToken);
         bool CheckUsernameExist(string username);
         bool CheckPhoneExist(string phone);
         bool ChangeRole(string id, string  role);

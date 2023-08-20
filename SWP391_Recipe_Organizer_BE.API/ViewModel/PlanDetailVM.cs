@@ -18,7 +18,7 @@ namespace SWP391_Recipe_Organizer_BE.API.ViewModel
         public string? PlanDetailId { get; set; }
         public string? PlanId { get; set; }
         public string? RecipeId { get; set; }
-        public DateTime? Date { get; set; }
+        public string? DateSt { get; set; }
         public int? MealOfDate { get; set; }
     }
 

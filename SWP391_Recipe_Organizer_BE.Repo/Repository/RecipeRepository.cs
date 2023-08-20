@@ -27,7 +27,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                 throw new Exception(ex.Message);
             }
         }
-        public void RemoveAddFail(string recipeId)
+        public async Task RemoveAddFail(string recipeId)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                 if (recipe != null)
                 {
                     dbSet.Remove(recipe);
-                    dBContext.SaveChanges();
+                    await dBContext.SaveChangesAsync();
                 }
             }
             catch (Exception ex)

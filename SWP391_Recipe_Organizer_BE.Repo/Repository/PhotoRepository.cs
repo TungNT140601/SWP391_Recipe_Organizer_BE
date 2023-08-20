@@ -15,11 +15,11 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
         public PhotoRepository(RecipeOrganizerDBContext dBContext) : base(dBContext)
         {
         }
-        public bool AddRangePhoto(List<Photo> photos,string userId,string recipeId)
+        public bool AddRangePhoto(List<Photo> photos, string userId, string recipeId)
         {
             try
             {
-                if(photos != null)
+                if (photos != null)
                 {
                     foreach (var item in photos)
                     {
@@ -37,7 +37,8 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                 {
                     return false;
                 }
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
@@ -47,7 +48,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
             try
             {
                 var items = GetAll(x => x.RecipeId == recipeId).ToList();
-                if(items != null)
+                if (items != null)
                 {
                     foreach (var item in items)
                     {
@@ -55,7 +56,8 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                     }
                     dBContext.SaveChanges();
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }

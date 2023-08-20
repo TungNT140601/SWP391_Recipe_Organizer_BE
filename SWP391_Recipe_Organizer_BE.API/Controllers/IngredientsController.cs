@@ -5,6 +5,7 @@ using SWP391_Recipe_Organizer_BE.Repo;
 using SWP391_Recipe_Organizer_BE.Repo.EntityModel;
 using SWP391_Recipe_Organizer_BE.Service.Interface;
 using SWP391_Recipe_Organizer_BE.Service.Services;
+using System.Drawing.Printing;
 using System.Security.Claims;
 
 namespace SWP391_Recipe_Organizer_BE.API.Controllers
@@ -21,6 +22,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
             this.ingredientService = ingredientService;
             this.mapper = mapper;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -38,6 +40,54 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                     Message = "Success",
                     Data = ingredients
                 });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllByAdmin(int movePage, int itemPerPage)
+        {
+            try
+            {
+                var lst = ingredientService.GetAll();
+                var ingredients = new List<IngredientVM>();
+                foreach (var item in lst)
+                {
+                    ingredients.Add(mapper.Map<IngredientVM>(item));
+                }
+                if (itemPerPage == 0 && movePage == 0)
+                {
+                    return Ok(new
+                    {
+                        Status = 1,
+                        Message = "Success",
+                        TotalPage = 0,
+                        MoveToPage = 0,
+                        itemPerPage = 0,
+                        TotalData = ingredients.Count(),
+                        Data = ingredients,
+                    });
+                }
+                else
+                {
+                    var totalPage = (int)Math.Ceiling((double)ingredients.Count() / itemPerPage);
+                    if (movePage > totalPage || movePage == 0)
+                    {
+                        movePage = 1;
+                    }
+                    return Ok(new
+                    {
+                        Status = 1,
+                        Message = "Success",
+                        TotalPage = totalPage,
+                        MoveToPage = movePage,
+                        ItemPerPage = itemPerPage,
+                        TotalData = ingredients.Count(),
+                        Data = ingredients.Skip((movePage - 1) * itemPerPage).Take(itemPerPage).ToArray(),
+                    });
+                }
             }
             catch (Exception ex)
             {

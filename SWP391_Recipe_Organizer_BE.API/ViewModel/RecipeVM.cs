@@ -41,16 +41,16 @@ namespace SWP391_Recipe_Organizer_BE.API.ViewModel
         public string CountryId { get; set; }
         public string MealId { get; set; }
         public string Description { get; set; }
-        public int PrepTime { get; set; }
-        public int CookTime { get; set; }
-        public int StandTime { get; set; }
+        public string PrepTimeSt { get; set; }
+        public string CookTimeSt { get; set; }
+        public string StandTimeSt { get; set; }
         public int TotalTime { get; set; }
-        public int Servings { get; set; }
-        public int Carbohydrate { get; set; }
-        public int Protein { get; set; }
-        public int Fat { get; set; }
+        public string ServingsSt { get; set; }
+        public string CarbohydrateSt { get; set; }
+        public string ProteinSt { get; set; }
+        public string FatSt { get; set; }
         public int Calories { get; set; }
-        public ICollection<PhotoVM>? PhotoVMs { get; set; }
+        public PhotoVM? PhotoVMs { get; set; }
         public ICollection<DirectionVM> DirectionVMs { get; set; }
         public virtual ICollection<IoRAddUpdateVM> IngredientOfRecipeVMs { get; set; }
     }

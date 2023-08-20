@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using SWP391_Recipe_Organizer_BE.API.ViewModel;
 using SWP391_Recipe_Organizer_BE.Repo;
+using SWP391_Recipe_Organizer_BE.Repo.EntityModel;
 using SWP391_Recipe_Organizer_BE.Service.Interface;
 
 namespace SWP391_Recipe_Organizer_BE.API.Controllers
@@ -273,7 +274,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllUser()
+        public async Task<IActionResult> GetAllUser(int movePage, int itemPerPage)
         {
             try
             {
@@ -312,12 +313,37 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                                 users.Add(user);
                             }
                         }
-                        return Ok(new
+                        if (itemPerPage == 0 && movePage == 0)
                         {
-                            Status = 1,
-                            Message = "Success",
-                            Data = users.ToList()
-                        }); ;
+                            return Ok(new
+                            {
+                                Status = 1,
+                                Message = "Success",
+                                TotalPage = 0,
+                                MoveToPage = 0,
+                                itemPerPage = 0,
+                                TotalData = users.Count(),
+                                Data = users,
+                            });
+                        }
+                        else
+                        {
+                            var totalPage = (int)Math.Ceiling((double)users.Count() / itemPerPage);
+                            if (movePage > totalPage || movePage == 0)
+                            {
+                                movePage = 1;
+                            }
+                            return Ok(new
+                            {
+                                Status = 1,
+                                Message = "Success",
+                                TotalPage = totalPage,
+                                MoveToPage = movePage,
+                                ItemPerPage = itemPerPage,
+                                TotalData = users.Count(),
+                                Data = users.Skip((movePage - 1) * itemPerPage).Take(itemPerPage).ToArray(),
+                            });
+                        }
                     }
                     else
                     {
@@ -325,7 +351,10 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                         {
                             Status = 0,
                             Message = "Role Denied",
-                            Data = new { }
+                            TotalPage = 0,
+                            MoveToPage = 0,
+                            TotalData = 0,
+                            Data = new { },
                         });
                     }
                 }

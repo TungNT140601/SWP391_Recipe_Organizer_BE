@@ -58,7 +58,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                 throw new Exception(ex.Message);
             }
         }
-        public bool AddRange(List<IngredientOfRecipe> ingredientOfRecipes,string recipeId)
+        public bool AddRange(List<IngredientOfRecipe> ingredientOfRecipes, string recipeId)
         {
             try
             {
@@ -69,6 +69,8 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                     if (ingredient != null)
                     {
                         ingredientOfRecipe.RecipeId = recipeId;
+                        ingredientOfRecipe.IngredientId = ingredient.IngredientId;
+                        ingredientOfRecipe.Ingredient = ingredient;
                         var item = dbSet.Where(x => x.IngredientId == ingredientOfRecipe.IngredientId && x.RecipeId == recipeId).FirstOrDefault();
                         if (item == null)
                         {

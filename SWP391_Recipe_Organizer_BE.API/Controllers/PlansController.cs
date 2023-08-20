@@ -30,7 +30,50 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
             this.recipeService = recipeService;
             this.ingredientService = ingredientService;
         }
-
+        [HttpGet]
+        public async Task<IActionResult> GetPlainDetail(string planDetailId)
+        {
+            try
+            {
+                var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                if (!string.IsNullOrEmpty(role))
+                {
+                    if (role == CommonValues.USER)
+                    {
+                        var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                        var planDetail = planService.GetDetail(userId, planDetailId);
+                        return planDetail != null ? Ok(new
+                        {
+                            Status = 1,
+                            Message = "Success",
+                            Data = mapper.Map<PlanDetailVM>(planDetail)
+                        }) : Ok(new
+                        {
+                            Status = 0,
+                            Message = "Fail",
+                            Data = new { }
+                        });
+                    }
+                    else
+                    {
+                        return Ok(new
+                        {
+                            Status = -1,
+                            Message = "Role Denied",
+                            Data = new { }
+                        });
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         [HttpGet()]
         public async Task<IActionResult> GetPlanWeek(string date)
         {
@@ -276,6 +319,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                     {
                         var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                         var planDetail = mapper.Map<PlanDetail>(planDetailVM);
+                        planDetail.Date = DateTime.ParseExact(planDetailVM.DateSt, "MM/dd/yyyy", null);
                         return planService.AddPlanDetail(planDetail, userId) ? Ok(new
                         {
                             Status = 1,
@@ -320,8 +364,9 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                         {
                             var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                             var planDetail = mapper.Map<PlanDetail>(planDetailVM);
-                            var planDT = planService.GetDetail(planDetailVM.PlanDetailId);
-                            if (planDetail.PlanId == planDT.PlanId && planDetail.PlanDetailId == planDT.PlanDetailId)
+                            planDetail.Date = DateTime.ParseExact(planDetailVM.DateSt, "MM/dd/yyyy", null);
+                            var planDT = planService.GetDetail(userId, planDetailVM.PlanDetailId);
+                            if (planDT != null)
                             {
                                 return planService.UpdatePlanDetail(planDetail) ? Ok(new
                                 {
@@ -382,7 +427,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                     if (role == CommonValues.USER)
                     {
                         var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                        var planDetail = planService.GetDetail(id);
+                        var planDetail = planService.GetDetail(userId, id);
                         if (planDetail != null && planDetail.Plan.UserId == userId)
                         {
                             return planService.DeletePlanDetail(id) ? Ok(new

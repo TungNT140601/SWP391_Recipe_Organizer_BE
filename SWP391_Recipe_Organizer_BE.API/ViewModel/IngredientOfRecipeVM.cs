@@ -9,6 +9,7 @@
     }
     public class IoRAddUpdateVM
     {
+        public double? Id { get; set; }
         public string? IngredientName { get; set; } = null!;
         public string? RecipeId { get; set; } = null!;
         public double? Quantity { get; set; }

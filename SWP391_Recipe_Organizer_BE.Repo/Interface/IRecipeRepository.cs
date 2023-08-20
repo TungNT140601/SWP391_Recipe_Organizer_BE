@@ -9,6 +9,6 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Interface
 {
     public interface IRecipeRepository : IGenericRepository<Recipe>
     {
-        void RemoveAddFail(string recipeId);
+        Task RemoveAddFail(string recipeId);
     }
 }

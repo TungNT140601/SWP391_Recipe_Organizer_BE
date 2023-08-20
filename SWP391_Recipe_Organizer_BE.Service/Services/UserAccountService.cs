@@ -63,11 +63,11 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
             }
         }
 
-        public bool CheckEmailExist(string email)
+        public bool CheckEmailExist(string email, string ggToken)
         {
             try
             {
-                return userAccountRepository.CheckEmailExist(email);
+                return userAccountRepository.CheckEmailExist(email,ggToken);
             }
             catch (Exception ex)
             {
@@ -79,7 +79,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         {
             try
             {
-                var check = userAccountRepository.CheckEmailExist(email);
+                var check = userAccountRepository.CheckEmailExist(email, ggToken);
                 if (check)
                 {
                     return userAccountRepository.CheckLoginByEmail(email, ggToken);
