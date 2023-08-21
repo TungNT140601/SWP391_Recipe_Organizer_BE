@@ -194,32 +194,18 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
             try
             {
                 var recipes = recipeRepository.GetAll(x =>
-                    x.IsDelete == false &&
-                    (string.IsNullOrEmpty(name) || x.RecipeName.ToLower().Trim().Contains(name.Trim().ToLower())) &&
-                    (string.IsNullOrEmpty(countryId) || x.CountryId.Trim().Equals(countryId.Trim())) &&
-                    (string.IsNullOrEmpty(mealId) || x.MealId.Trim().Equals(mealId.Trim())) &&
-                    (!minTime.HasValue || !maxTime.HasValue || (x.TotalTime >= minTime && x.TotalTime <= maxTime)) &&
-                    (!minServing.HasValue || !maxServing.HasValue || (x.Servings >= minServing && x.Servings <= maxServing)),
-                    new Expression<Func<Recipe, object>>[]
+                    x.IsDelete == false
+                     && (string.IsNullOrEmpty(name) || x.RecipeName.ToLower().Trim().Contains(name.Trim().ToLower()))
+                    && (string.IsNullOrEmpty(countryId) || (x.CountryId != null && x.CountryId.Trim().Equals(countryId.Trim())))
+                    && (string.IsNullOrEmpty(mealId) || (x.MealId != null && x.MealId.Trim().Equals(mealId.Trim())))
+                    && ((!minTime.HasValue || !maxTime.HasValue) || (x.TotalTime >= minTime.Value && x.TotalTime <= maxTime.Value))
+                    && ((!minServing.HasValue || !maxServing.HasValue) || (x.Servings >= minServing.Value && x.Servings <= maxServing.Value))
+                    , new Expression<Func<Recipe, object>>[]
                     {
-                        x => x.Directions,
                         x => x.FavoriteRecipes,
                         x => x.Photos,
-                        x => x.PlanDetails,
-                        x => x.Reviews,
-                        x => x.Meal,
-                        x => x.User,
-                        x => x.Country
                     }
                 );
-
-                foreach (var recipe in recipes)
-                {
-                    recipe.IngredientOfRecipes = ingredientOfRecipeRepository.GetAll(x => x.RecipeId == recipe.RecipeId, new Expression<Func<IngredientOfRecipe, object>>[]
-                    {
-                        x => x.Ingredient
-                    }).ToList();
-                }
 
                 return recipes;
             }
@@ -234,30 +220,18 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
             try
             {
 
-                var recipes = recipeRepository.GetAll(x => x.IsDelete == false && recipeIds.Contains(x.RecipeId)
-                && ((!string.IsNullOrEmpty(name) && x.RecipeName.ToLower().Trim().Contains(name.Trim().ToLower()))
-                || (!string.IsNullOrEmpty(countryId) && x.CountryId.ToLower().Trim().Contains(countryId.Trim().ToLower()))
-                || (!string.IsNullOrEmpty(mealId) && x.MealId.ToLower().Trim().Contains(mealId.Trim().ToLower()))
-                || (minTime != null && maxTime != null && x.TotalTime >= minTime && x.TotalTime <= maxTime)
-                || (minServing != null && maxServing != null && x.Servings >= minServing && x.TotalTime <= maxServing))
-                , new System.Linq.Expressions.Expression<Func<Recipe, object>>[]
-                {
-                    x => x.Directions,
-                    x => x.FavoriteRecipes,
-                    x => x.Photos,
-                    x => x.PlanDetails,
-                    x => x.Reviews,
-                    x => x.Meal,
-                    x => x.User,
-                    x => x.Country
-                });
-                foreach (var recipe in recipes)
-                {
-                    recipe.IngredientOfRecipes = ingredientOfRecipeRepository.GetAll(x => x.RecipeId == recipe.RecipeId, new System.Linq.Expressions.Expression<Func<IngredientOfRecipe, object>>[]
+                var recipes = recipeRepository.GetAll(x =>
+                    x.IsDelete == false
+                    && (string.IsNullOrEmpty(name) || x.RecipeName.ToLower().Trim().Contains(name.Trim().ToLower()))
+                    && (string.IsNullOrEmpty(countryId) || (x.CountryId != null && x.CountryId.Trim().Equals(countryId.Trim())))
+                    && (string.IsNullOrEmpty(mealId) || (x.MealId != null && x.MealId.Trim().Equals(mealId.Trim())))
+                    && ((!minTime.HasValue || !maxTime.HasValue) || (x.TotalTime >= minTime.Value && x.TotalTime <= maxTime.Value))
+                    && ((!minServing.HasValue || !maxServing.HasValue) || (x.Servings >= minServing.Value && x.Servings <= maxServing.Value))
+                    , new Expression<Func<Recipe, object>>[]
                     {
-                    x => x.Ingredient
-                    }).ToList();
-                }
+                        x => x.FavoriteRecipes,
+                        x => x.Photos,
+                    });
                 return recipes.OrderByDescending(x => x.CreateTime);
             }
             catch (Exception ex)
