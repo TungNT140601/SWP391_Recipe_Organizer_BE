@@ -44,14 +44,14 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
             }
         }
 
-        public bool Delete(object id)
+        public bool Delete(string id)
         {
             try
             {
                 var review = reviewRepository.Get(x => x.ReviewId == id);
                 if (review != null)
                 {
-                    return reviewRepository.Remove(review);
+                    return reviewRepository.Remove(review.ReviewId);
                 }
                 else
                 {

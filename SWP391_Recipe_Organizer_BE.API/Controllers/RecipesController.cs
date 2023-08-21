@@ -296,13 +296,14 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                     if (review.UserId == userId)
                     {
                         recipe.UserReview = mapper.Map<ReviewVM>(review);
+                        recipe.UserReview.User = mapper.Map<UserAccountVM>(userAccountService.Get(recipe.UserReview.UserId));
                     }
                     else
                     {
                         recipe.ReviewVMs.Add(mapper.Map<ReviewVM>(review));
                         foreach (var reviewVM in recipe.ReviewVMs)
                         {
-                            reviewVM.User = mapper.Map<UserAccountVM>(userAccountService.Get(review.UserId));
+                            reviewVM.User = mapper.Map<UserAccountVM>(userAccountService.Get(reviewVM.UserId));
                         }
                     }
                 }
@@ -327,11 +328,92 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
             }
         }
         [HttpGet]
+        public async Task<IActionResult> GetRecipeUpdate(string id)
+        {
+            try
+            {
+
+                var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                if (!string.IsNullOrEmpty(role))
+                {
+                    if (role == CommonValues.COOKER)
+                    {
+                        var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                        var item = recipeService.Get(id);
+                        if (item != null)
+                        {
+                            if (item.UserId == userId)
+                            {
+                                var recipe = mapper.Map<RecipeVM>(item);
+                                recipe.MealVMs = mapper.Map<MealVM>(item.Meal);
+                                recipe.UserAccountVMs = mapper.Map<UserAccountVM>(item.User);
+                                recipe.TotalReview = item.Reviews != null ? item.Reviews.Count() : 0;
+                                recipe.AveVote = reviewService.GetAveReview(recipe.RecipeId);
+                                recipe.TotalFavorite = item.FavoriteRecipes != null ? item.FavoriteRecipes.Count() : 0;
+                                recipe.CountryVM = mapper.Map<CountryVM>(item.Country);
+
+                                recipe.PhotoVMs = item.Photos.Select(photo => mapper.Map<PhotoVM>(photo)).ToList();
+
+                                recipe.DirectionVMs = item.Directions
+                                    .Select(direction => mapper.Map<DirectionVM>(direction))
+                                    .OrderBy(x => x.DirectionsNum)
+                                    .ToList();
+
+                                recipe.IngredientOfRecipeVMs = item.IngredientOfRecipes.Select(ingredientOfRecipe =>
+                                {
+                                    var ingredientOfRecipeVM = mapper.Map<IngredientOfRecipeVM>(ingredientOfRecipe);
+                                    var ingredientVM = mapper.Map<IngredientVM>(ingredientOfRecipe.Ingredient);
+                                    ingredientOfRecipeVM.IngredientVM = ingredientVM;
+                                    return ingredientOfRecipeVM;
+                                }).ToList();
+
+                                return Ok(new
+                                {
+                                    Status = 1,
+                                    Message = "Success",
+                                    Data = recipe
+                                });
+                            }
+                        }
+                        return Ok(new
+                        {
+                            Status = 0,
+                            Message = "Not Found",
+                            Data = new { }
+                        });
+                    }
+                    else
+                    {
+                        return Ok(new
+                        {
+                            Status = 0,
+                            Message = "Role Denied",
+                            Data = new { }
+                        });
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet]
         public async Task<IActionResult> GetByUser(string id)
         {
             try
             {
                 var lst = recipeService.GetByCooker(id);
+                var user = userAccountService.GetUserInfo(id);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                var returnUser = user != null ? mapper.Map<UserAccountVM>(user) : null;
                 var data = new List<RecipeVM>();
                 foreach (var item in lst)
                 {
@@ -386,7 +468,8 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return Ok(new
                 {
                     Status = 1,
-                    Data = data
+                    Data = data,
+                    User = returnUser,
                 });
             }
             catch (Exception ex)
