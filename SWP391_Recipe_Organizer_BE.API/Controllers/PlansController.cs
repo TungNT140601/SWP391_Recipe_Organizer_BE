@@ -100,25 +100,28 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                                 foreach (var planDetail in recipeOfDate)
                                 {
                                     var item = recipeService.Get(planDetail.RecipeId);
-                                    var planDate = new PlanDetailDateOfWeekVM
+                                    if (item != null)
                                     {
-                                        MealOfDate = 1,
-                                        PlanDetailId = planDetail.PlanDetailId,
-                                        RecipeId = item.RecipeId,
-                                        RecipeName = item.RecipeName,
-                                        RecipeCalo = item.Calories
-                                    };
-                                    if (planDetail.MealOfDate == 1)
-                                    {
-                                        breakfast.Add(planDate);
-                                    }
-                                    if (planDetail.MealOfDate == 2)
-                                    {
-                                        lunch.Add(planDate);
-                                    }
-                                    if (planDetail.MealOfDate == 3)
-                                    {
-                                        dinner.Add(planDate);
+                                        var planDate = new PlanDetailDateOfWeekVM
+                                        {
+                                            MealOfDate = 1,
+                                            PlanDetailId = planDetail.PlanDetailId,
+                                            RecipeId = item.RecipeId,
+                                            RecipeName = item.RecipeName,
+                                            RecipeCalo = item.Calories
+                                        };
+                                        if (planDetail.MealOfDate == 1)
+                                        {
+                                            breakfast.Add(planDate);
+                                        }
+                                        if (planDetail.MealOfDate == 2)
+                                        {
+                                            lunch.Add(planDate);
+                                        }
+                                        if (planDetail.MealOfDate == 3)
+                                        {
+                                            dinner.Add(planDate);
+                                        }
                                     }
                                 }
                                 food.Add(new PlanDetailWeekVM
@@ -194,62 +197,65 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                             foreach (var planDetail in planDetails)
                             {
                                 var recipe = planDetail.Recipe;
-                                ingredient.AddRange(planDetail.Recipe.IngredientOfRecipes);
-                                if (planDetail.MealOfDate == 1 || planDetail.MealOfDate == 2 || planDetail.MealOfDate == 3)
+                                if (planDetail != null && recipe != null && recipe.IngredientOfRecipes != null)
                                 {
-                                    calories += recipe.Calories.GetValueOrDefault();
-                                    fat += recipe.Fat.GetValueOrDefault();
-                                    carbs += recipe.Carbohydrate.GetValueOrDefault();
-                                    protein += recipe.Protein.GetValueOrDefault();
                                     ingredient.AddRange(recipe.IngredientOfRecipes);
-                                }
-                                if (planDetail.MealOfDate == 1)
-                                {
-                                    breakfast.Add(new PlanDetailDateVM
+                                    if (planDetail.MealOfDate == 1 || planDetail.MealOfDate == 2 || planDetail.MealOfDate == 3)
                                     {
-                                        PlanDetailId = planDetail.PlanDetailId,
-                                        Photos = recipe.Photos.FirstOrDefault().PhotoName,
-                                        RecipeId = recipe.RecipeId,
-                                        RecipeName = recipe.RecipeName,
-                                        TotalIngredient = recipe.IngredientOfRecipes.Count(),
-                                        TotalTime = recipe.TotalTime,
-                                        Calories = recipe.Calories.GetValueOrDefault(),
-                                        Fat = recipe.Fat.GetValueOrDefault(),
-                                        Carbohydrate = recipe.Carbohydrate.GetValueOrDefault(),
-                                        Protein = recipe.Protein.GetValueOrDefault(),
-                                    });
-                                }
-                                if (planDetail.MealOfDate == 2)
-                                {
-                                    lunch.Add(new PlanDetailDateVM
+                                        calories += recipe.Calories.GetValueOrDefault();
+                                        fat += recipe.Fat.GetValueOrDefault();
+                                        carbs += recipe.Carbohydrate.GetValueOrDefault();
+                                        protein += recipe.Protein.GetValueOrDefault();
+                                        ingredient.AddRange(recipe.IngredientOfRecipes);
+                                    }
+                                    if (planDetail.MealOfDate == 1)
                                     {
-                                        PlanDetailId = planDetail.PlanDetailId,
-                                        Photos = recipe.Photos.FirstOrDefault().PhotoName,
-                                        RecipeId = recipe.RecipeId,
-                                        RecipeName = recipe.RecipeName,
-                                        TotalIngredient = recipe.IngredientOfRecipes.Count(),
-                                        TotalTime = recipe.TotalTime,
-                                        Calories = recipe.Calories.GetValueOrDefault(),
-                                        Fat = recipe.Fat.GetValueOrDefault(),
-                                        Carbohydrate = recipe.Carbohydrate.GetValueOrDefault(),
-                                        Protein = recipe.Protein.GetValueOrDefault(),
-                                    });
-                                }
-                                if (planDetail.MealOfDate == 3)
-                                {
-                                    dinner.Add(new PlanDetailDateVM
+                                        breakfast.Add(new PlanDetailDateVM
+                                        {
+                                            PlanDetailId = planDetail.PlanDetailId,
+                                            Photos = recipe.Photos.FirstOrDefault().PhotoName,
+                                            RecipeId = recipe.RecipeId,
+                                            RecipeName = recipe.RecipeName,
+                                            TotalIngredient = recipe.IngredientOfRecipes.Count(),
+                                            TotalTime = recipe.TotalTime,
+                                            Calories = recipe.Calories.GetValueOrDefault(),
+                                            Fat = recipe.Fat.GetValueOrDefault(),
+                                            Carbohydrate = recipe.Carbohydrate.GetValueOrDefault(),
+                                            Protein = recipe.Protein.GetValueOrDefault(),
+                                        });
+                                    }
+                                    if (planDetail.MealOfDate == 2)
                                     {
-                                        PlanDetailId = planDetail.PlanDetailId,
-                                        Photos = recipe.Photos.FirstOrDefault().PhotoName,
-                                        RecipeId = recipe.RecipeId,
-                                        RecipeName = recipe.RecipeName,
-                                        TotalIngredient = recipe.IngredientOfRecipes.Count(),
-                                        TotalTime = recipe.TotalTime,
-                                        Calories = recipe.Calories.GetValueOrDefault(),
-                                        Fat = recipe.Fat.GetValueOrDefault(),
-                                        Carbohydrate = recipe.Carbohydrate.GetValueOrDefault(),
-                                        Protein = recipe.Protein.GetValueOrDefault(),
-                                    });
+                                        lunch.Add(new PlanDetailDateVM
+                                        {
+                                            PlanDetailId = planDetail.PlanDetailId,
+                                            Photos = recipe.Photos.FirstOrDefault().PhotoName,
+                                            RecipeId = recipe.RecipeId,
+                                            RecipeName = recipe.RecipeName,
+                                            TotalIngredient = recipe.IngredientOfRecipes.Count(),
+                                            TotalTime = recipe.TotalTime,
+                                            Calories = recipe.Calories.GetValueOrDefault(),
+                                            Fat = recipe.Fat.GetValueOrDefault(),
+                                            Carbohydrate = recipe.Carbohydrate.GetValueOrDefault(),
+                                            Protein = recipe.Protein.GetValueOrDefault(),
+                                        });
+                                    }
+                                    if (planDetail.MealOfDate == 3)
+                                    {
+                                        dinner.Add(new PlanDetailDateVM
+                                        {
+                                            PlanDetailId = planDetail.PlanDetailId,
+                                            Photos = recipe.Photos.FirstOrDefault().PhotoName,
+                                            RecipeId = recipe.RecipeId,
+                                            RecipeName = recipe.RecipeName,
+                                            TotalIngredient = recipe.IngredientOfRecipes.Count(),
+                                            TotalTime = recipe.TotalTime,
+                                            Calories = recipe.Calories.GetValueOrDefault(),
+                                            Fat = recipe.Fat.GetValueOrDefault(),
+                                            Carbohydrate = recipe.Carbohydrate.GetValueOrDefault(),
+                                            Protein = recipe.Protein.GetValueOrDefault(),
+                                        });
+                                    }
                                 }
                             }
                             var groupedIngredients = ingredient

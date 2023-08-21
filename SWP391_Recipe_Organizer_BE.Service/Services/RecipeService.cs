@@ -15,12 +15,14 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         private readonly IIngredientOfRecipeRepository ingredientOfRecipeRepository;
         private readonly IIngredientRepository ingredientRepository;
         private readonly ICountryService countryService;
+        private readonly IUserAccountRepository userAccountRepository;
         public RecipeService(IRecipeRepository recipeRepository,
             IPhotoRepository photoRepository,
             IDirectionRepository directionRepository,
             IIngredientOfRecipeRepository ingredientOfRecipeRepository,
             ICountryService countryService,
-            IIngredientRepository ingredientRepository)
+            IIngredientRepository ingredientRepository,
+            IUserAccountRepository userAccountRepository)
         {
             this.recipeRepository = recipeRepository;
             this.photoRepository = photoRepository;
@@ -28,6 +30,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
             this.ingredientOfRecipeRepository = ingredientOfRecipeRepository;
             this.countryService = countryService;
             this.ingredientRepository = ingredientRepository;
+            this.userAccountRepository = userAccountRepository;
         }
         public async Task<bool> AddAsync(Recipe item, List<Photo> photos, List<Direction> directions, List<IngredientOfRecipe> lstIngredientOfRecipes)
         {
@@ -81,10 +84,13 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     x => x.User,
                     x => x.Country
                 });
-                recipes.IngredientOfRecipes = ingredientOfRecipeRepository.GetAll(x => x.RecipeId == recipes.RecipeId, new System.Linq.Expressions.Expression<Func<IngredientOfRecipe, object>>[]
+                if (recipes != null)
                 {
+                    recipes.IngredientOfRecipes = ingredientOfRecipeRepository.GetAll(x => x.RecipeId == recipes.RecipeId, new System.Linq.Expressions.Expression<Func<IngredientOfRecipe, object>>[]
+                    {
                     x => x.Ingredient
-                }).ToList();
+                    }).ToList();
+                }
                 return recipes;
             }
             catch (Exception ex)
