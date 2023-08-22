@@ -218,8 +218,8 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet]
-        public async Task<IActionResult> SearchFavoriteRecipe(string search, [FromBody] RecipeSearch? recipeSearch)
+        [HttpPost]
+        public async Task<IActionResult> SearchFavoriteRecipe([FromBody] RecipeSearch? recipeSearch)
         {
             try
             {
@@ -238,7 +238,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                         }
                         var result = recipeService.SearchFavoriteRecipe(
                             lstRecipe,
-                            search,
+                            recipeSearch.RecipeName,
                             recipeSearch.CountryId,
                             recipeSearch.MealId,
                             recipeSearch.MinTotalTime,

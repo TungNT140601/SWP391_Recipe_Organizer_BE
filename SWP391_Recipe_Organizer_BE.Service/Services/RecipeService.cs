@@ -222,6 +222,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
 
                 var recipes = recipeRepository.GetAll(x =>
                     x.IsDelete == false
+                    && recipeIds.Contains(x.RecipeId)
                     && (string.IsNullOrEmpty(name) || x.RecipeName.ToLower().Trim().Contains(name.Trim().ToLower()))
                     && (string.IsNullOrEmpty(countryId) || (x.CountryId != null && x.CountryId.Trim().Equals(countryId.Trim())))
                     && (string.IsNullOrEmpty(mealId) || (x.MealId != null && x.MealId.Trim().Equals(mealId.Trim())))
@@ -294,8 +295,22 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 if (recipe != null)
                 {
                     recipe.RecipeName = item.RecipeName;
-                    recipe.CountryId = item.CountryId;
-                    recipe.MealId = item.MealId;
+                    if (string.IsNullOrEmpty(item.CountryId))
+                    {
+                        recipe.CountryId = null;
+                    }
+                    else
+                    {
+                        recipe.CountryId = item.CountryId;
+                    }
+                    if (string.IsNullOrEmpty(item.MealId))
+                    {
+                        recipe.MealId = null;
+                    }
+                    else
+                    {
+                        recipe.MealId = item.MealId;
+                    }
                     recipe.Description = item.Description;
                     recipe.PrepTime = item.PrepTime;
                     recipe.CookTime = item.CookTime;

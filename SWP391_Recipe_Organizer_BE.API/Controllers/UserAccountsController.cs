@@ -563,6 +563,102 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> UpdateInfo(UserAccountVM user)
+        {
+            try
+            {
+                var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                if (!string.IsNullOrEmpty(userId))
+                {
+                    var userInfo = userAccountService.Get(userId);
+                    if (userInfo == null)
+                    {
+                        return Ok(new
+                        {
+                            Status = 0,
+                            Message = "Not Found User!!!"
+                        });
+                    }
+                    else
+                    {
+                        if (string.IsNullOrEmpty(user.FullName))
+                        {
+                            return Ok(new
+                            {
+                                Status = 0,
+                                Message = "You must input Fullname!!!!"
+                            });
+                        }
+                        else
+                        {
+                            userInfo.FullName = user.FullName;
+                        }
+                        if (!string.IsNullOrEmpty(user.PhoneNum))
+                        {
+                            if (user.PhoneNum.Length != 10)
+                            {
+                                return Ok(new
+                                {
+                                    Status = 0,
+                                    Message = "Phone must have 10 numbs!!!!"
+                                });
+                            }
+                            else
+                            {
+                                userInfo.PhoneNum = user.PhoneNum;
+                            }
+                        }
+                        else
+                        {
+                            userInfo.PhoneNum = "";
+                        }
+                        if (!string.IsNullOrEmpty(user.Email) && user.Email != userInfo.Email)
+                        {
+                            return Ok(new
+                            {
+                                Status = 0,
+                                Message = "Email Error!!!!"
+                            });
+                        }
+                        if (!string.IsNullOrEmpty(user.Address))
+                        {
+                            userInfo.Address = user.Address;
+                        }
+                        else
+                        {
+                            userInfo.Address = "";
+                        }
+                        if (!string.IsNullOrEmpty(user.UserInfo))
+                        {
+                            userInfo.UserInfo = user.UserInfo;
+                        }
+                        else
+                        {
+                            userInfo.UserInfo = "";
+                        }
+
+                        return userAccountService.Update(userInfo) ? Ok(new
+                        {
+                            Status = 1,
+                            Message = "Success"
+                        }) : Ok(new
+                        {
+                            Status = 0,
+                            Message = "Fail"
+                        });
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         private string GenerateJwtToken(string id, string role)
         {
             var jwtSettings = configuration.GetSection("JwtSettings");

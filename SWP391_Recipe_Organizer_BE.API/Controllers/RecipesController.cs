@@ -409,7 +409,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
             {
                 var lst = recipeService.GetByCooker(id);
                 var user = userAccountService.GetUserInfo(id);
-                if (user == null)
+                if (user == null|| user.Role != 2)
                 {
                     return NotFound();
                 }
