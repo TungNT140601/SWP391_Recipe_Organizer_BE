@@ -15,5 +15,6 @@ namespace SWP391_Recipe_Organizer_BE.Service.Interface
         bool AddPlanDetail(PlanDetail item, string userId);
         bool DeletePlanDetail(string id);
         bool UpdatePlanDetail(PlanDetail item);
+        bool DeletePlanOfDate(string userId,DateTime dateTime);
     }
 }

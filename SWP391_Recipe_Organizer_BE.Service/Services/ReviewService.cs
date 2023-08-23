@@ -106,7 +106,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 {
                     if (reviews.Count > 0)
                     {
-                        return reviews.Average(x => x.VoteNum ?? 0);
+                        return Math.Round(reviews.Average(x => x.VoteNum ?? 0), 1);
                     }
                 }
                 return 0;

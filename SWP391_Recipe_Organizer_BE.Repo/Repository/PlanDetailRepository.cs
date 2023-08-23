@@ -14,5 +14,21 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
         public PlanDetailRepository(RecipeOrganizerDBContext dBContext) : base(dBContext)
         {
         }
+
+        public bool RemoveRange(List<PlanDetail> planDetails)
+        {
+            try
+            {
+                foreach (var item in planDetails)
+                {
+                    dbSet.Remove(item);
+                }
+                dBContext.SaveChanges();
+                return true;
+            }catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

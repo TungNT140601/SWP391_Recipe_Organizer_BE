@@ -16,7 +16,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         private readonly IRecipeService recipeService;
         private readonly IPlanDetailRepository planDetailRepository;
 
-        public PlanService(IPlanRepository planRepository, IPlanDetailRepository planDetailRepository,IRecipeService recipeService)
+        public PlanService(IPlanRepository planRepository, IPlanDetailRepository planDetailRepository, IRecipeService recipeService)
         {
             this.planRepository = planRepository;
             this.planDetailRepository = planDetailRepository;
@@ -75,11 +75,11 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         {
             try
             {
-                var plan = planRepository.Get(x => x.UserId == userId && x.IsDelete == false,new System.Linq.Expressions.Expression<Func<Plan, object>>[]
+                var plan = planRepository.Get(x => x.UserId == userId && x.IsDelete == false, new System.Linq.Expressions.Expression<Func<Plan, object>>[]
                 {
                     x => x.PlanDetails
                 });
-                if(plan != null)
+                if (plan != null)
                 {
                     var planDetai = plan.PlanDetails.Where(x => x.PlanDetailId == id).FirstOrDefault();
                     return planDetai;
@@ -197,6 +197,33 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 {
                     return false;
                 }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public bool DeletePlanOfDate(string userId, DateTime dateTime)
+        {
+            try
+            {
+                var plan = planRepository.Get(x => x.UserId == userId, new System.Linq.Expressions.Expression<Func<Plan, object>>[]
+                {
+                    x => x.PlanDetails
+                });
+                if (plan != null)
+                {
+                    if (plan.PlanDetails != null && plan.PlanDetails.Count() > 0)
+                    {
+                        var planToRemove = plan.PlanDetails.Where(x => x.Date.Value.Date == dateTime.Date).ToList();
+                        if (planToRemove != null && planToRemove.Count() > 0)
+                        {
+                            return planDetailRepository.RemoveRange(planToRemove);
+                        }
+                    }
+                }
+                return false;
             }
             catch (Exception ex)
             {

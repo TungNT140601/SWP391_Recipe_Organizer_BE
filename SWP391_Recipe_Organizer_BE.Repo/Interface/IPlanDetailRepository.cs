@@ -9,5 +9,6 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Interface
 {
     public interface IPlanDetailRepository : IGenericRepository<PlanDetail>
     {
+        bool RemoveRange(List<PlanDetail> planDetails);
     }
 }

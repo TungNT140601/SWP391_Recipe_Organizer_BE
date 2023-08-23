@@ -171,7 +171,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet()]
+        [HttpGet]
         public async Task<IActionResult> GetPlanDate(string date)
         {
             try
@@ -266,6 +266,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                                 {
                                     i.IngredientId,
                                     info.IngredientName,
+                                    info.Measure,
                                     i.Quantity
                                 })
                                 .GroupBy(i => i.IngredientId)
@@ -273,7 +274,8 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                                 {
                                     IngredientId = group.Key,
                                     IngredientName = group.First().IngredientName,
-                                    TotalQuantity = group.Sum(i => i.Quantity ?? 0)
+                                    TotalQuantity = group.Sum(i => i.Quantity ?? 0),
+                                    Measure = group.First().Measure
                                 });
                             return Ok(new
                             {
@@ -304,6 +306,50 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                                 Data = new { }
                             });
                         }
+                    }
+                    else
+                    {
+                        return Ok(new
+                        {
+                            Status = -1,
+                            Message = "Role Denied",
+                            Data = new { }
+                        });
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> DeletePlanOfDate(string date)
+        {
+            try
+            {
+                var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                if (!string.IsNullOrEmpty(role))
+                {
+                    if (role == CommonValues.USER)
+                    {
+                        var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                        DateTime dateTime = DateTime.ParseExact(date, "MM/dd/yyyy", null);
+                        return planService.DeletePlanOfDate(userId, dateTime) ? Ok(new
+                        {
+                            Status = 1,
+                            Message = "Success",
+                            Data = new { }
+                        }) : Ok(new
+                        {
+                            Status = 0,
+                            Message = "Fail",
+                            Data = new { }
+                        });
                     }
                     else
                     {
