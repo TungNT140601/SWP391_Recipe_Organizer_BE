@@ -42,13 +42,24 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 item.CreateTime = DateTime.Now;
                 item.UpdateTime = DateTime.Now;
                 item.IsDelete = false;
+                if(item.CountryId == "")
+                {
+                    item.CountryId = null;
+                }
+                if (item.MealId == "")
+                {
+                    item.MealId = null;
+                }
                 var checkRecipe = recipeRepository.Add(item);
                 var checkPhoto = photoRepository.AddRangePhoto(photos, item.UserId, item.RecipeId);
                 var checkDirection = directionRepository.AddRange(directions, item.RecipeId);
                 var checkIngredientOfRecipe = ingredientOfRecipeRepository.AddRange(lstIngredientOfRecipes, item.RecipeId);
                 if (checkRecipe && checkPhoto && checkDirection && checkIngredientOfRecipe)
                 {
-                    countryService.CheckCountryHasRecipe(item.CountryId);
+                    if(item.CountryId != null)
+                    {
+                        countryService.CheckCountryHasRecipe(item.CountryId);
+                    }
                 }
                 else
                 {
@@ -268,7 +279,10 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     recipe.IsDelete = true;
                     if (recipeRepository.Update(recipe))
                     {
-                        countryService.CheckCountryHasRecipe(recipe.CountryId);
+                        if(recipe.CountryId != null)
+                        {
+                            countryService.CheckCountryHasRecipe(recipe.CountryId);
+                        }
                         return true;
                     }
                     else
@@ -331,7 +345,10 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     var checkIngredientOfRecipe = ingredientOfRecipeRepository.AddRange(lstIngredientOfRecipes, recipe.RecipeId);
                     if (checkRecipe && checkPhoto && checkDirection && checkIngredientOfRecipe)
                     {
-                        countryService.CheckCountryHasRecipe(recipe.CountryId);
+                        if(recipe.CountryId != null)
+                        {
+                            countryService.CheckCountryHasRecipe(recipe.CountryId);
+                        }
                         return true;
                     }
                     else

@@ -409,7 +409,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
             {
                 var lst = recipeService.GetByCooker(id);
                 var user = userAccountService.GetUserInfo(id);
-                if (user == null|| user.Role != 2)
+                if (user == null || user.Role != 2)
                 {
                     return NotFound();
                 }
@@ -590,13 +590,18 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                             var lstDirection = new List<Direction>();
                             if (recipeVM.DirectionVMs.Any())
                             {
+                                int step = 1;
                                 foreach (var direction in recipeVM.DirectionVMs)
                                 {
-                                    lstDirection.Add(new Direction
+                                    if (direction.DirectionsDesc != "")
                                     {
-                                        DirectionsNum = direction.DirectionsNum,
-                                        DirectionsDesc = direction.DirectionsDesc
-                                    });
+                                        lstDirection.Add(new Direction
+                                        {
+                                            DirectionsNum = step,
+                                            DirectionsDesc = direction.DirectionsDesc
+                                        });
+                                        step++;
+                                    }
                                 }
                             }
                             var lstIngredientOfRecipes = new List<IngredientOfRecipe>();
@@ -707,13 +712,18 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                             var lstDirection = new List<Direction>();
                             if (recipeVM.DirectionVMs.Any())
                             {
+                                int step = 1;
                                 foreach (var direction in recipeVM.DirectionVMs)
                                 {
-                                    lstDirection.Add(new Direction
+                                    if (direction.DirectionsDesc != "")
                                     {
-                                        DirectionsNum = direction.DirectionsNum,
-                                        DirectionsDesc = direction.DirectionsDesc
-                                    });
+                                        lstDirection.Add(new Direction
+                                        {
+                                            DirectionsNum = step,
+                                            DirectionsDesc = direction.DirectionsDesc
+                                        });
+                                        step++;
+                                    }
                                 }
                             }
                             var lstIngredientOfRecipes = new List<IngredientOfRecipe>();
