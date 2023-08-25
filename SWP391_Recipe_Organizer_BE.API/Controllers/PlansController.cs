@@ -327,7 +327,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet]
+        [HttpDelete]
         public async Task<IActionResult> DeletePlanOfDate(string date)
         {
             try
