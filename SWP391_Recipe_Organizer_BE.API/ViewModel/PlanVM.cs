@@ -27,4 +27,11 @@ namespace SWP391_Recipe_Organizer_BE.API.ViewModel
     public class PlanVMReturn
     {
     }
+    public class PlanDetailAddUpdate
+    {
+        public string DateSt { get; set; }
+        public List<string> Breakfast { get; set; } = new List<string>();
+        public List<string> Lunch { get; set; } = new List<string>();
+        public List<string> Dinner { get; set; } = new List<string>();
+    }
 }

@@ -15,10 +15,10 @@ namespace SWP391_Recipe_Organizer_BE.API.ViewModel
         public int? StandTime { get; set; }
         public int? TotalTime { get; set; }
         public int? Servings { get; set; }
-        public int? Carbohydrate { get; set; }
-        public int? Protein { get; set; }
-        public int? Fat { get; set; }
-        public int? Calories { get; set; }
+        public int? Carbohydrate { get; set; } = 0;
+        public int? Protein { get; set; } = 0;
+        public int? Fat { get; set; } = 0;
+        public int? Calories { get; set; } = 0;
         public DateTime? UpdateTime { get; set; }
         public UserAccountVM? UserAccountVMs { get; set; }
         public MealVM? MealVMs { get; set; }
@@ -26,6 +26,7 @@ namespace SWP391_Recipe_Organizer_BE.API.ViewModel
         public double? AveVote { get; set; }
         public int? TotalFavorite { get; set; }
         public bool? IsFavorite { get; set; } = false;
+        public bool IsDelete { get; set; }
         public ReviewVM? UserReview { get; set; }
         public CountryVM? CountryVM { get; set; }
         public ICollection<PhotoVM>? PhotoVMs { get; set; }

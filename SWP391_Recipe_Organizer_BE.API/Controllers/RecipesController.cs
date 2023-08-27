@@ -8,6 +8,7 @@ using SWP391_Recipe_Organizer_BE.Service.Interface;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using System.Xml.Linq;
 
 namespace SWP391_Recipe_Organizer_BE.API.Controllers
 {
@@ -66,30 +67,8 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                         recipe.PhotoVMs.Add(mapper.Map<PhotoVM>(photo));
                     }
                     recipe.DirectionVMs = new List<DirectionVM>();
-                    //foreach (var direction in item.Directions)
-                    //{
-                    //    recipe.DirectionVMs.Add(mapper.Map<DirectionVM>(direction));
-                    //}
                     recipe.ReviewVMs = new List<ReviewVM>();
-                    //foreach (var review in item.Reviews)
-                    //{
-                    //    recipe.ReviewVMs.Add(mapper.Map<ReviewVM>(review));
-                    //}
                     recipe.IngredientOfRecipeVMs = new List<IngredientOfRecipeVM>();
-                    //foreach (var ingredientOfRecipe in item.IngredientOfRecipes)
-                    //{
-                    //    var ingredientOfRecipeVM = mapper.Map<IngredientOfRecipeVM>(ingredientOfRecipe);
-                    //    var ingredient = mapper.Map<IngredientVM>(ingredientOfRecipe.Ingredient);
-                    //    ingredientOfRecipeVM.IngredientVM = ingredient;
-                    //    recipe.IngredientOfRecipeVMs.Add(ingredientOfRecipeVM);
-                    //}
-                    //foreach (var nutritionInRecipe in item.NutritionInRecipes)
-                    //{
-                    //    var nutritionInRecipeVM = mapper.Map<NutritionInRecipeVM>(nutritionInRecipe);
-                    //    var nutritionVM = mapper.Map<NutritionVM>(nutritionInRecipe.Nutrition);
-                    //    nutritionInRecipeVM.NutritionVM = nutritionVM;
-                    //    recipe.NutritionInRecipeVMs.Add(nutritionInRecipeVM);
-                    //}
                     recipes.Add(recipe);
                 }
                 return Ok(new
@@ -141,30 +120,8 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                         recipe.PhotoVMs.Add(mapper.Map<PhotoVM>(photo));
                     }
                     recipe.DirectionVMs = new List<DirectionVM>();
-                    //foreach (var direction in item.Directions)
-                    //{
-                    //    recipe.DirectionVMs.Add(mapper.Map<DirectionVM>(direction));
-                    //}
                     recipe.ReviewVMs = new List<ReviewVM>();
-                    //foreach (var review in item.Reviews)
-                    //{
-                    //    recipe.ReviewVMs.Add(mapper.Map<ReviewVM>(review));
-                    //}
                     recipe.IngredientOfRecipeVMs = new List<IngredientOfRecipeVM>();
-                    //foreach (var ingredientOfRecipe in item.IngredientOfRecipes)
-                    //{
-                    //    var ingredientOfRecipeVM = mapper.Map<IngredientOfRecipeVM>(ingredientOfRecipe);
-                    //    var ingredient = mapper.Map<IngredientVM>(ingredientOfRecipe.Ingredient);
-                    //    ingredientOfRecipeVM.IngredientVM = ingredient;
-                    //    recipe.IngredientOfRecipeVMs.Add(ingredientOfRecipeVM);
-                    //}
-                    //foreach (var nutritionInRecipe in item.NutritionInRecipes)
-                    //{
-                    //    var nutritionInRecipeVM = mapper.Map<NutritionInRecipeVM>(nutritionInRecipe);
-                    //    var nutritionVM = mapper.Map<NutritionVM>(nutritionInRecipe.Nutrition);
-                    //    nutritionInRecipeVM.NutritionVM = nutritionVM;
-                    //    recipe.NutritionInRecipeVMs.Add(nutritionInRecipeVM);
-                    //}
                     recipes.Add(recipe);
                 }
                 return Ok(new
@@ -216,30 +173,8 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                         recipe.PhotoVMs.Add(mapper.Map<PhotoVM>(photo));
                     }
                     recipe.DirectionVMs = new List<DirectionVM>();
-                    //foreach (var direction in item.Directions)
-                    //{
-                    //    recipe.DirectionVMs.Add(mapper.Map<DirectionVM>(direction));
-                    //}
                     recipe.ReviewVMs = new List<ReviewVM>();
-                    //foreach (var review in item.Reviews)
-                    //{
-                    //    recipe.ReviewVMs.Add(mapper.Map<ReviewVM>(review));
-                    //}
                     recipe.IngredientOfRecipeVMs = new List<IngredientOfRecipeVM>();
-                    //foreach (var ingredientOfRecipe in item.IngredientOfRecipes)
-                    //{
-                    //    var ingredientOfRecipeVM = mapper.Map<IngredientOfRecipeVM>(ingredientOfRecipe);
-                    //    var ingredient = mapper.Map<IngredientVM>(ingredientOfRecipe.Ingredient);
-                    //    ingredientOfRecipeVM.IngredientVM = ingredient;
-                    //    recipe.IngredientOfRecipeVMs.Add(ingredientOfRecipeVM);
-                    //}
-                    //foreach (var nutritionInRecipe in item.NutritionInRecipes)
-                    //{
-                    //    var nutritionInRecipeVM = mapper.Map<NutritionInRecipeVM>(nutritionInRecipe);
-                    //    var nutritionVM = mapper.Map<NutritionVM>(nutritionInRecipe.Nutrition);
-                    //    nutritionInRecipeVM.NutritionVM = nutritionVM;
-                    //    recipe.NutritionInRecipeVMs.Add(nutritionInRecipeVM);
-                    //}
                     recipes.Add(recipe);
                 }
                 return Ok(new
@@ -260,6 +195,10 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
             {
                 var item = recipeService.Get(id);
                 var recipe = mapper.Map<RecipeVM>(item);
+                recipe.Fat = recipe.Fat != null ? recipe.Fat : 0;
+                recipe.Carbohydrate = recipe.Carbohydrate != null ? recipe.Carbohydrate : 0;
+                recipe.Calories = recipe.Calories != null ? recipe.Calories : 0;
+                recipe.Protein = recipe.Protein != null ? recipe.Protein : 0;
                 recipe.MealVMs = mapper.Map<MealVM>(item.Meal);
                 recipe.UserAccountVMs = mapper.Map<UserAccountVM>(item.User);
                 recipe.TotalReview = item.Reviews != null ? item.Reviews.Count() : 0;
@@ -557,93 +496,19 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 {
                     if (role == CommonValues.COOKER)
                     {
-                        if (string.IsNullOrEmpty(recipeVM.RecipeName))
+                        var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                        var recipe = ValidateRecipe(recipeVM);
+                        recipe.UserId = userId;
+                        var check = await recipeService.AddAsync(recipe, recipe.Photos.ToList(), recipe.Directions.ToList(), recipe.IngredientOfRecipes.ToList());
+                        return check ? Ok(new
                         {
-                            return StatusCode(400, new
-                            {
-                                Message = "Recipe name cannot be empty!!!"
-                            });
-                        }
-                        else
+                            Status = 1,
+                            Message = "Add Recipe Success"
+                        }) : Ok(new
                         {
-                            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                            var recipe = mapper.Map<Recipe>(recipeVM);
-                            recipe.UserId = userId;
-                            recipe.PrepTime = int.Parse(recipeVM.PrepTimeSt);
-                            recipe.CookTime = int.Parse(recipeVM.CookTimeSt);
-                            recipe.StandTime = int.Parse(recipeVM.StandTimeSt);
-                            recipe.Carbohydrate = int.Parse(recipeVM.CarbohydrateSt);
-                            recipe.Fat = int.Parse(recipeVM.FatSt);
-                            recipe.Protein = int.Parse(recipeVM.ProteinSt);
-                            recipe.Servings = int.Parse(recipeVM.ServingsSt);
-                            recipe.TotalTime = (recipe.PrepTime != null ? recipe.PrepTime : 0)
-                                + (recipe.CookTime != null ? recipe.CookTime : 0)
-                                + (recipe.StandTime != null ? recipe.StandTime : 0);
-                            recipe.IngredientOfRecipes.Clear();
-                            recipe.Photos.Clear();
-                            recipe.Directions.Clear();
-                            var lstPhoto = new List<Photo>();
-                            lstPhoto.Add(new Photo
-                            {
-                                PhotoName = recipeVM.PhotoVMs.PhotoName
-                            });
-                            var lstDirection = new List<Direction>();
-                            if (recipeVM.DirectionVMs.Any())
-                            {
-                                int step = 1;
-                                foreach (var direction in recipeVM.DirectionVMs)
-                                {
-                                    if (direction.DirectionsDesc != "")
-                                    {
-                                        lstDirection.Add(new Direction
-                                        {
-                                            DirectionsNum = step,
-                                            DirectionsDesc = direction.DirectionsDesc
-                                        });
-                                        step++;
-                                    }
-                                }
-                            }
-                            var lstIngredientOfRecipes = new List<IngredientOfRecipe>();
-                            if (recipeVM.IngredientOfRecipeVMs.Any())
-                            {
-                                foreach (var ingredientOfRecipe in recipeVM.IngredientOfRecipeVMs)
-                                {
-                                    if (ingredientOfRecipe.IngredientName.Contains(" - "))
-                                    {
-                                        lstIngredientOfRecipes.Add(new IngredientOfRecipe
-                                        {
-                                            Quantity = ingredientOfRecipe.Quantity,
-                                            Ingredient = new Ingredient
-                                            {
-                                                IngredientName = ingredientOfRecipe.IngredientName.Split(" - ")[0].Trim()
-                                            }
-                                        });
-                                    }
-                                    else
-                                    {
-                                        lstIngredientOfRecipes.Add(new IngredientOfRecipe
-                                        {
-                                            Quantity = ingredientOfRecipe.Quantity,
-                                            Ingredient = new Ingredient
-                                            {
-                                                IngredientName = ingredientOfRecipe.IngredientName.Trim()
-                                            }
-                                        });
-                                    }
-                                }
-                            }
-                            var check = await recipeService.AddAsync(recipe, lstPhoto, lstDirection, lstIngredientOfRecipes);
-                            return check ? Ok(new
-                            {
-                                Status = 1,
-                                Message = "Add Recipe Success"
-                            }) : Ok(new
-                            {
-                                Status = 0,
-                                Message = "Add Recipe Fail"
-                            });
-                        }
+                            Status = 0,
+                            Message = "Add Recipe Fail"
+                        });
                     }
                     else
                     {
@@ -662,7 +527,10 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(400, new
+                {
+                    Message = ex.Message
+                });
             }
         }
         [HttpPut]
@@ -680,82 +548,12 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 {
                     if (role == CommonValues.COOKER)
                     {
-                        if (string.IsNullOrEmpty(recipeVM.RecipeName))
+                        var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                        if (recipeService.Get(recipeVM.RecipeId) != null && recipeService.Get(recipeVM.RecipeId).UserId == userId)
                         {
-                            return StatusCode(400, new
-                            {
-                                Message = "Recipe name cannot be empty!!!"
-                            });
-                        }
-                        else
-                        {
-                            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                            var recipe = mapper.Map<Recipe>(recipeVM);
-                            recipe.PrepTime = int.Parse(recipeVM.PrepTimeSt);
-                            recipe.CookTime = int.Parse(recipeVM.CookTimeSt);
-                            recipe.StandTime = int.Parse(recipeVM.StandTimeSt);
-                            recipe.Carbohydrate = int.Parse(recipeVM.CarbohydrateSt);
-                            recipe.Fat = int.Parse(recipeVM.FatSt);
-                            recipe.Protein = int.Parse(recipeVM.ProteinSt);
-                            recipe.Servings = int.Parse(recipeVM.ServingsSt);
-                            recipe.TotalTime = (recipe.PrepTime != null ? recipe.PrepTime : 0)
-                                + (recipe.CookTime != null ? recipe.CookTime : 0)
-                                + (recipe.StandTime != null ? recipe.StandTime : 0);
-                            var lstPhoto = new List<Photo>();
-                            if (recipeVM.PhotoVMs != null)
-                            {
-                                lstPhoto.Add(new Photo
-                                {
-                                    PhotoName = recipeVM.PhotoVMs.PhotoName
-                                });
-                            }
-                            var lstDirection = new List<Direction>();
-                            if (recipeVM.DirectionVMs.Any())
-                            {
-                                int step = 1;
-                                foreach (var direction in recipeVM.DirectionVMs)
-                                {
-                                    if (direction.DirectionsDesc != "")
-                                    {
-                                        lstDirection.Add(new Direction
-                                        {
-                                            DirectionsNum = step,
-                                            DirectionsDesc = direction.DirectionsDesc
-                                        });
-                                        step++;
-                                    }
-                                }
-                            }
-                            var lstIngredientOfRecipes = new List<IngredientOfRecipe>();
-                            if (recipeVM.IngredientOfRecipeVMs.Any())
-                            {
-                                foreach (var ingredientOfRecipe in recipeVM.IngredientOfRecipeVMs)
-                                {
-                                    if (ingredientOfRecipe.IngredientName.Contains(" - "))
-                                    {
-                                        lstIngredientOfRecipes.Add(new IngredientOfRecipe
-                                        {
-                                            Quantity = ingredientOfRecipe.Quantity,
-                                            Ingredient = new Ingredient
-                                            {
-                                                IngredientName = ingredientOfRecipe.IngredientName.Split(" - ")[0].Trim()
-                                            }
-                                        });
-                                    }
-                                    else
-                                    {
-                                        lstIngredientOfRecipes.Add(new IngredientOfRecipe
-                                        {
-                                            Quantity = ingredientOfRecipe.Quantity,
-                                            Ingredient = new Ingredient
-                                            {
-                                                IngredientName = ingredientOfRecipe.IngredientName.Trim()
-                                            }
-                                        });
-                                    }
-                                }
-                            }
-                            var check = recipeService.Update(recipe, lstPhoto, lstDirection, lstIngredientOfRecipes);
+                            var recipe = ValidateRecipe(recipeVM);
+                            recipe.UserId = userId;
+                            var check = await recipeService.Update(recipe, recipe.Photos.ToList(), recipe.Directions.ToList(), recipe.IngredientOfRecipes.ToList());
                             return check ? Ok(new
                             {
                                 Status = 1,
@@ -765,6 +563,10 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                                 Status = 0,
                                 Message = "Update Recipe Fail"
                             });
+                        }
+                        else
+                        {
+                            throw new Exception("Not Found Recipe");
                         }
                     }
                     else
@@ -785,7 +587,10 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(400, new
+                {
+                    Message = ex.Message
+                });
             }
         }
         [HttpDelete]
@@ -924,6 +729,197 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+        private Recipe ValidateRecipe(RecipeAddUpdateVM recipeVM)
+        {
+            string err = "";
+            if (string.IsNullOrEmpty(recipeVM.RecipeName.Trim()))
+            {
+                err = err + ",Recipe Name cannot be empty!!!";
+            }
+            if (string.IsNullOrEmpty(recipeVM.CountryId.Trim()))
+            {
+                err = err + ",Please choose Country!!!";
+            }
+            if (string.IsNullOrEmpty(recipeVM.MealId.Trim()))
+            {
+                err = err + ",Please choose Meal Type!!!";
+            }
+            var recipe = mapper.Map<Recipe>(recipeVM);
+            if (int.TryParse(recipeVM.PrepTimeSt, out int prepTime))
+            {
+                if (prepTime >= 1)
+                {
+                    recipe.PrepTime = prepTime;
+                }
+                else
+                {
+                    err = err + ",Prep Time must be greater than 0!!!";
+                }
+            }
+            else
+            {
+                err = err + ",Prep Time not correct format!!!";
+            }
+            if (int.TryParse(recipeVM.CookTimeSt, out int cookTime))
+            {
+                if (cookTime >= 1)
+                {
+                    recipe.CookTime = cookTime;
+                }
+                else
+                {
+                    err = err + ",Cook Time must be greater than 0!!!";
+                }
+            }
+            else
+            {
+                err = err + ",Cook Time not correct format!!!";
+            }
+            if (int.TryParse(recipeVM.StandTimeSt, out int standTime))
+            {
+                if (standTime >= 0)
+                {
+                    recipe.StandTime = standTime;
+                }
+                else
+                {
+                    err = err + ",Stand Time must be greater than 0!!!";
+                }
+            }
+            else
+            {
+                err = err + ",Stand Time not correct format!!!";
+            }
+            if (int.TryParse(recipeVM.ServingsSt, out int servings))
+            {
+                if (servings >= 1)
+                {
+                    recipe.Servings = servings;
+                }
+                else
+                {
+                    err = err + ",Servings must be greater than 0!!!";
+                }
+            }
+            else
+            {
+                err = err + ",Servings not correct format!!!";
+            }
+            recipe.TotalTime = (recipe.PrepTime != null ? recipe.PrepTime : 0)
+                + (recipe.CookTime != null ? recipe.CookTime : 0)
+                + (recipe.StandTime != null ? recipe.StandTime : 0);
+            recipe.Photos = new List<Photo>();
+            if (recipeVM.PhotoVMs != null)
+            {
+                if (string.IsNullOrEmpty(recipeVM.PhotoVMs.PhotoName.Trim()))
+                {
+                    err = err + ",Please Choose an image for recipe!!!";
+                }
+                recipe.Photos.Add(new Photo
+                {
+                    PhotoName = recipeVM.PhotoVMs.PhotoName
+                });
+            }
+            recipe.Directions = new List<Direction>();
+            if (recipeVM.DirectionVMs != null && recipeVM.DirectionVMs.Count() >= 1)
+            {
+                int step = 1;
+                string stepBlank = "";
+                bool checkBlank = false;
+                foreach (var direction in recipeVM.DirectionVMs)
+                {
+                    if (direction.DirectionsDesc != "")
+                    {
+                        recipe.Directions.Add(new Direction
+                        {
+                            DirectionsNum = step,
+                            DirectionsDesc = direction.DirectionsDesc
+                        });
+                    }
+                    else
+                    {
+                        if (string.IsNullOrEmpty(stepBlank))
+                        {
+                            stepBlank += $"{step}";
+                        }
+                        else
+                        {
+                            stepBlank += $"; {step}";
+                        }
+                        checkBlank = true;
+                    }
+                    step++;
+                }
+                if (checkBlank)
+                {
+                    err = err + $",Please input for step {stepBlank}!!!";
+                }
+            }
+            else
+            {
+                err = err + $",Please insert at least 1 step for recipe!!!";
+            }
+            recipe.IngredientOfRecipes = new List<IngredientOfRecipe>();
+            if (recipeVM.IngredientOfRecipeVMs != null && recipeVM.IngredientOfRecipeVMs.Count() >= 1)
+            {
+                int index = 1;
+                bool checkDup = false;
+                bool checkNull = false;
+                bool checkNagative = false;
+                foreach (var ingredientOfRecipe in recipeVM.IngredientOfRecipeVMs)
+                {
+                    if (ingredientOfRecipe.IngredientName != null && ingredientOfRecipe.IngredientName.Contains(" - "))
+                    {
+                        var name = ingredientOfRecipe.IngredientName.Split(" - ")[0].Trim();
+                        if (recipe.IngredientOfRecipes.Any(x => x.Ingredient.IngredientName == name))
+                        {
+                            checkDup = true;
+                        }
+                        else
+                        {
+                            if (ingredientOfRecipe.Quantity <= 0)
+                            {
+                                checkNagative = true;
+                            }
+                            recipe.IngredientOfRecipes.Add(new IngredientOfRecipe
+                            {
+                                Quantity = ingredientOfRecipe.Quantity,
+                                RecipeId = ingredientOfRecipe.RecipeId,
+                                Ingredient = new Ingredient
+                                {
+                                    IngredientName = name
+                                }
+                            });
+                        }
+                    }
+                    else
+                    {
+                        checkNull = true;
+                    }
+                }
+                if (checkDup)
+                {
+                    err = err + $",Cannot add duplicate ingredient";
+                }
+                if (checkNull)
+                {
+                    err = err + $",Please select ingredient";
+                }
+                if (checkNagative)
+                {
+                    err = err + $",Quantity of ingredients cannot be a negative number";
+                }
+            }
+            else
+            {
+                err = err + $",Please select at least 1 ingredient for recipe!!!";
+            }
+            if (!string.IsNullOrEmpty(err))
+            {
+                throw new Exception(err);
+            }
+            return recipe;
         }
     }
 }

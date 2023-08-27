@@ -36,7 +36,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                 throw new Exception(ex.Message);
             }
         }
-        public bool AddRange(List<Direction> directions, string recipeId)
+        public async Task<bool> AddRange(List<Direction> directions, string recipeId)
         {
             try
             {
@@ -46,7 +46,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                     direction.RecipeId = recipeId;
                     dbSet.Add(direction);
                 }
-                dBContext.SaveChanges();
+                await dBContext.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)

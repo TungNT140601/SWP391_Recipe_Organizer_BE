@@ -196,7 +196,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                             var dinner = new List<PlanDetailDateVM>();
                             foreach (var planDetail in planDetails)
                             {
-                                var recipe = planDetail.Recipe;
+                                var recipe = recipeService.Get(planDetail.RecipeId);
                                 if (planDetail != null && recipe != null && recipe.IngredientOfRecipes != null)
                                 {
                                     ingredient.AddRange(recipe.IngredientOfRecipes);
@@ -339,7 +339,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                     {
                         var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                         DateTime dateTime = DateTime.ParseExact(date, "MM/dd/yyyy", null);
-                        return planService.DeletePlanOfDate(userId, dateTime) ? Ok(new
+                        return await planService.DeletePlanOfDate(userId, dateTime) ? Ok(new
                         {
                             Status = 1,
                             Message = "Success",
@@ -372,7 +372,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> CreatePlanDetail(PlanDetailUpdateVM planDetailVM)
+        public async Task<IActionResult> CreatePlanDetail(PlanDetailAddUpdate planDetailAddUpdate)
         {
             try
             {
@@ -382,83 +382,18 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                     if (role == CommonValues.USER)
                     {
                         var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                        var planDetail = mapper.Map<PlanDetail>(planDetailVM);
-                        planDetail.Date = DateTime.ParseExact(planDetailVM.DateSt, "MM/dd/yyyy", null);
-                        return planService.AddPlanDetail(planDetail, userId) ? Ok(new
-                        {
-                            Status = 1,
-                            Message = "Success"
-                        }) : Ok(new
-                        {
-                            Status = 0,
-                            Message = "Fail"
-                        });
-                    }
-                    else
-                    {
-                        return Ok(new
-                        {
-                            Status = -1,
-                            Message = "Role Denied",
-                            Data = new { }
-                        });
-                    }
-                }
-                else
-                {
-                    return Unauthorized();
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-        [HttpPut]
-        public async Task<IActionResult> UpdatePlanDetail(string id, PlanDetailUpdateVM planDetailVM)
-        {
-            try
-            {
-                var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-                if (!string.IsNullOrEmpty(role))
-                {
-                    if (role == CommonValues.USER)
-                    {
-                        if (id == planDetailVM.PlanDetailId)
-                        {
-                            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                            var planDetail = mapper.Map<PlanDetail>(planDetailVM);
-                            planDetail.Date = DateTime.ParseExact(planDetailVM.DateSt, "MM/dd/yyyy", null);
-                            var planDT = planService.GetDetail(userId, planDetailVM.PlanDetailId);
-                            if (planDT != null)
+                        DateTime date = DateTime.ParseExact(planDetailAddUpdate.DateSt, "MM/dd/yyyy", null);
+
+                        return await planService.AddPlanDetail(userId, planDetailAddUpdate.Breakfast, planDetailAddUpdate.Lunch, planDetailAddUpdate.Dinner, date) ?
+                            Ok(new
                             {
-                                return planService.UpdatePlanDetail(planDetail) ? Ok(new
-                                {
-                                    Status = 1,
-                                    Message = "Success"
-                                }) : Ok(new
-                                {
-                                    Status = 0,
-                                    Message = "Fail"
-                                });
-                            }
-                            else
-                            {
-                                return Ok(new
-                                {
-                                    Status = 0,
-                                    Message = "Not Found"
-                                });
-                            }
-                        }
-                        else
-                        {
-                            return Ok(new
+                                Status = 1,
+                                Message = "Create Success",
+                            }) : Ok(new
                             {
                                 Status = 0,
-                                Message = "Not Found"
+                                Message = "Create Fail",
                             });
-                        }
                     }
                     else
                     {

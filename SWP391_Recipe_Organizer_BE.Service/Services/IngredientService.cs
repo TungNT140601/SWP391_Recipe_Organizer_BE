@@ -18,6 +18,10 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         {
             try
             {
+                if (ingredientRepository.Get(x => x.IngredientName == item.IngredientName && x.IsDelete == false) != null)
+                {
+                    throw new Exception("Name exist");
+                }
                 item.IngredientId = GenerateId.AutoGenerateId();
                 item.IsDelete = false;
                 return ingredientRepository.Add(item);
@@ -78,6 +82,10 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
             try
             {
                 var ingredient = ingredientRepository.Get(x => x.IngredientId == item.IngredientId && x.IsDelete == false);
+                if (ingredientRepository.Get(x => x.IngredientId != ingredient.IngredientId && x.IngredientName == item.IngredientName && x.IsDelete == false) != null)
+                {
+                    throw new Exception("Name exist");
+                }
                 ingredient.IngredientName = item.IngredientName;
                 ingredient.Measure = item.Measure;
                 ingredient.IsDelete = false;

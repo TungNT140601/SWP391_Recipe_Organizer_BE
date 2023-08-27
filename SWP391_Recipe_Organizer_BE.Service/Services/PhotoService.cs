@@ -17,11 +17,11 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         {
             this.photoRepository = photoRepository;
         }
-        public bool Add(List<Photo> lst, string userId, string recipeId)
+        public async Task<bool> Add(List<Photo> lst, string userId, string recipeId)
         {
             try
             {
-                return photoRepository.AddRangePhoto(lst, userId, recipeId);
+                return await photoRepository.AddRangePhoto(lst, userId, recipeId);
             }
             catch (Exception ex)
             {

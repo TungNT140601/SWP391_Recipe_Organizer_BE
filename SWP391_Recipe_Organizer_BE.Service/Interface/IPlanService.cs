@@ -12,9 +12,9 @@ namespace SWP391_Recipe_Organizer_BE.Service.Interface
         PlanDetail GetDetail(string userId, string id);
         IEnumerable<PlanDetail> GetPlanOfWeek(string userId, DateTime dateTime);
         IEnumerable<PlanDetail> GetPlanOfDate(string userId, DateTime dateTime);
-        bool AddPlanDetail(PlanDetail item, string userId);
+        Task<bool> AddPlanDetail(string userId, List<string> breakfast, List<string> lunch, List<string> dinner,DateTime date);
         bool DeletePlanDetail(string id);
         bool UpdatePlanDetail(PlanDetail item);
-        bool DeletePlanOfDate(string userId,DateTime dateTime);
+        Task<bool> DeletePlanOfDate(string userId,DateTime dateTime);
     }
 }

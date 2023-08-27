@@ -22,11 +22,50 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
             this.planDetailRepository = planDetailRepository;
             this.recipeService = recipeService;
         }
-        public bool AddPlanDetail(PlanDetail item, string userId)
+        public async Task<bool> AddPlanDetail(string userId, List<string> breakfast, List<string> lunch, List<string> dinner, DateTime date)
         {
+            var plan = planRepository.Get(x => x.UserId == userId);
+            var bkPlanDT = new List<PlanDetail>();
+            var planDetails = new List<PlanDetail>();
+            foreach (var item in breakfast)
+            {
+                planDetails.Add(new PlanDetail
+                {
+                    PlanDetailId = GenerateId.AutoGenerateId(),
+                    Date = date,
+                    MealOfDate = 1,
+                    PlanId = plan.PlanId,
+                    RecipeId = item
+                });
+            }
+            foreach (var item in lunch)
+            {
+                planDetails.Add(new PlanDetail
+                {
+                    PlanDetailId = GenerateId.AutoGenerateId(),
+                    Date = date,
+                    MealOfDate = 2,
+                    PlanId = plan.PlanId,
+                    RecipeId = item
+                });
+            }
+            foreach (var item in dinner)
+            {
+                planDetails.Add(new PlanDetail
+                {
+                    PlanDetailId = GenerateId.AutoGenerateId(),
+                    Date = date,
+                    MealOfDate = 3,
+                    PlanId = plan.PlanId,
+                    RecipeId = item
+                });
+            }
+            if (plan != null)
+            {
+                bkPlanDT = planDetailRepository.GetAll(x => x.PlanId == plan.PlanId && x.Date.Value.Date == date.Date).ToList();
+            }
             try
             {
-                var plan = planRepository.Get(x => x.UserId == userId);
                 if (plan == null)
                 {
                     var planNew = new Plan
@@ -41,10 +80,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     };
                     if (planRepository.Add(planNew))
                     {
-                        item.PlanDetailId = GenerateId.AutoGenerateId();
-                        item.PlanId = planNew.PlanId;
-                        planDetailRepository.Add(item);
-                        return true;
+                        return await planDetailRepository.AddRange(planDetails);
                     }
                     else
                     {
@@ -55,10 +91,8 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 {
                     if (plan != null)
                     {
-                        item.PlanDetailId = GenerateId.AutoGenerateId();
-                        item.PlanId = plan.PlanId;
-                        planDetailRepository.Add(item);
-                        return true;
+                        await planDetailRepository.RemoveRange(bkPlanDT);
+                        return await planDetailRepository.AddRange(planDetails);
                     }
                     else
                     {
@@ -68,6 +102,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
             }
             catch (Exception ex)
             {
+                await planDetailRepository.AddRange(bkPlanDT);
                 throw new Exception(ex.Message);
             }
         }
@@ -204,7 +239,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
             }
         }
 
-        public bool DeletePlanOfDate(string userId, DateTime dateTime)
+        public async Task<bool> DeletePlanOfDate(string userId, DateTime dateTime)
         {
             try
             {
@@ -219,7 +254,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                         var planToRemove = plan.PlanDetails.Where(x => x.Date.Value.Date == dateTime.Date).ToList();
                         if (planToRemove != null && planToRemove.Count() > 0)
                         {
-                            return planDetailRepository.RemoveRange(planToRemove);
+                            return await planDetailRepository.RemoveRange(planToRemove);
                         }
                     }
                 }

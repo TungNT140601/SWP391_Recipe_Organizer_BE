@@ -120,27 +120,17 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 {
                     if (role == CommonValues.ADMIN)
                     {
-                        if (string.IsNullOrEmpty(ingredientVM.IngredientName))
+                        var ingredient = Validate(ingredientVM);
+                        var check = ingredientService.Add(ingredient);
+                        return check ? Ok(new
                         {
-                            return StatusCode(400, new
-                            {
-                                Message = "Ingredient name cannot be empty!!!"
-                            });
-                        }
-                        else
+                            Status = 1,
+                            Message = "Add Ingredient Success"
+                        }) : Ok(new
                         {
-                            var ingredient = mapper.Map<Ingredient>(ingredientVM);
-                            var check = ingredientService.Add(ingredient);
-                            return check ? Ok(new
-                            {
-                                Status = 1,
-                                Message = "Add Ingredient Success"
-                            }) : Ok(new
-                            {
-                                Status = 0,
-                                Message = "Add Ingredient Fail"
-                            });
-                        }
+                            Status = 0,
+                            Message = "Add Ingredient Fail"
+                        });
                     }
                     else
                     {
@@ -177,27 +167,17 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 {
                     if (role == CommonValues.ADMIN)
                     {
-                        if (string.IsNullOrEmpty(ingredientVM.IngredientName))
+                        var ingredient = Validate(ingredientVM);
+                        var check = ingredientService.Update(ingredient);
+                        return check ? Ok(new
                         {
-                            return StatusCode(400, new
-                            {
-                                Message = "Ingredient name cannot be empty!!!"
-                            });
-                        }
-                        else
+                            Status = 1,
+                            Message = "Update Ingredient Success"
+                        }) : Ok(new
                         {
-                            var ingredient = mapper.Map<Ingredient>(ingredientVM);
-                            var check = ingredientService.Update(ingredient);
-                            return check ? Ok(new
-                            {
-                                Status = 1,
-                                Message = "Update Ingredient Success"
-                            }) : Ok(new
-                            {
-                                Status = 0,
-                                Message = "Update Ingredient Fail"
-                            });
-                        }
+                            Status = 0,
+                            Message = "Update Ingredient Fail"
+                        });
                     }
                     else
                     {
@@ -267,6 +247,31 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+        private Ingredient Validate(IngredientVM ingredientVM)
+        {
+            if (string.IsNullOrEmpty(ingredientVM.IngredientName.Trim()))
+            {
+                throw new Exception("Ingredient Name cannot be empty!!!");
+            }
+            if (string.IsNullOrEmpty(ingredientVM.Measure.Trim()))
+            {
+                throw new Exception("Measure cannot be empty!!!");
+            }
+            if (ingredientVM.Protein < 1)
+            {
+                throw new Exception("Ingredient Protein cannot less than 1!!!");
+            }
+            if (ingredientVM.Fat < 1)
+            {
+                throw new Exception("Ingredient Protein cannot less than 1!!!");
+            }
+            if (ingredientVM.Carbohydrate < 1)
+            {
+                throw new Exception("Ingredient Protein cannot less than 1!!!");
+            }
+            ingredientVM.Calories = ingredientVM.Fat * 9 + ingredientVM.Carbohydrate * 4 + ingredientVM.Protein * 4;
+            return mapper.Map<Ingredient>(ingredientVM);
         }
     }
 }

@@ -11,6 +11,6 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Interface
     {
         bool Remove(string recipeId, string ingredientId);
         void RemoveAll(string recipeId);
-        bool AddRange(List<IngredientOfRecipe> ingredientOfRecipes, string recipeId);
+        Task<bool> AddRange(List<IngredientOfRecipe> ingredientOfRecipes, string recipeId);
     }
 }

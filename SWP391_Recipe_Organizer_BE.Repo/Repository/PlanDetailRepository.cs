@@ -15,7 +15,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
         {
         }
 
-        public bool RemoveRange(List<PlanDetail> planDetails)
+        public async Task<bool> RemoveRange(List<PlanDetail> planDetails)
         {
             try
             {
@@ -23,9 +23,26 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                 {
                     dbSet.Remove(item);
                 }
-                dBContext.SaveChanges();
+                await dBContext.SaveChangesAsync();
                 return true;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public async Task<bool> AddRange(List<PlanDetail> planDetails)
+        {
+            try
+            {
+                foreach (var item in planDetails)
+                {
+                    dbSet.Add(item);
+                }
+                await dBContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }

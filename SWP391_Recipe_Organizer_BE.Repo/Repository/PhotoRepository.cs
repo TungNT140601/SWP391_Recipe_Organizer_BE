@@ -15,7 +15,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
         public PhotoRepository(RecipeOrganizerDBContext dBContext) : base(dBContext)
         {
         }
-        public bool AddRangePhoto(List<Photo> photos, string userId, string recipeId)
+        public async Task<bool> AddRangePhoto(List<Photo> photos, string userId, string recipeId)
         {
             try
             {
@@ -30,7 +30,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                         item.IsDelete = false;
                         dbSet.Add(item);
                     }
-                    dBContext.SaveChanges();
+                    await dBContext.SaveChangesAsync();
                     return true;
                 }
                 else
