@@ -99,7 +99,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                                 var recipeOfDate = planDetails.Where(x => x.Date.Value.Date == currentDate.Date).ToList();
                                 foreach (var planDetail in recipeOfDate)
                                 {
-                                    var item = recipeService.Get(planDetail.RecipeId);
+                                    var item = recipeService.GetInPlanWeek(planDetail.RecipeId);
                                     if (item != null)
                                     {
                                         var planDate = new PlanDetailDateOfWeekVM
@@ -108,7 +108,8 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                                             PlanDetailId = planDetail.PlanDetailId,
                                             RecipeId = item.RecipeId,
                                             RecipeName = item.RecipeName,
-                                            RecipeCalo = item.Calories
+                                            RecipeCalo = item.Calories,
+                                            IsDelete = item.IsDelete
                                         };
                                         if (planDetail.MealOfDate == 1)
                                         {
@@ -196,7 +197,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                             var dinner = new List<PlanDetailDateVM>();
                             foreach (var planDetail in planDetails)
                             {
-                                var recipe = recipeService.Get(planDetail.RecipeId);
+                                var recipe = recipeService.GetInPlanWeek(planDetail.RecipeId);
                                 if (planDetail != null && recipe != null && recipe.IngredientOfRecipes != null)
                                 {
                                     ingredient.AddRange(recipe.IngredientOfRecipes);

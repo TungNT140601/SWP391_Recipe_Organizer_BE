@@ -29,6 +29,7 @@ namespace SWP391_Recipe_Organizer_BE.API.ViewModel
         public string? RecipeId { get; set; }
         public string? RecipeName { get; set; }
         public double? RecipeCalo { get; set; }
+        public bool? IsDelete { get; set; }
     }
     public class PlanDetailDateVM
     {

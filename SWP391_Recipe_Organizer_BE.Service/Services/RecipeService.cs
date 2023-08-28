@@ -114,7 +114,33 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 throw new Exception(ex.Message);
             }
         }
+        public Recipe GetInPlanWeek(string id)
+        {
+            try
+            {
+                var recipes = recipeRepository.Get(x => x.RecipeId == id, new System.Linq.Expressions.Expression<Func<Recipe, object>>[]
+                {
+                    x => x.IngredientOfRecipes
+                });
+                if (recipes != null)
+                {
+                    foreach (var ingre in recipes.IngredientOfRecipes)
+                    {
+                        ingre.Ingredient = ingredientRepository.Get(x => x.IngredientId == ingre.IngredientId);
+                        recipes.Protein = ingre.Ingredient.Protein * (int)Math.Round(ingre.Quantity.Value, 0);
+                        recipes.Carbohydrate = ingre.Ingredient.Carbohydrate * (int)Math.Round(ingre.Quantity.Value, 0);
+                        recipes.Fat = ingre.Ingredient.Fat * (int)Math.Round(ingre.Quantity.Value, 0);
+                        recipes.Calories = ingre.Ingredient.Calories * (int)Math.Round(ingre.Quantity.Value, 0);
+                    }
+                }
 
+                return recipes;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         public IEnumerable<Recipe> GetByCooker(string id)
         {
             try
@@ -124,8 +150,8 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     x => x.FavoriteRecipes,
                     x => x.Photos,
                     x => x.Reviews,
-                    x => x.Meal,
-                    x => x.User,
+                    //x => x.Meal,
+                    //x => x.User,
                     x => x.Country
                 });
                 return recipes.OrderByDescending(x => x.CreateTime);
@@ -145,8 +171,8 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     x => x.FavoriteRecipes,
                     x => x.Photos,
                     x => x.Reviews,
-                    x => x.Meal,
-                    x => x.User,
+                    //x => x.Meal,
+                    //x => x.User,
                     x => x.Country
                 });
                 return recipes.OrderByDescending(x => x.CreateTime);
@@ -165,8 +191,8 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     x => x.FavoriteRecipes,
                     x => x.Photos,
                     x => x.Reviews,
-                    x => x.Meal,
-                    x => x.User,
+                    //x => x.Meal,
+                    //x => x.User,
                     x => x.Country
                 });
                 return recipes.OrderByDescending(x => x.CreateTime);
@@ -192,8 +218,8 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                         x => x.FavoriteRecipes,
                         x => x.Photos,
                         x => x.Reviews,
-                        x => x.Meal,
-                        x => x.User,
+                        //x => x.Meal,
+                        //x => x.User,
                         x => x.Country
                     }
                 );
@@ -223,8 +249,8 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                         x => x.FavoriteRecipes,
                         x => x.Photos,
                         x => x.Reviews,
-                        x => x.Meal,
-                        x => x.User,
+                        //x => x.Meal,
+                        //x => x.User,
                         x => x.Country
                     });
                 return recipes.OrderByDescending(x => x.CreateTime);

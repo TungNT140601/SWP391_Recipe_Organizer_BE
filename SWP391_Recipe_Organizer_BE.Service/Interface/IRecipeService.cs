@@ -10,6 +10,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Interface
     public interface IRecipeService
     {
         Recipe Get(string id);
+        Recipe GetInPlanWeek(string id);
         IEnumerable<Recipe> GetByCooker(string id);
         IEnumerable<Recipe> GetAll();
         IEnumerable<Recipe> GetAll(List<string> recipeIds);

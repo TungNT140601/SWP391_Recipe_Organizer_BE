@@ -88,6 +88,10 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 }
                 ingredient.IngredientName = item.IngredientName;
                 ingredient.Measure = item.Measure;
+                ingredient.Fat = item.Fat;
+                ingredient.Calories = item.Calories;
+                ingredient.Carbohydrate = item.Carbohydrate;
+                ingredient.Protein = item.Protein;
                 ingredient.IsDelete = false;
                 return ingredientRepository.Update(ingredient);
             }
