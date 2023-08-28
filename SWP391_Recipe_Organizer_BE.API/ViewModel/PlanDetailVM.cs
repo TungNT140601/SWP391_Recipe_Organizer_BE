@@ -51,4 +51,9 @@ namespace SWP391_Recipe_Organizer_BE.API.ViewModel
         public List<PlanDetailDateOfWeekVM>? Lunch { get; set; } = new List<PlanDetailDateOfWeekVM> { };
         public List<PlanDetailDateOfWeekVM>? Dinner { get; set; } = new List<PlanDetailDateOfWeekVM> { };
     }
+    public class PlanDetailAddDateVM
+    {
+        public string Value { get; set; } = ""; //recipeId
+        public string Label { get; set; } = ""; //recipeName
+    }
 }

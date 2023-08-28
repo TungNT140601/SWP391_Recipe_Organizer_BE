@@ -328,6 +328,97 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> GetRecipeOfPlanDate(string date)
+        {
+            try
+            {
+                var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                if (!string.IsNullOrEmpty(role))
+                {
+                    if (role == CommonValues.USER)
+                    {
+                        var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                        DateTime dateTime = DateTime.ParseExact(date, "MM/dd/yyyy", null);
+                        var planDetails = planService.SearchPlanOfDate(userId, dateTime);
+                        if (planDetails != null)
+                        {
+                            var breakfast = new List<PlanDetailAddDateVM>();
+                            var lunch = new List<PlanDetailAddDateVM>();
+                            var dinner = new List<PlanDetailAddDateVM>();
+                            foreach (var planDetail in planDetails)
+                            {
+                                var recipe = recipeService.GetInPlanWeek(planDetail.RecipeId);
+                                if (planDetail != null && recipe != null && recipe.IngredientOfRecipes != null)
+                                {
+                                    if (planDetail.MealOfDate == 1)
+                                    {
+                                        breakfast.Add(new PlanDetailAddDateVM
+                                        {
+                                            Value = recipe.RecipeId,
+                                            Label = recipe.RecipeName
+                                        });
+                                    }
+                                    if (planDetail.MealOfDate == 2)
+                                    {
+                                        lunch.Add(new PlanDetailAddDateVM
+                                        {
+                                            Value = recipe.RecipeId,
+                                            Label = recipe.RecipeName
+                                        });
+                                    }
+                                    if (planDetail.MealOfDate == 3)
+                                    {
+                                        dinner.Add(new PlanDetailAddDateVM
+                                        {
+                                            Value = recipe.RecipeId,
+                                            Label = recipe.RecipeName
+                                        });
+                                    }
+                                }
+                            }
+                            return Ok(new
+                            {
+                                Status = 1,
+                                Message = "Success",
+                                Data = new
+                                {
+                                    Breakfast = breakfast,
+                                    Lunch = lunch,
+                                    Dinner = dinner
+                                }
+                            });
+                        }
+                        else
+                        {
+                            return Ok(new
+                            {
+                                Status = 0,
+                                Message = "Fail",
+                                Data = new { }
+                            });
+                        }
+                    }
+                    else
+                    {
+                        return Ok(new
+                        {
+                            Status = -1,
+                            Message = "Role Denied",
+                            Data = new { }
+                        });
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         [HttpDelete]
         public async Task<IActionResult> DeletePlanOfDate(string date)
         {

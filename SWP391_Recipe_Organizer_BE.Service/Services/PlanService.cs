@@ -190,6 +190,37 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 throw new Exception(ex.Message);
             }
         }
+        public IEnumerable<PlanDetail> SearchPlanOfDate(string userId, DateTime dateTime)
+        {
+            try
+            {
+                var plan = planRepository.Get(x => x.UserId == userId && x.IsDelete == false, new System.Linq.Expressions.Expression<Func<Plan, object>>[]
+                {
+                    x => x.PlanDetails
+                });
+                if (plan != null)
+                {
+                    var planReturn = new List<PlanDetail>();
+                    foreach (var planDetail in plan.PlanDetails)
+                    {
+                        if (planDetail.Date.Value.Date == dateTime.Date)
+                        {
+                            planDetail.Recipe = recipeService.Get(planDetail.RecipeId);
+                            planReturn.Add(planDetail);
+                        }
+                    }
+                    return planReturn;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         public bool DeletePlanDetail(string id)
         {
             try

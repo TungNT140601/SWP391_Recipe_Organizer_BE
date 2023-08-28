@@ -66,7 +66,15 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                 bool check = true;
                 foreach (var ingredientOfRecipe in ingredientOfRecipes)
                 {
-                    var ingredient = ingredientRepository.Get(x => x.IngredientId == ingredientOfRecipe.IngredientId);
+                    Ingredient ingredient = null;
+                    if(ingredientOfRecipe.IngredientId != null)
+                    {
+                        ingredient = ingredientRepository.Get(x => x.IngredientId == ingredientOfRecipe.IngredientId);
+                    }
+                    else
+                    {
+                        ingredient = ingredientRepository.Get(x => x.IngredientName == ingredientOfRecipe.Ingredient.IngredientName && x.IsDelete == false);
+                    }
                     if (ingredient != null)
                     {
                         var existingIngredientOfRecipe = dbSet.SingleOrDefault(e => e.IngredientId == ingredientOfRecipe.IngredientId && e.RecipeId == ingredientOfRecipe.RecipeId);

@@ -174,23 +174,12 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                                 recipe.PhotoVMs.Add(mapper.Map<PhotoVM>(photo));
                             }
                             recipe.DirectionVMs = new List<DirectionVM>();
-                            foreach (var direction in item.Directions)
-                            {
-                                recipe.DirectionVMs.Add(mapper.Map<DirectionVM>(direction));
-                            }
                             recipe.ReviewVMs = new List<ReviewVM>();
                             foreach (var review in item.Reviews)
                             {
                                 recipe.ReviewVMs.Add(mapper.Map<ReviewVM>(review));
                             }
                             recipe.IngredientOfRecipeVMs = new List<IngredientOfRecipeVM>();
-                            foreach (var ingredientOfRecipe in item.IngredientOfRecipes)
-                            {
-                                var ingredientOfRecipeVM = mapper.Map<IngredientOfRecipeVM>(ingredientOfRecipe);
-                                var ingredient = mapper.Map<IngredientVM>(ingredientOfRecipe.Ingredient);
-                                ingredientOfRecipeVM.IngredientVM = ingredient;
-                                recipe.IngredientOfRecipeVMs.Add(ingredientOfRecipeVM);
-                            }
                             data.Add(recipe);
                         }
                         return Ok(new

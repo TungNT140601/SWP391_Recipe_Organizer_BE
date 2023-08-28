@@ -20,14 +20,16 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
         private readonly IReviewService reviewService;
         private readonly IFavoriteRecipeService favoriteRecipeService;
         private readonly IUserAccountService userAccountService;
+        private readonly IIngredientService IIngredientService;
         private readonly IMapper mapper;
-        public RecipesController(IRecipeService recipeService, IMapper mapper, IReviewService reviewService, IFavoriteRecipeService favoriteRecipeService, IUserAccountService userAccountService)
+        public RecipesController(IRecipeService recipeService, IMapper mapper, IReviewService reviewService, IFavoriteRecipeService favoriteRecipeService, IUserAccountService userAccountService, IIngredientService iIngredientService)
         {
             this.recipeService = recipeService;
             this.mapper = mapper;
             this.reviewService = reviewService;
             this.favoriteRecipeService = favoriteRecipeService;
             this.userAccountService = userAccountService;
+            IIngredientService = iIngredientService;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -66,6 +68,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                     {
                         recipe.PhotoVMs.Add(mapper.Map<PhotoVM>(photo));
                     }
+                    recipe.MealVMs = mapper.Map<MealVM>(item.Meal);
                     recipe.DirectionVMs = new List<DirectionVM>();
                     recipe.ReviewVMs = new List<ReviewVM>();
                     recipe.IngredientOfRecipeVMs = new List<IngredientOfRecipeVM>();
@@ -278,7 +281,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                     if (role == CommonValues.COOKER)
                     {
                         var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                        var item = recipeService.Get(id);
+                        var item = recipeService.GetUpdate(id);
                         if (item != null)
                         {
                             if (item.UserId == userId)
@@ -287,8 +290,6 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                                 recipe.MealVMs = mapper.Map<MealVM>(item.Meal);
                                 recipe.UserAccountVMs = mapper.Map<UserAccountVM>(item.User);
                                 recipe.TotalReview = item.Reviews != null ? item.Reviews.Count() : 0;
-                                recipe.AveVote = reviewService.GetAveReview(recipe.RecipeId);
-                                recipe.TotalFavorite = item.FavoriteRecipes != null ? item.FavoriteRecipes.Count() : 0;
                                 recipe.CountryVM = mapper.Map<CountryVM>(item.Country);
 
                                 recipe.PhotoVMs = item.Photos.Select(photo => mapper.Map<PhotoVM>(photo)).ToList();
@@ -746,7 +747,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 err = err + ",Please choose Meal Type!!!";
             }
             var recipe = mapper.Map<Recipe>(recipeVM);
-            if (int.TryParse(recipeVM.PrepTimeSt, out int prepTime))
+            if (int.TryParse(recipeVM.PrepTimeSt.Trim(), out int prepTime))
             {
                 if (prepTime >= 1)
                 {
@@ -761,7 +762,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
             {
                 err = err + ",Prep Time not correct format!!!";
             }
-            if (int.TryParse(recipeVM.CookTimeSt, out int cookTime))
+            if (int.TryParse(recipeVM.CookTimeSt.Trim(), out int cookTime))
             {
                 if (cookTime >= 1)
                 {
@@ -776,7 +777,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
             {
                 err = err + ",Cook Time not correct format!!!";
             }
-            if (int.TryParse(recipeVM.StandTimeSt, out int standTime))
+            if (int.TryParse(recipeVM.StandTimeSt.Trim(), out int standTime))
             {
                 if (standTime >= 0)
                 {
@@ -791,7 +792,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
             {
                 err = err + ",Stand Time not correct format!!!";
             }
-            if (int.TryParse(recipeVM.ServingsSt, out int servings))
+            if (int.TryParse(recipeVM.ServingsSt.Trim(), out int servings))
             {
                 if (servings >= 1)
                 {
@@ -829,7 +830,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 bool checkBlank = false;
                 foreach (var direction in recipeVM.DirectionVMs)
                 {
-                    if (direction.DirectionsDesc != "")
+                    if (direction.DirectionsDesc.Trim() != "")
                     {
                         recipe.Directions.Add(new Direction
                         {
@@ -871,7 +872,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                 {
                     if (ingredientOfRecipe.IngredientName != null && ingredientOfRecipe.IngredientName.Contains(" - "))
                     {
-                        var name = ingredientOfRecipe.IngredientName.Split(" - ")[0].Trim();
+                        var name = ingredientOfRecipe.IngredientName.Trim().Split(" - ")[0].Trim();
                         if (recipe.IngredientOfRecipes.Any(x => x.Ingredient.IngredientName == name))
                         {
                             checkDup = true;

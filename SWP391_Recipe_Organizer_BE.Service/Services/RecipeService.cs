@@ -2,6 +2,7 @@
 using SWP391_Recipe_Organizer_BE.Repo.Interface;
 using SWP391_Recipe_Organizer_BE.Service.Interface;
 using SWP391_Recipe_Organizer_BE.Ultility;
+using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
 
@@ -78,7 +79,6 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 throw new Exception(ex.Message);
             }
         }
-
         public Recipe Get(string id)
         {
             try
@@ -97,16 +97,46 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 });
                 if (recipes != null)
                 {
+                    recipes.Protein = 0;
+                    recipes.Carbohydrate = 0;
+                    recipes.Fat = 0;
+                    recipes.Calories = 0;
                     foreach (var ingre in recipes.IngredientOfRecipes)
                     {
                         ingre.Ingredient = ingredientRepository.Get(x => x.IngredientId == ingre.IngredientId);
-                        recipes.Protein = ingre.Ingredient.Protein * (int)Math.Round(ingre.Quantity.Value, 0);
-                        recipes.Carbohydrate = ingre.Ingredient.Carbohydrate * (int)Math.Round(ingre.Quantity.Value, 0);
-                        recipes.Fat = ingre.Ingredient.Fat * (int)Math.Round(ingre.Quantity.Value, 0);
-                        recipes.Calories = ingre.Ingredient.Calories * (int)Math.Round(ingre.Quantity.Value, 0);
+                        recipes.Protein += (int)Math.Round((decimal)(ingre.Ingredient.Protein * (int)Math.Round(ingre.Quantity.Value, 0)),0);
+                        recipes.Carbohydrate += (int)Math.Round((decimal)(ingre.Ingredient.Carbohydrate * (int)Math.Round(ingre.Quantity.Value, 0)), 0);
+                        recipes.Fat += (int)Math.Round((decimal)(ingre.Ingredient.Fat * (int)Math.Round(ingre.Quantity.Value, 0)), 0);
+                        recipes.Calories += (int)Math.Round((decimal)(ingre.Ingredient.Calories * (int)Math.Round(ingre.Quantity.Value, 0)), 0);
                     }
                 }
 
+                return recipes;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public Recipe GetUpdate(string id)
+        {
+            try
+            {
+                var recipes = recipeRepository.Get(x => x.RecipeId == id, new System.Linq.Expressions.Expression<Func<Recipe, object>>[]
+                {
+                    x => x.Directions,
+                    x => x.IngredientOfRecipes,
+                    x => x.Photos,
+                    x => x.Meal,
+                    x => x.Country
+                });
+                if (recipes != null)
+                {
+                    foreach (var ingre in recipes.IngredientOfRecipes)
+                    {
+                        ingre.Ingredient = ingredientRepository.Get(x => x.IngredientId == ingre.IngredientId);
+                    }
+                }
                 return recipes;
             }
             catch (Exception ex)
@@ -127,10 +157,10 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     foreach (var ingre in recipes.IngredientOfRecipes)
                     {
                         ingre.Ingredient = ingredientRepository.Get(x => x.IngredientId == ingre.IngredientId);
-                        recipes.Protein = ingre.Ingredient.Protein * (int)Math.Round(ingre.Quantity.Value, 0);
-                        recipes.Carbohydrate = ingre.Ingredient.Carbohydrate * (int)Math.Round(ingre.Quantity.Value, 0);
-                        recipes.Fat = ingre.Ingredient.Fat * (int)Math.Round(ingre.Quantity.Value, 0);
-                        recipes.Calories = ingre.Ingredient.Calories * (int)Math.Round(ingre.Quantity.Value, 0);
+                        recipes.Protein += (int)Math.Round((decimal)(ingre.Ingredient.Protein * (int)Math.Round(ingre.Quantity.Value, 0)), 0);
+                        recipes.Carbohydrate += (int)Math.Round((decimal)(ingre.Ingredient.Carbohydrate * (int)Math.Round(ingre.Quantity.Value, 0)), 0);
+                        recipes.Fat += (int)Math.Round((decimal)(ingre.Ingredient.Fat * (int)Math.Round(ingre.Quantity.Value, 0)), 0);
+                        recipes.Calories += (int)Math.Round((decimal)(ingre.Ingredient.Calories * (int)Math.Round(ingre.Quantity.Value, 0)), 0);
                     }
                 }
 
@@ -161,7 +191,6 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 throw new Exception(ex.Message);
             }
         }
-
         public IEnumerable<Recipe> GetAll()
         {
             try
@@ -171,7 +200,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     x => x.FavoriteRecipes,
                     x => x.Photos,
                     x => x.Reviews,
-                    //x => x.Meal,
+                    x => x.Meal,
                     //x => x.User,
                     x => x.Country
                 });
@@ -208,7 +237,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
             {
                 var recipes = recipeRepository.GetAll(x =>
                     x.IsDelete == false
-                     && (string.IsNullOrEmpty(name) || x.RecipeName.ToLower().Trim().Contains(name.Trim().ToLower()))
+                    && (string.IsNullOrEmpty(name) || x.RecipeName.ToLower().Trim().Contains(name.Trim().ToLower()))
                     && (string.IsNullOrEmpty(countryId) || (x.CountryId != null && x.CountryId.Trim().Equals(countryId.Trim())))
                     && (string.IsNullOrEmpty(mealId) || (x.MealId != null && x.MealId.Trim().Equals(mealId.Trim())))
                     && ((!minTime.HasValue || !maxTime.HasValue) || (x.TotalTime >= minTime.Value && x.TotalTime <= maxTime.Value))
@@ -231,7 +260,6 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 throw new Exception(ex.Message);
             }
         }
-
         public IEnumerable<Recipe> SearchFavoriteRecipe(List<string> recipeIds, string? name, string? countryId, string? mealId, int? minTime, int? maxTime, int? minServing, int? maxServing)
         {
             try
@@ -309,7 +337,6 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 throw new Exception(ex.Message);
             }
         }
-
         public async Task<bool> Update(Recipe item, List<Photo> photos, List<Direction> directions, List<IngredientOfRecipe> lstIngredientOfRecipes)
         {
             var recipe = recipeRepository.Get(x => x.RecipeId == item.RecipeId && x.IsDelete == false, new Expression<Func<Recipe, object>>[]
