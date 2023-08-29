@@ -734,15 +734,36 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
         private Recipe ValidateRecipe(RecipeAddUpdateVM recipeVM)
         {
             string err = "";
-            if (string.IsNullOrEmpty(recipeVM.RecipeName.Trim()))
+            if (recipeVM.RecipeName != null)
+            {
+                if (string.IsNullOrEmpty(recipeVM.RecipeName.Trim()))
+                {
+                    err = err + ",Recipe Name cannot be empty!!!";
+                }
+            }
+            else
             {
                 err = err + ",Recipe Name cannot be empty!!!";
             }
-            if (string.IsNullOrEmpty(recipeVM.CountryId.Trim()))
+            if(recipeVM.CountryId != null)
+            {
+                if (string.IsNullOrEmpty(recipeVM.CountryId.Trim()))
+                {
+                    err = err + ",Please choose Country!!!";
+                }
+            }
+            else
             {
                 err = err + ",Please choose Country!!!";
             }
-            if (string.IsNullOrEmpty(recipeVM.MealId.Trim()))
+            if(recipeVM.MealId != null)
+            {
+                if (string.IsNullOrEmpty(recipeVM.MealId.Trim()))
+                {
+                    err = err + ",Please choose Meal Type!!!";
+                }
+            }
+            else
             {
                 err = err + ",Please choose Meal Type!!!";
             }

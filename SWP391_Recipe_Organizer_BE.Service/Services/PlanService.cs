@@ -134,7 +134,19 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 }
                 else
                 {
-                    return null;
+                    plan = new Plan
+                    {
+                        PlanId = GenerateId.AutoGenerateId(),
+                        CreateTime = DateTime.Now,
+                        UpdateTime = DateTime.Now,
+                        PlanName = "",
+                        PlanDescription = "",
+                        IsDelete = false,
+                        UserId = userId,
+                    };
+                    planRepository.Add(plan);
+                    plan.PlanDetails = new List<PlanDetail>();
+                    return plan.PlanDetails;
                 }
             }
             catch (Exception ex)
