@@ -219,11 +219,11 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                         return check ? Ok(new
                         {
                             Status = 1,
-                            Message = "Delete Meal Success"
+                            Message = "Delete Ingredient Success"
                         }) : Ok(new
                         {
                             Status = 0,
-                            Message = "Delete Meal Fail"
+                            Message = "Delete Ingredient Fail"
                         });
 
                     }

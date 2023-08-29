@@ -48,7 +48,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                     if(dbSet.Where(x => x.IngredientName.ToLower().Trim() == item.IngredientName.ToLower().Trim() && x.IsDelete == false && x.IngredientId != item.IngredientId).FirstOrDefault() == null)
                     {
                         dBContext.Entry(ingredient).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
-                        dbSet.Update(ingredient);
+                        dbSet.Update(item);
                         dBContext.SaveChanges();
                         return true;
                     }
