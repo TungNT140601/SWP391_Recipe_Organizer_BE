@@ -258,17 +258,17 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
             {
                 throw new Exception("Measure cannot be empty!!!");
             }
-            if (ingredientVM.Protein < 1)
+            if (ingredientVM.Protein <= 0)
             {
-                throw new Exception("Ingredient Protein cannot less than 1!!!");
+                throw new Exception("Ingredient Protein cannot be a negative number!!!");
             }
-            if (ingredientVM.Fat < 1)
+            if (ingredientVM.Fat <= 0)
             {
-                throw new Exception("Ingredient Protein cannot less than 1!!!");
+                throw new Exception("Ingredient Protein cannot be a negative number!!!");
             }
-            if (ingredientVM.Carbohydrate < 1)
+            if (ingredientVM.Carbohydrate <= 0)
             {
-                throw new Exception("Ingredient Protein cannot less than 1!!!");
+                throw new Exception("Ingredient Protein cannot be a negative number!!!");
             }
             ingredientVM.Calories = ingredientVM.Fat * 9 + ingredientVM.Carbohydrate * 4 + ingredientVM.Protein * 4;
             return mapper.Map<Ingredient>(ingredientVM);

@@ -26,6 +26,24 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         {
             var plan = planRepository.Get(x => x.UserId == userId);
             var bkPlanDT = new List<PlanDetail>();
+            if (plan != null)
+            {
+                bkPlanDT = planDetailRepository.GetAll(x => x.PlanId == plan.PlanId && x.Date.Value.Date == date.Date).ToList();
+            }
+            else
+            {
+                plan = new Plan
+                {
+                    CreateTime = DateTime.Now,
+                    UserId = userId,
+                    IsDelete = false,
+                    PlanDescription = "",
+                    PlanId = GenerateId.AutoGenerateId(),
+                    PlanName = "",
+                    UpdateTime = DateTime.Now,
+                };
+                planRepository.Add(plan);
+            }
             var planDetails = new List<PlanDetail>();
             foreach (var item in breakfast)
             {
@@ -60,45 +78,10 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     RecipeId = item
                 });
             }
-            if (plan != null)
-            {
-                bkPlanDT = planDetailRepository.GetAll(x => x.PlanId == plan.PlanId && x.Date.Value.Date == date.Date).ToList();
-            }
             try
             {
-                if (plan == null)
-                {
-                    var planNew = new Plan
-                    {
-                        PlanId = GenerateId.AutoGenerateId(),
-                        CreateTime = DateTime.Now,
-                        UpdateTime = DateTime.Now,
-                        IsDelete = false,
-                        PlanDescription = "",
-                        PlanName = "",
-                        UserId = userId
-                    };
-                    if (planRepository.Add(planNew))
-                    {
-                        return await planDetailRepository.AddRange(planDetails);
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    if (plan != null)
-                    {
-                        await planDetailRepository.RemoveRange(bkPlanDT);
-                        return await planDetailRepository.AddRange(planDetails);
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
+                await planDetailRepository.RemoveRange(bkPlanDT);
+                return await planDetailRepository.AddRange(planDetails);
             }
             catch (Exception ex)
             {
