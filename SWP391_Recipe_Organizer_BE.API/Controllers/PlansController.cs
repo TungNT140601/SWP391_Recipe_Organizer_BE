@@ -104,7 +104,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                                     {
                                         var planDate = new PlanDetailDateOfWeekVM
                                         {
-                                            MealOfDate = 1,
+                                            MealOfDate = planDetail.MealOfDate,
                                             PlanDetailId = planDetail.PlanDetailId,
                                             RecipeId = item.RecipeId,
                                             RecipeName = item.RecipeName,

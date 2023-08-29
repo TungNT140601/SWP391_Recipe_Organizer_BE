@@ -154,6 +154,10 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                 });
                 if (recipes != null)
                 {
+                    recipes.Protein = 0;
+                    recipes.Carbohydrate = 0;
+                    recipes.Fat = 0;
+                    recipes.Calories = 0;
                     foreach (var ingre in recipes.IngredientOfRecipes)
                     {
                         ingre.Ingredient = ingredientRepository.Get(x => x.IngredientId == ingre.IngredientId);
