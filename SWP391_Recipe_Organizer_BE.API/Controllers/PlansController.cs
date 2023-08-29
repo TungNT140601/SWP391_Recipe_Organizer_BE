@@ -223,6 +223,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                                             Fat = recipe.Fat.GetValueOrDefault(),
                                             Carbohydrate = recipe.Carbohydrate.GetValueOrDefault(),
                                             Protein = recipe.Protein.GetValueOrDefault(),
+                                            IsDelete = recipe.IsDelete,
                                         });
                                     }
                                     if (planDetail.MealOfDate == 2)
@@ -239,6 +240,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                                             Fat = recipe.Fat.GetValueOrDefault(),
                                             Carbohydrate = recipe.Carbohydrate.GetValueOrDefault(),
                                             Protein = recipe.Protein.GetValueOrDefault(),
+                                            IsDelete = recipe.IsDelete,
                                         });
                                     }
                                     if (planDetail.MealOfDate == 3)
@@ -255,6 +257,7 @@ namespace SWP391_Recipe_Organizer_BE.API.Controllers
                                             Fat = recipe.Fat.GetValueOrDefault(),
                                             Carbohydrate = recipe.Carbohydrate.GetValueOrDefault(),
                                             Protein = recipe.Protein.GetValueOrDefault(),
+                                            IsDelete = recipe.IsDelete,
                                         });
                                     }
                                 }

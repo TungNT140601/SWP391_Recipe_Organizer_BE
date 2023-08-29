@@ -43,6 +43,7 @@ namespace SWP391_Recipe_Organizer_BE.API.ViewModel
         public int? Protein { get; set; }
         public int? Fat { get; set; }
         public int? Calories { get; set; }
+        public bool? IsDelete { get; set; }
     }
 
     public class PlanDetailWeekVM

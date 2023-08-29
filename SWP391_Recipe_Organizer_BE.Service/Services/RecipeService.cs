@@ -75,7 +75,6 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
             catch (Exception ex)
             {
                 await Fail(id, item.UserId, null, null, null);
-                await recipeRepository.RemoveAddFail(id);
                 throw new Exception(ex.Message);
             }
         }
@@ -505,6 +504,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
             {
                 await ingredientOfRecipeRepository.AddRange(bkIngre, recipeId);
             }
+            recipeRepository.Remove(recipeId);
         }
     }
 }
