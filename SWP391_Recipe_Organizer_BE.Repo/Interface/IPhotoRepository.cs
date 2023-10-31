@@ -11,5 +11,6 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Interface
     {
         Task<bool> AddRangePhoto(List<Photo> photos, string userId, string recipeId);
         void RemoveAll(string recipeId);
+        Task<IEnumerable<Photo>> Get(string recipeId);
     }
 }

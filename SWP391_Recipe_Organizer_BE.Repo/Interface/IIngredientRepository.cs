@@ -9,5 +9,6 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Interface
 {
     public interface IIngredientRepository : IGenericRepository<Ingredient>
     {
+        Task<Ingredient> Get(string id);
     }
 }

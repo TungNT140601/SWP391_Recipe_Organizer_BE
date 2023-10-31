@@ -67,7 +67,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                 foreach (var ingredientOfRecipe in ingredientOfRecipes)
                 {
                     Ingredient ingredient = null;
-                    if(ingredientOfRecipe.IngredientId != null)
+                    if (ingredientOfRecipe.IngredientId != null)
                     {
                         ingredient = ingredientRepository.Get(x => x.IngredientId == ingredientOfRecipe.IngredientId);
                     }
@@ -78,7 +78,7 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                     if (ingredient != null)
                     {
                         var existingIngredientOfRecipe = dbSet.SingleOrDefault(e => e.IngredientId == ingredientOfRecipe.IngredientId && e.RecipeId == ingredientOfRecipe.RecipeId);
-                        if(existingIngredientOfRecipe != null)
+                        if (existingIngredientOfRecipe != null)
                         {
                             existingIngredientOfRecipe.Quantity = ingredientOfRecipe.Quantity;
                             var entry = dbSet.Attach(existingIngredientOfRecipe);
@@ -100,6 +100,18 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                 }
                 await dBContext.SaveChangesAsync();
                 return check;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<IEnumerable<IngredientOfRecipe>> GetIngredientOfRecipe(string id)
+        {
+            try
+            {
+                return await dbSet.Where(x => x.RecipeId == id).ToListAsync();
             }
             catch (Exception ex)
             {

@@ -43,5 +43,16 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                 throw new Exception(ex.Message);
             }
         }
+        public async Task<Recipe> Get(string id)
+        {
+            try
+            {
+                return await dbSet.FindAsync(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using SWP391_Recipe_Organizer_BE.Repo.DataAccess;
+﻿using Microsoft.EntityFrameworkCore;
+using SWP391_Recipe_Organizer_BE.Repo.DataAccess;
 using SWP391_Recipe_Organizer_BE.Repo.EntityModel;
 using SWP391_Recipe_Organizer_BE.Repo.Interface;
 using SWP391_Recipe_Organizer_BE.Ultility;
@@ -56,6 +57,17 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                     }
                     dBContext.SaveChanges();
                 }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public async Task<IEnumerable<Photo>> Get(string recipeId)
+        {
+            try
+            {
+                return await dbSet.Where(x => x.RecipeId == recipeId).ToListAsync();
             }
             catch (Exception ex)
             {

@@ -158,18 +158,20 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         {
             try
             {
-                var plan = planRepository.Get(x => x.UserId == userId && x.IsDelete == false, new System.Linq.Expressions.Expression<Func<Plan, object>>[]
-                {
-                    x => x.PlanDetails
-                });
+                //var plan = planRepository.Get(x => x.UserId == userId && x.IsDelete == false, new System.Linq.Expressions.Expression<Func<Plan, object>>[]
+                //{
+                //    x => x.PlanDetails
+                //});
+                var plan = planRepository.GetPlan(userId).Result;
                 if (plan != null)
                 {
                     var planReturn = new List<PlanDetail>();
+                    plan.PlanDetails = planDetailRepository.GetPlanDetailsOfPlan(plan.PlanId).Result.ToList();
                     foreach (var planDetail in plan.PlanDetails)
                     {
                         if (planDetail.Date.Value.Date == dateTime.Date)
                         {
-                            planDetail.Recipe = recipeService.Get(planDetail.RecipeId);
+                            planDetail.Recipe = recipeService.GetInPlanWeek(planDetail.RecipeId);
                             planReturn.Add(planDetail);
                         }
                     }

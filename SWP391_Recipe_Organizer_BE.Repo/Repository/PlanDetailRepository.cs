@@ -1,4 +1,5 @@
-﻿using SWP391_Recipe_Organizer_BE.Repo.DataAccess;
+﻿using Microsoft.EntityFrameworkCore;
+using SWP391_Recipe_Organizer_BE.Repo.DataAccess;
 using SWP391_Recipe_Organizer_BE.Repo.EntityModel;
 using SWP391_Recipe_Organizer_BE.Repo.Interface;
 using System;
@@ -41,6 +42,17 @@ namespace SWP391_Recipe_Organizer_BE.Repo.Repository
                 }
                 await dBContext.SaveChangesAsync();
                 return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public async Task<IEnumerable<PlanDetail>> GetPlanDetailsOfPlan(string planId)
+        {
+            try
+            {
+                return await dbSet.Where(x => x.PlanId == planId).ToListAsync();
             }
             catch (Exception ex)
             {

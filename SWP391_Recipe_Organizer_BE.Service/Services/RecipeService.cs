@@ -103,7 +103,7 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
                     foreach (var ingre in recipes.IngredientOfRecipes)
                     {
                         ingre.Ingredient = ingredientRepository.Get(x => x.IngredientId == ingre.IngredientId);
-                        recipes.Protein += (int)Math.Round((decimal)(ingre.Ingredient.Protein * (int)Math.Round(ingre.Quantity.Value, 0)),0);
+                        recipes.Protein += (int)Math.Round((decimal)(ingre.Ingredient.Protein * (int)Math.Round(ingre.Quantity.Value, 0)), 0);
                         recipes.Carbohydrate += (int)Math.Round((decimal)(ingre.Ingredient.Carbohydrate * (int)Math.Round(ingre.Quantity.Value, 0)), 0);
                         recipes.Fat += (int)Math.Round((decimal)(ingre.Ingredient.Fat * (int)Math.Round(ingre.Quantity.Value, 0)), 0);
                         recipes.Calories += (int)Math.Round((decimal)(ingre.Ingredient.Calories * (int)Math.Round(ingre.Quantity.Value, 0)), 0);
@@ -147,19 +147,22 @@ namespace SWP391_Recipe_Organizer_BE.Service.Services
         {
             try
             {
-                var recipes = recipeRepository.Get(x => x.RecipeId == id, new System.Linq.Expressions.Expression<Func<Recipe, object>>[]
-                {
-                    x => x.IngredientOfRecipes
-                });
+                //var recipes = recipeRepository.Get(x => x.RecipeId == id, new System.Linq.Expressions.Expression<Func<Recipe, object>>[]
+                //{
+                //    x => x.IngredientOfRecipes
+                //});
+                var recipes = recipeRepository.Get(id).Result;
                 if (recipes != null)
                 {
                     recipes.Protein = 0;
                     recipes.Carbohydrate = 0;
                     recipes.Fat = 0;
                     recipes.Calories = 0;
+                    recipes.IngredientOfRecipes = ingredientOfRecipeRepository.GetIngredientOfRecipe(recipes.RecipeId).Result.ToList();
+                    recipes.Photos = photoRepository.Get(recipes.RecipeId).Result.ToList();
                     foreach (var ingre in recipes.IngredientOfRecipes)
                     {
-                        ingre.Ingredient = ingredientRepository.Get(x => x.IngredientId == ingre.IngredientId);
+                        ingre.Ingredient = ingredientRepository.Get(ingre.IngredientId).Result;
                         recipes.Protein += (int)Math.Round((decimal)(ingre.Ingredient.Protein * (int)Math.Round(ingre.Quantity.Value, 0)), 0);
                         recipes.Carbohydrate += (int)Math.Round((decimal)(ingre.Ingredient.Carbohydrate * (int)Math.Round(ingre.Quantity.Value, 0)), 0);
                         recipes.Fat += (int)Math.Round((decimal)(ingre.Ingredient.Fat * (int)Math.Round(ingre.Quantity.Value, 0)), 0);
